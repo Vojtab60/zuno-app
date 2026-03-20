@@ -1,1 +1,1653 @@
 
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Aktivity</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --dark: #0f172a;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius: 24px;
+      --radius-sm: 16px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f9fbff 0%, #f6f8fc 100%);
+      color: var(--text);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .sidebar-user img {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+      flex-shrink: 0;
+    }
+
+    .sidebar-user strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-user span {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px;
+      border-radius: 16px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      transition: 0.15s ease;
+    }
+
+    .sidebar-link:hover {
+      background: #eef4ff;
+      border-color: #d7e5ff;
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 10px;
+    }
+
+    .settings-btn,
+    .logout-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .settings-btn {
+      background: var(--dark);
+      color: white;
+      border-color: var(--dark);
+    }
+
+    .logout-btn {
+      background: white;
+      color: var(--text);
+    }
+
+    .main {
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .top-left,
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .pill-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .top-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .top-user img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+    }
+
+    .top-user span {
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(37,99,235,0.12), transparent 35%),
+        radial-gradient(circle at bottom left, rgba(59,130,246,0.08), transparent 30%);
+      pointer-events: none;
+    }
+
+    .hero-main h1 {
+      position: relative;
+      margin: 0 0 10px;
+      font-size: 42px;
+      line-height: 1.05;
+      letter-spacing: -0.8px;
+    }
+
+    .hero-main p {
+      position: relative;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .hero-stats {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .mini-stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+        .mini-stat strong {
+      display: block;
+      font-size: 26px;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .hero-side h2 {
+      margin: 0 0 4px;
+      font-size: 26px;
+    }
+
+    .hero-side p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .quick-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .quick-chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 22px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .panel .lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      font-family: Arial, sans-serif;
+      background: white;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .save-btn,
+    .secondary-btn,
+    .danger-btn,
+    .join-btn,
+    .whatsapp-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .save-btn,
+    .join-btn,
+    .whatsapp-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .save-btn:hover,
+    .join-btn:hover,
+    .whatsapp-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .secondary-btn {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .danger-btn {
+      background: var(--danger);
+      color: white;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .toolbar-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .toolbar-filters select,
+    .toolbar-filters input {
+      max-width: 220px;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .sports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .sport-card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .sport-card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .sport-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 14px;
+    }
+
+        .activity-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #f8fafc;
+      padding: 20px;
+      transition: 0.15s ease;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .activity-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .activity-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.15;
+    }
+
+    .activity-meta {
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .activity-badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2563eb;
+      cursor: pointer;
+    }
+
+    .author-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .activity-people {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .person-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 13px;
+    }
+
+    .person-chip img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+    }
+
+    .activity-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .empty-state {
+      padding: 18px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 18px;
+      background: #fafafa;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .loading-row {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 6px 0;
+    }
+
+    .map-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .map-top {
+      padding: 24px 24px 0;
+    }
+
+    .map-top h2 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    .map-top p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    #activityMap {
+      width: 100%;
+      height: 440px;
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .map-note {
+      padding: 0 24px 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notice-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .notice-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .notice-item strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .notice-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .settings-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .settings-item {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .settings-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .settings-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1280px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .sports-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .main {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .two-col,
+      .three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .sports-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-main h1 {
+        font-size: 34px;
+      }
+
+      .top-user span {
+        max-width: 120px;
+      }
+    }
+     </style>
+</head>
+<body>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand">Zuno</div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil">
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+
+      <a class="sidebar-link active" href="app.html">🏃 Aktivity</a>
+      <a class="sidebar-link" href="#sports">🎾 Všechny sporty</a>
+      <a class="sidebar-link" href="profil.html">👤 Profil</a>
+      <a class="sidebar-link" href="#notifications">🔔 Notifikace</a>
+
+      <div class="sidebar-bottom">
+        <button class="settings-btn" onclick="document.getElementById('settings').scrollIntoView({behavior:'smooth'})">⚙️ Nastavení</button>
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="top-left">
+          <button class="pill-btn" id="homeBtn">← Domů</button>
+          <button class="pill-btn primary" id="createFocusBtn">+ Vytvořit aktivitu</button>
+        </div>
+
+        <div class="top-right">
+          <button class="pill-btn" id="profileBtn">Profil</button>
+
+          <div class="top-user">
+            <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil">
+            <span id="topUserName">Načítám...</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div class="card hero-main">
+          <h1>Ahoj, <span id="welcomeName">sportovče</span> 👋</h1>
+          <p>
+            Tady máš kompletní přehled aktivit v Zuno. Můžeš vytvářet nové akce,
+            připojovat se k ostatním, sdílet je přes WhatsApp a sledovat vše i na mapě.
+          </p>
+
+          <div class="hero-stats">
+            <div class="mini-stat">
+              <strong id="totalActivitiesCount">0</strong>
+              <span>Aktivit celkem</span>
+            </div>
+
+            <div class="mini-stat">
+              <strong id="myCreatedCount">0</strong>
+              <span>Mnou vytvořené</span>
+            </div>
+
+            <div class="mini-stat">
+              <strong id="myJoinedCount">0</strong>
+              <span>Moje účasti</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card hero-side">
+          <h2>Rychlé sporty</h2>
+          <p>Vyber sport jedním kliknutím a filtruj aktivity rychleji.</p>
+
+          <div class="quick-chip-row">
+            <div class="quick-chip" data-quick-type="Vše">Vše</div>
+            <div class="quick-chip" data-quick-type="Padel">Padel</div>
+            <div class="quick-chip" data-quick-type="Tenis">Tenis</div>
+            <div class="quick-chip" data-quick-type="Běh">Běh</div>
+            <div class="quick-chip" data-quick-type="Kolo">Kolo</div>
+            <div class="quick-chip" data-quick-type="Fitness">Fitness</div>
+            <div class="quick-chip" data-quick-type="Turistika">Turistika</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="section-stack">
+          <div class="card panel" id="createPanel">
+            <h2>Vytvořit aktivitu</h2>
+            <p class="lead">
+              Naplánuj novou sportovní akci a ostatní se mohou přidat během pár sekund.
+            </p>
+
+            <div class="field-grid">
+              <div class="two-col">
+                <div class="field">
+                  <label for="activityName">Název aktivity</label>
+                  <input id="activityName" placeholder="Např. Padel dnes večer" />
+                </div>
+
+                <div class="field">
+                  <label for="activityType">Sport</label>
+                  <select id="activityType">
+                    <option value="Padel">Padel</option>
+                    <option value="Tenis">Tenis</option>
+                    <option value="Běh">Běh</option>
+                    <option value="Kolo">Kolo</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Turistika">Turistika</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="activityPlace">Místo</label>
+                <input id="activityPlace" placeholder="Např. Praha 4, Padel Club" />
+              </div>
+
+              <div class="three-col">
+                <div class="field">
+                  <label for="activityDate">Datum</label>
+                  <input type="date" id="activityDate" />
+                </div>
+
+                <div class="field">
+                  <label for="activityHour">Hodina</label>
+                  <select id="activityHour"></select>
+                </div>
+
+                <div class="field">
+                  <label for="activityMinute">Minuta</label>
+                  <select id="activityMinute"></select>
+                </div>
+              </div>
+
+              <div class="two-col">
+                <div class="field">
+                  <label for="activityLimit">Max lidí</label>
+                  <input id="activityLimit" type="number" placeholder="Např. 4" />
+                </div>
+
+                <div class="field">
+                  <label for="activityDescription">Popis</label>
+                  <input id="activityDescription" placeholder="Krátký popis aktivity..." />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="save-btn" id="saveActivityBtn">Vytvořit aktivitu</button>
+                <button class="secondary-btn" id="clearActivityBtn">Vymazat</button>
+              </div>
+
+              <div class="success-text" id="activitySuccess">Aktivita byla úspěšně vytvořena.</div>
+            </div>
+          </div>
+
+          <div class="card panel" id="sports">
+            <h2>Všechny sporty</h2>
+            <p class="lead">
+              Přehled sportů a aktivit, které můžeš v Zuno hledat nebo organizovat.
+            </p>
+
+            <div class="sports-grid">
+              <div class="sport-card">
+                <strong>Padel</strong>
+                <span>Čtyřhry, sparingy i spontánní hraní.</span>
+              </div>
+
+              <div class="sport-card">
+                <strong>Tenis</strong>
+                <span>Singly, debly i tréninky.</span>
+              </div>
+
+              <div class="sport-card">
+                <strong>Běh</strong>
+                <span>Lehký klus, tempo nebo delší běhy.</span>
+              </div>
+
+              <div class="sport-card">
+                <strong>Kolo</strong>
+                <span>Silnice, gravel, MTB i pohodová jízda.</span>
+              </div>
+
+              <div class="sport-card">
+                <strong>Fitness</strong>
+                <span>Workout, kruháč nebo společný trénink.</span>
+              </div>
+
+                            <div class="sport-card">
+                <strong>Turistika</strong>
+                <span>Výšlapy, výlety a víkendové akce.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card map-card">
+            <div class="map-top">
+              <h2>Mapa aktivit</h2>
+              <p>Zobraz si, kde se aktivity odehrávají a kde už je nejvíc lidí.</p>
+            </div>
+
+            <div id="activityMap"></div>
+
+            <div class="map-note">
+              Pokud některé místo nejde přesně dohledat, marker se nemusí objevit.
+              I tak aktivita zůstane normálně vidět v seznamu.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-stack">
+          <div class="card panel">
+            <div class="toolbar">
+              <div>
+                <h2 style="margin:0 0 6px;">Aktivity</h2>
+                <p class="lead" style="margin:0;">
+                  Všechny aktuální aktivity v aplikaci na jednom místě.
+                </p>
+              </div>
+            </div>
+
+            <div class="toolbar-filters">
+              <select id="filterType">
+                <option value="Vše">Všechny sporty</option>
+                <option value="Padel">Padel</option>
+                <option value="Tenis">Tenis</option>
+                <option value="Běh">Běh</option>
+                <option value="Kolo">Kolo</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Turistika">Turistika</option>
+              </select>
+
+              <input id="searchPlace" placeholder="Hledat podle místa" />
+              <input id="searchText" placeholder="Hledat podle názvu nebo popisu" />
+            </div>
+
+            <div class="activity-list" id="activitiesList" style="margin-top:18px;">
+              <div class="loading-row">Načítám aktivity...</div>
+            </div>
+          </div>
+
+          <div class="card panel" id="notifications">
+            <h2>Notifikace</h2>
+            <p class="lead">
+              Přehled důležitých událostí kolem tvých aktivit a účastí.
+            </p>
+
+            <div class="notice-list" id="noticeList">
+              <div class="notice-item">
+                <strong>Zatím tu nejsou notifikace</strong>
+                <span>
+                  Jakmile se někdo přidá na tvoji aktivitu nebo vytvoříš novou aktivitu,
+                  objeví se to tady.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card panel" id="settings">
+            <h2>Nastavení</h2>
+            <p class="lead">
+              Základní přehled nastavení a rychlých akcí v aplikaci.
+            </p>
+
+            <div class="settings-grid">
+              <div class="settings-item">
+                <strong>Profil</strong>
+                <span>Upravit jméno, fotku, bio a oblíbené sporty můžeš na stránce Profil.</span>
+              </div>
+
+              <div class="settings-item">
+                <strong>Sdílení aktivit</strong>
+                <span>Každou aktivitu můžeš sdílet přes WhatsApp přímo z její karty.</span>
+              </div>
+
+              <div class="settings-item">
+                <strong>Bezpečné odhlášení</strong>
+                <span>Odhlásit se můžeš kdykoliv přes levý panel bez ztráty uložených dat.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+    <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    window.addEventListener("load", async function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      } catch (e) {
+        console.error(e);
+      }
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const welcomeName = document.getElementById("welcomeName");
+
+      const homeBtn = document.getElementById("homeBtn");
+      const sidebarHomeBtn = document.getElementById("sidebarHomeBtn");
+      const profileBtn = document.getElementById("profileBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const createFocusBtn = document.getElementById("createFocusBtn");
+
+      const activityName = document.getElementById("activityName");
+      const activityType = document.getElementById("activityType");
+      const activityPlace = document.getElementById("activityPlace");
+      const activityDate = document.getElementById("activityDate");
+      const activityHour = document.getElementById("activityHour");
+      const activityMinute = document.getElementById("activityMinute");
+      const activityLimit = document.getElementById("activityLimit");
+      const activityDescription = document.getElementById("activityDescription");
+      const saveActivityBtn = document.getElementById("saveActivityBtn");
+      const clearActivityBtn = document.getElementById("clearActivityBtn");
+      const activitySuccess = document.getElementById("activitySuccess");
+
+      const filterType = document.getElementById("filterType");
+      const searchPlace = document.getElementById("searchPlace");
+      const searchText = document.getElementById("searchText");
+      const activitiesList = document.getElementById("activitiesList");
+
+      const totalActivitiesCount = document.getElementById("totalActivitiesCount");
+      const myCreatedCount = document.getElementById("myCreatedCount");
+      const myJoinedCount = document.getElementById("myJoinedCount");
+      const noticeList = document.getElementById("noticeList");
+
+      let currentUser = null;
+      let currentProfile = null;
+      let allActivities = [];
+      let map = null;
+      let markerLayer = null;
+      let geocodeCache = {};
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function saveProfileCache(profile) {
+        localStorage.setItem("zunoProfile", JSON.stringify(profile));
+      }
+
+      function readGeocodeCache() {
+        try {
+          geocodeCache = JSON.parse(localStorage.getItem("zunoGeocodeCache") || "{}");
+        } catch (e) {
+          geocodeCache = {};
+        }
+      }
+
+      function saveGeocodeCache() {
+        localStorage.setItem("zunoGeocodeCache", JSON.stringify(geocodeCache));
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = profile?.photo || user?.photoURL || "https://via.placeholder.com/100x100.png?text=+";
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+
+        if (welcomeName) {
+          welcomeName.textContent = name.split(" ")[0];
+        }
+      }
+
+      function fillTimeSelects() {
+        activityHour.innerHTML = "";
+        activityMinute.innerHTML = "";
+
+        for (let h = 0; h < 24; h++) {
+          const v = String(h).padStart(2, "0");
+          activityHour.innerHTML += `<option value="${v}">${v}</option>`;
+        }
+
+        ["00","05","10","15","20","25","30","35","40","45","50","55"].forEach((v) => {
+          activityMinute.innerHTML += `<option value="${v}">${v}</option>`;
+        });
+
+        activityHour.value = "18";
+        activityMinute.value = "00";
+      }
+
+      function clearActivityForm() {
+        activityName.value = "";
+        activityType.value = "Padel";
+        activityPlace.value = "";
+        activityDate.value = "";
+        activityHour.value = "18";
+        activityMinute.value = "00";
+        activityLimit.value = "";
+        activityDescription.value = "";
+      }
+
+      function toDateTime(activity) {
+        if (!activity?.date) return null;
+        const time = activity.time || "00:00";
+        const iso = `${activity.date}T${time.length === 5 ? time : "00:00"}`;
+        const dt = new Date(iso);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+
+      function formatShortDate(activity) {
+        if (!activity?.date) return "Bez data";
+        const dt = toDateTime(activity) || new Date(activity.date);
+        return dt.toLocaleDateString("cs-CZ", {
+          day: "numeric",
+          month: "long"
+        });
+      }
+
+      function makeWhatsappLink(activity) {
+        const message = `Ahoj, přidej se na ${activity.name} – ${activity.date} v ${activity.time}, ${activity.place}. Mrkni sem: https://co-se-dnes-deje.web.app`;
+        return `https://wa.me/?text=${encodeURIComponent(message)}`;
+      }
+
+      function isJoinedBy(activity, uid) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        return people.some((person) => person.uid === uid);
+      }
+
+      function uniqueActivities(items) {
+        const map = new Map();
+        items.forEach((item) => map.set(item.id, item));
+        return Array.from(map.values());
+      }
+
+      function sortActivities(items) {
+        return [...items].sort((a, b) => {
+          const aTime = toDateTime(a)?.getTime() || 0;
+          const bTime = toDateTime(b)?.getTime() || 0;
+          return aTime - bTime;
+        });
+      }
+
+      function renderEmpty(target, text) {
+        target.innerHTML = `<div class="empty-state">${text}</div>`;
+      }
+
+      function createActivityCard(activity) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        const alreadyJoined = isJoinedBy(activity, currentUser.uid);
+        const isOrganizer = activity.authorUid === currentUser.uid;
+
+        const card = document.createElement("div");
+        card.className = "activity-card";
+
+        card.innerHTML = `
+          <div class="activity-head">
+            <div>
+              <div class="activity-title">${activity.name || "Bez názvu"}</div>
+              <div class="activity-meta">
+                ${activity.type || "Jiná aktivita"} • ${activity.place || "Bez místa"}<br>
+                ${formatShortDate(activity)} • ${activity.time || "bez času"}<br>
+                Přihlášeno: ${people.length}${activity.limit ? ` / ${activity.limit}` : ""}
+                ${activity.description ? `<br>${activity.description}` : ""}
+              </div>
+
+              <div class="author-row">
+                <img class="author-avatar" src="${activity.authorPhoto || "https://via.placeholder.com/100x100.png?text=+"}" alt="Organizátor">
+                <div>
+                  <div class="author-sub">Organizátor</div>
+                  <div class="author-name" data-uid="${activity.authorUid}">${activity.authorName || "Uživatel"}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="activity-badge">${isOrganizer ? "Organizátor" : "Aktivita"}</div>
+          </div>
+
+          <div class="activity-people">
+            ${
+              people.length
+                ? people.map((person) => `
+                  <div class="person-chip">
+                    <img src="${person.photo || "https://via.placeholder.com/100x100.png?text=+"}" alt="Uživatel">
+                    <span>${person.name || "Uživatel"}</span>
+                  </div>
+                `).join("")
+                : `<div class="person-chip"><span>Zatím nikdo přihlášený</span></div>`
+            }
+          </div>
+
+          <div class="activity-actions">
+            <button class="join-btn join-toggle-btn">${alreadyJoined ? "Opustit" : "Připojit se"}</button>
+            <a class="whatsapp-btn" href="${makeWhatsappLink(activity)}" target="_blank">Pozvat přes WhatsApp</a>
+            <a class="secondary-btn" href="https://www.google.com/maps/search/${encodeURIComponent(activity.place || "")}" target="_blank">Otevřít v mapě</a>
+            ${
+              isOrganizer
+                ? `<button class="danger-btn delete-btn">Smazat</button>`
+                : ""
+            }
+          </div>
+        `;
+
+        const authorName = card.querySelector(".author-name");
+        authorName.onclick = () => {
+          window.location.href = `profil.html?uid=${activity.authorUid}`;
+        };
+
+        const joinBtn = card.querySelector(".join-toggle-btn");
+        joinBtn.onclick = async () => {
+          const peopleNow = Array.isArray(activity.people) ? activity.people : [];
+          const joined = peopleNow.some((person) => person.uid === currentUser.uid);
+
+          const nextPeople = joined
+            ? peopleNow.filter((person) => person.uid !== currentUser.uid)
+            : [
+                ...peopleNow,
+                {
+                  uid: currentUser.uid,
+                  name: currentProfile.name || currentUser.displayName || "Uživatel",
+                  photo: currentProfile.photo || currentUser.photoURL || ""
+                }
+              ];
+
+          await db.collection("activities").doc(activity.id).update({
+            people: nextPeople
+          });
+        };
+
+        const deleteBtn = card.querySelector(".delete-btn");
+        if (deleteBtn) {
+          deleteBtn.onclick = async () => {
+            const ok = confirm("Opravdu chceš tuto aktivitu smazat?");
+            if (!ok) return;
+            await db.collection("activities").doc(activity.id).delete();
+          };
+        }
+
+        return card;
+      }
+
+      function renderActivities() {
+        activitiesList.innerHTML = "";
+
+        let items = [...allActivities];
+
+        if (filterType.value !== "Vše") {
+          items = items.filter((activity) => activity.type === filterType.value);
+        }
+
+        const placeQuery = searchPlace.value.trim().toLowerCase();
+        if (placeQuery) {
+          items = items.filter((activity) => (activity.place || "").toLowerCase().includes(placeQuery));
+        }
+
+        const textQuery = searchText.value.trim().toLowerCase();
+        if (textQuery) {
+          items = items.filter((activity) => {
+            const joinedText = `${activity.name || ""} ${activity.description || ""} ${activity.type || ""}`.toLowerCase();
+            return joinedText.includes(textQuery);
+          });
+        }
+
+        items = sortActivities(items);
+
+        if (!items.length) {
+          renderEmpty(activitiesList, "Pro tento filtr tu nejsou žádné aktivity.");
+          return;
+        }
+
+        items.forEach((activity) => {
+          activitiesList.appendChild(createActivityCard(activity));
+        });
+      }
+
+      function updateCounters() {
+        totalActivitiesCount.textContent = allActivities.length;
+        myCreatedCount.textContent = allActivities.filter((a) => a.authorUid === currentUser.uid).length;
+        myJoinedCount.textContent = uniqueActivities(allActivities.filter((a) => isJoinedBy(a, currentUser.uid))).length;
+      }
+
+      function renderNotifications() {
+        const myCreated = allActivities.filter((a) => a.authorUid === currentUser.uid);
+        const joinedByOthers = myCreated.filter((a) => Array.isArray(a.people) && a.people.length > 0);
+
+        if (!joinedByOthers.length) {
+          noticeList.innerHTML = `
+            <div class="notice-item">
+              <strong>Zatím tu nejsou notifikace</strong>
+              <span>Jakmile se někdo přidá na tvoji aktivitu nebo vytvoříš novou aktivitu, objeví se to tady.</span>
+            </div>
+          `;
+          return;
+        }
+
+        noticeList.innerHTML = "";
+        joinedByOthers.slice(0, 6).forEach((activity) => {
+          const div = document.createElement("div");
+          div.className = "notice-item";
+          div.innerHTML = `
+            <strong>${activity.name}</strong>
+            <span>
+              Na tuto aktivitu je aktuálně přihlášeno ${Array.isArray(activity.people) ? activity.people.length : 0} lidí.
+              ${activity.place ? `<br>${activity.place}` : ""}
+            </span>
+          `;
+          noticeList.appendChild(div);
+        });
+      }
+
+      function initMap() {
+        if (map) return;
+
+        map = L.map("activityMap", {
+          zoomControl: true
+        }).setView([50.0755, 14.4378], 11);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap"
+        }).addTo(map);
+
+        markerLayer = L.layerGroup().addTo(map);
+      }
+
+      async function geocodePlace(place) {
+        if (!place) return null;
+        if (geocodeCache[place]) return geocodeCache[place];
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place + ", Czechia")}`);
+          const data = await res.json();
+
+          if (Array.isArray(data) && data.length) {
+            const coords = {
+              lat: Number(data[0].lat),
+              lng: Number(data[0].lon)
+            };
+            geocodeCache[place] = coords;
+            saveGeocodeCache();
+            return coords;
+          }
+        } catch (e) {
+          console.error("Geocode error:", e);
+        }
+
+        return null;
+      }
+
+      async function renderMap() {
+        initMap();
+        markerLayer.clearLayers();
+
+        const uniquePlaces = [];
+        const placeSet = new Set();
+
+        allActivities.forEach((activity) => {
+          if (activity.place && !placeSet.has(activity.place)) {
+            placeSet.add(activity.place);
+            uniquePlaces.push(activity);
+          }
+        });
+
+        const limited = uniquePlaces.slice(0, 10);
+        const markers = [];
+
+        for (const activity of limited) {
+          const coords = await geocodePlace(activity.place);
+          if (!coords) continue;
+
+          const marker = L.marker([coords.lat, coords.lng]).bindPopup(`
+            <strong>${activity.name || "Aktivita"}</strong><br>
+            ${activity.place || ""}<br>
+            ${activity.date || ""} ${activity.time || ""}
+          `);
+
+          marker.addTo(markerLayer);
+          markers.push(marker);
+        }
+
+        if (markers.length) {
+          const group = new L.featureGroup(markers);
+          map.fitBounds(group.getBounds().pad(0.2));
+        } else {
+          map.setView([50.0755, 14.4378], 11);
+        }
+
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 120);
+      }
+
+      function hookQuickChips() {
+        document.querySelectorAll("[data-quick-type]").forEach((chip) => {
+          chip.onclick = () => {
+            filterType.value = chip.getAttribute("data-quick-type");
+            renderActivities();
+          };
+        });
+      }
+
+      homeBtn.onclick = () => {
+        window.location.href = "index.html";
+      };
+
+      sidebarHomeBtn.onclick = () => {
+        window.location.href = "index.html";
+      };
+
+      profileBtn.onclick = () => {
+        window.location.href = "profil.html";
+      };
+
+      createFocusBtn.onclick = () => {
+        document.getElementById("createPanel").scrollIntoView({ behavior: "smooth" });
+        activityName.focus();
+      };
+
+      logoutBtn.onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      saveActivityBtn.onclick = async () => {
+        if (!currentUser || !currentProfile) return;
+
+        const name = activityName.value.trim();
+        const type = activityType.value;
+        const place = activityPlace.value.trim();
+        const date = activityDate.value;
+        const time = `${activityHour.value}:${activityMinute.value}`;
+        const limit = Number(activityLimit.value);
+        const description = activityDescription.value.trim();
+
+        if (!name || !place || !date || !limit) {
+          alert("Vyplň prosím název, místo, datum a maximální počet lidí.");
+          return;
+        }
+
+        await db.collection("activities").add({
+          name,
+          type,
+          place,
+          date,
+          time,
+          limit,
+          description,
+          authorUid: currentUser.uid,
+          authorName: currentProfile.name || currentUser.displayName || "Uživatel",
+          authorPhoto: currentProfile.photo || currentUser.photoURL || "",
+          people: [],
+          createdAt: Date.now()
+        });
+
+        clearActivityForm();
+        activitySuccess.style.display = "block";
+
+        setTimeout(() => {
+          activitySuccess.style.display = "none";
+        }, 1800);
+      };
+
+      clearActivityBtn.onclick = () => {
+        clearActivityForm();
+      };
+
+      filterType.addEventListener("change", renderActivities);
+      searchPlace.addEventListener("input", renderActivities);
+      searchText.addEventListener("input", renderActivities);
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        readGeocodeCache();
+
+        const cached = readProfileCache();
+        if (cached) {
+          setHeaderUser(cached, user);
+        } else {
+          setHeaderUser(null, user);
+        }
+
+        try {
+          const profileSnap = await db.collection("profiles").doc(user.uid).get();
+
+          if (!profileSnap.exists) {
+            window.location.href = "profil.html";
+            return;
+          }
+
+          currentProfile = profileSnap.data();
+
+          saveProfileCache({
+            uid: user.uid,
+            name: currentProfile.name || user.displayName || "",
+            email: user.email || "",
+            photo: currentProfile.photo || user.photoURL || "",
+            city: currentProfile.city || "",
+            bio: currentProfile.bio || "",
+            hobbies: currentProfile.hobbies || ""
+          });
+
+          setHeaderUser(currentProfile, user);
+
+          db.collection("activities").onSnapshot(async (snapshot) => {
+            allActivities = [];
+            snapshot.forEach((docSnap) => {
+              allActivities.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            updateCounters();
+            renderActivities();
+            renderNotifications();
+            await renderMap();
+          });
+        } catch (e) {
+          console.error(e);
+          renderEmpty(activitiesList, "Nepodařilo se načíst aktivity.");
+        }
+      });
+
+      fillTimeSelects();
+      clearActivityForm();
+      hookQuickChips();
+    });
+  </script>
+</body>
+</html>
+  
+      
+   
