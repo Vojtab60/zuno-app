@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno - Sledující</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --text: #0d1726;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --accent: #90b7ff;
+      --line: rgba(10, 21, 37, 0.08);
+      --surface: rgba(255, 255, 255, 0.86);
+      --surface-strong: rgba(255, 255, 255, 0.95);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --sidebar-width: 300px;
+      --bg:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.24), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.22), transparent 22%),
+        linear-gradient(135deg, #f4f8ff 0%, #edf3fb 46%, #e7eef8 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.12), transparent 24%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      --sidebar-text: #edf4ff;
+    }
+    :root[data-theme="dark"] {
+      --text: #eaf1ff;
+      --muted: #9baec8;
+      --line: rgba(255, 255, 255, 0.08);
+      --surface: rgba(13, 27, 46, 0.84);
+      --surface-strong: rgba(16, 31, 52, 0.96);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.38);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.24);
+      --bg:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.12), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.12), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(4, 11, 22, 0.98), rgba(8, 19, 33, 0.98));
+      --sidebar-text: #edf4ff;
+    }
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent 80%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      min-height: 100vh;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sidebar-brand, .brand-block, .sidebar-nav, .topbar, .top-actions, .hero-actions, .user-row {
+      display: flex;
+    }
+    .sidebar-brand {
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand-block {
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .brand {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .brand-caption {
+      color: rgba(234, 241, 255, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .home-btn, .sidebar-link, .sidebar-button, .pill-btn, .tab-btn {
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+    .home-btn:hover, .sidebar-link:hover, .sidebar-button:hover, .pill-btn:hover, .tab-btn:hover {
+      transform: translateY(-1px);
+    }
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: inherit;
+      cursor: pointer;
+    }
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sidebar-user img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+    .sidebar-user strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+    .sidebar-user span {
+      display: block;
+      color: rgba(234, 241, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .sidebar-nav {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sidebar-link {
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ebf2ff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.22), rgba(144, 183, 255, 0.2));
+      border-color: rgba(115, 224, 194, 0.18);
+    }
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .sidebar-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.96), rgba(134, 190, 255, 0.96));
+      color: #081321;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .sidebar-badge.is-visible {
+      display: inline-flex;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      display: grid;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sidebar-button {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .main {
+      padding: 26px;
+      position: relative;
+      z-index: 1;
+    }
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+    .topbar, .card {
+      position: relative;
+      z-index: 1;
+    }
+    .topbar {
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(16px);
+    }
+    .top-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill-btn, .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 11px 15px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .pill-btn.primary, .tab-btn.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.96), rgba(144, 183, 255, 0.92));
+      color: #07111f;
+      border-color: transparent;
+    }
+    .pill-btn.secondary, .tab-btn {
+      background: transparent;
+    }
+    .card {
+      padding: 22px;
+      border-radius: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+    }
+    .hero {
+      display: grid;
+      gap: 14px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+    .hero-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.12);
+      border: 1px solid rgba(115, 224, 194, 0.16);
+      color: #28537d;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    :root[data-theme="dark"] .count-pill {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.16), rgba(144, 183, 255, 0.18));
+      color: #cfe2ff;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+    .toolbar {
+      display: grid;
+      gap: 14px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 15px;
+      font-size: 15px;
+      background: var(--surface-strong);
+      color: var(--text);
+    }
+    .search:focus {
+      outline: none;
+      border-color: #8ab4ff;
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.14);
+    }
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+    .user-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      cursor: pointer;
+    }
+    .user-row {
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .user-card img {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: #dbe4ef;
+      flex-shrink: 0;
+    }
+    .user-meta {
+      min-width: 0;
+    }
+    .user-meta strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .user-meta span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .user-cta {
+      flex-shrink: 0;
+      padding: 10px 13px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.12);
+      color: #264d81;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .empty-state {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px dashed var(--line);
+      background: var(--surface-strong);
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: center;
+    }
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        min-height: auto;
+      }
+      .main {
+        padding: 20px;
+      }
+    }
+    @media (max-width: 640px) {
+      .main {
+        padding: 16px;
+      }
+      .topbar, .card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .tabs {
+        display: grid;
+      }
+      .tab-btn {
+        width: 100%;
+      }
+      .user-card {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div>
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn" type="button" aria-label="Domů">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Načítám...</strong>
+          <span id="sidebarUserEmail">Přihlášený uživatel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link active" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-button" id="logoutBtn" type="button">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page">
+        <div class="topbar">
+          <div class="top-actions">
+            <button class="pill-btn secondary" id="homeBtn" type="button">Komunita</button>
+            <button class="pill-btn secondary" id="profileBtn" type="button">Profil</button>
+            <button class="pill-btn primary" id="messagesBtn" type="button">Zprávy</button>
+          </div>
+        </div>
+
+        <section class="card hero">
+          <h1 id="pageTitle">Sledující</h1>
+          <p id="pageLead">Na jednom místě uvidíš všechny profily, které tě sledují nebo které sleduješ ty.</p>
+          <div class="hero-actions">
+            <div class="count-pill" id="countPill">0 profilů</div>
+          </div>
+        </section>
+
+        <section class="card toolbar">
+          <div class="tabs">
+            <button class="tab-btn" id="followersTabBtn" type="button">Kdo mě sleduje</button>
+            <button class="tab-btn" id="followingTabBtn" type="button">Koho sleduju já</button>
+          </div>
+          <input class="search" id="searchInput" placeholder="Hledat podle jména, města nebo bio" />
+        </section>
+
+        <section class="card">
+          <div class="list" id="peopleList">
+            <div class="empty-state">Načítám profily...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    {
+      const redirectParams = new URLSearchParams(window.location.search);
+      const redirectTarget = `users.html${redirectParams.toString() ? `?${redirectParams.toString()}` : ""}`;
+      window.location.replace(redirectTarget);
+    }
+
+    async function initSocialPage() {
+      const params = new URLSearchParams(window.location.search);
+      const viewedUidParam = params.get("uid");
+      const initialTab = params.get("tab") === "following" ? "following" : "followers";
+
+      const els = {
+        sidebarUserPhoto: document.getElementById("sidebarUserPhoto"),
+        sidebarUserName: document.getElementById("sidebarUserName"),
+        sidebarUserEmail: document.getElementById("sidebarUserEmail"),
+        notificationsNavBadge: document.getElementById("notificationsNavBadge"),
+        messagesNavBadge: document.getElementById("messagesNavBadge"),
+        sidebarHomeBtn: document.getElementById("sidebarHomeBtn"),
+        logoutBtn: document.getElementById("logoutBtn"),
+        homeBtn: document.getElementById("homeBtn"),
+        profileBtn: document.getElementById("profileBtn"),
+        messagesBtn: document.getElementById("messagesBtn"),
+        pageTitle: document.getElementById("pageTitle"),
+        pageLead: document.getElementById("pageLead"),
+        countPill: document.getElementById("countPill"),
+        followersTabBtn: document.getElementById("followersTabBtn"),
+        followingTabBtn: document.getElementById("followingTabBtn"),
+        searchInput: document.getElementById("searchInput"),
+        peopleList: document.getElementById("peopleList")
+      };
+
+      const firebaseApi = window.firebase;
+      const auth = firebaseApi?.auth ? firebaseApi.auth() : null;
+      const db = firebaseApi?.firestore ? firebaseApi.firestore() : null;
+      const firebaseReady = Boolean(auth && db);
+
+      let currentUser = null;
+      let currentViewedUid = viewedUidParam || null;
+      let activeTab = initialTab;
+      let allItems = [];
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let unsubscribeList = null;
+
+      function goHome() { window.location.href = "index.html"; }
+      function goProfile() {
+        const uid = currentViewedUid || currentUser?.uid || "";
+        window.location.href = uid ? `profil.html?uid=${uid}` : "profil.html";
+      }
+
+      els.sidebarHomeBtn.onclick = goHome;
+      els.homeBtn.onclick = goHome;
+      els.profileBtn.onclick = goProfile;
+      els.messagesBtn.onclick = () => { window.location.href = "messages.html"; };
+
+      function createFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seed = Array.from(safeName).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 3), 0);
+        const hueA = seed % 360;
+        const hueB = (hueA + 46) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-label="Avatar">
+            <defs>
+              <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 80% 62%)" />
+                <stop offset="100%" stop-color="hsl(${hueB} 72% 48%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="78" fill="url(#g)" />
+            <circle cx="160" cy="126" r="54" fill="rgba(255,255,255,0.9)" />
+            <path d="M70 270c18-52 55-78 90-78s72 26 90 78" fill="rgba(255,255,255,0.9)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getAvatar(photo, name) {
+        return photo || createFallbackAvatar(name);
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const value = Number(count) || 0;
+        target.textContent = value > 99 ? "99+" : String(value);
+        target.classList.toggle("is-visible", value > 0);
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+        if (!db || !user?.uid) return;
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.filter((docSnap) => docSnap.data()?.read === false).length;
+            setSidebarBadge(els.notificationsNavBadge, unreadCount);
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((total, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && Number(data.lastMessageAt || 0) > readAt);
+              return total + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(els.messagesNavBadge, unreadCount);
+          });
+      }
+
+      function setHeaderUser(profile, user) {
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+        const photo = getAvatar(profile?.photo || user?.photoURL || "", name);
+        els.sidebarUserPhoto.src = photo;
+        els.sidebarUserName.textContent = name;
+        els.sidebarUserEmail.textContent = email || "Bez e-mailu";
+      }
+
+      async function ensureCurrentUserProfile(user) {
+        if (!db || !user?.uid) return null;
+        const ref = db.collection("profiles").doc(user.uid);
+        const snap = await ref.get();
+        if (snap.exists) return snap.data();
+        const payload = {
+          uid: user.uid,
+          name: user.displayName || "Uživatel",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          city: "",
+          bio: "",
+          hobbies: "",
+          followersCount: 0,
+          followingCount: 0,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await ref.set(payload, { merge: true });
+        return payload;
+      }
+
+      async function getProfileByUid(uid) {
+        if (!uid || !db) return null;
+        try {
+          const snap = await db.collection("profiles").doc(uid).get();
+          return snap.exists ? snap.data() : null;
+        } catch (e) {
+          console.error("Failed to fetch profile:", e);
+          return null;
+        }
+      }
+
+      function normalize(value) {
+        return (value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+      }
+
+      function createUserCard(profile) {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "user-card";
+        card.innerHTML = `
+          <div class="user-row">
+            <img src="${getAvatar(profile?.photo || "", profile?.name || "Uživatel")}" alt="Profil">
+            <div class="user-meta">
+              <strong>${profile?.name || "Uživatel"}</strong>
+              <span>${profile?.city || profile?.bio || profile?.email || "Zuno komunita"}</span>
+            </div>
+          </div>
+          <div class="user-cta">Profil</div>
+        `;
+        card.onclick = () => {
+          if (!profile?.uid) return;
+          window.location.href = `profil.html?uid=${profile.uid}`;
+        };
+        return card;
+      }
+
+      function updateTabUi() {
+        const isFollowers = activeTab === "followers";
+        els.followersTabBtn.classList.toggle("active", isFollowers);
+        els.followingTabBtn.classList.toggle("active", !isFollowers);
+        els.pageTitle.textContent = isFollowers ? "Kdo mě sleduje" : "Koho sleduju já";
+        els.pageLead.textContent = isFollowers
+          ? "Kompletní seznam uživatelů, kteří sledují tento profil. Kliknutím otevřeš jejich profil."
+          : "Kompletní seznam profilů, které tento uživatel sleduje. Kliknutím otevřeš jejich profil.";
+      }
+
+      function formatProfileCount(count) {
+        if (count === 1) return "1 profil";
+        if (count >= 2 && count <= 4) return `${count} profily`;
+        return `${count} profilů`;
+      }
+
+      function renderList() {
+        const query = normalize(els.searchInput.value.trim());
+        const filtered = allItems.filter((item) => {
+          if (!query) return true;
+          const haystack = normalize([item.name, item.city, item.bio, item.email].filter(Boolean).join(" "));
+          return haystack.includes(query);
+        });
+
+        els.countPill.textContent = formatProfileCount(filtered.length);
+        els.peopleList.innerHTML = "";
+
+        if (!filtered.length) {
+          els.peopleList.innerHTML = `<div class="empty-state">Nikdo sem zatím nespadá nebo nic neodpovídá hledání.</div>`;
+          return;
+        }
+
+        filtered.forEach((profile) => {
+          els.peopleList.appendChild(createUserCard(profile));
+        });
+      }
+
+      async function hydrateFollowDocs(docs, direction) {
+        const profiles = await Promise.all(docs.map(async (docSnap) => {
+          const data = docSnap.data() || {};
+          const uid = direction === "followers" ? data.followerUid : data.followingUid;
+          const fallbackName = direction === "followers" ? data.followerName : data.followingName;
+          const fallbackPhoto = direction === "followers" ? data.followerPhoto : data.followingPhoto;
+          const profile = await getProfileByUid(uid);
+          return {
+            uid,
+            name: profile?.name || fallbackName || "Uživatel",
+            photo: profile?.photo || fallbackPhoto || "",
+            city: profile?.city || "",
+            bio: profile?.bio || "",
+            email: profile?.email || ""
+          };
+        }));
+        allItems = profiles.filter((item) => item.uid);
+        renderList();
+      }
+
+      function subscribeCurrentList() {
+        unsubscribeList?.();
+        if (!db || !currentViewedUid) return;
+
+        if (activeTab === "followers") {
+          unsubscribeList = db.collection("follows")
+            .where("followingUid", "==", currentViewedUid)
+            .onSnapshot(async (snapshot) => {
+              await hydrateFollowDocs(snapshot.docs, "followers");
+            });
+        } else {
+          unsubscribeList = db.collection("follows")
+            .where("followerUid", "==", currentViewedUid)
+            .onSnapshot(async (snapshot) => {
+              await hydrateFollowDocs(snapshot.docs, "following");
+            });
+        }
+      }
+
+      els.followersTabBtn.onclick = () => {
+        activeTab = "followers";
+        updateTabUi();
+        subscribeCurrentList();
+      };
+      els.followingTabBtn.onclick = () => {
+        activeTab = "following";
+        updateTabUi();
+        subscribeCurrentList();
+      };
+      els.searchInput.addEventListener("input", renderList);
+
+      els.logoutBtn.onclick = async () => {
+        if (!auth) {
+          localStorage.removeItem("zunoProfile");
+          window.location.href = "index.html";
+          return;
+        }
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      if (!firebaseReady) {
+        els.peopleList.innerHTML = `<div class="empty-state">Firebase teď není dostupný, takže seznam kontaktů nejde načíst.</div>`;
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        currentViewedUid = currentViewedUid || user.uid;
+        subscribeSidebarBadges(user);
+
+        try {
+          const ownProfile = await ensureCurrentUserProfile(user);
+          setHeaderUser(ownProfile, user);
+          updateTabUi();
+          subscribeCurrentList();
+        } catch (e) {
+          console.error("Social page init failed:", e);
+          els.peopleList.innerHTML = `<div class="empty-state">Nepodařilo se načíst seznam kontaktů.</div>`;
+        }
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        initSocialPage().catch((error) => {
+          console.error("Social page fatal init error:", error);
+        });
+      }, { once: true });
+    } else {
+      initSocialPage().catch((error) => {
+        console.error("Social page fatal init error:", error);
+      });
+    }
+  </script>
+</body>
+</html>

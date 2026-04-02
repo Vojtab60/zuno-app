@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Detail aktivity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #eef4fb;
+      --text: #0a1525;
+      --muted: #607089;
+      --surface: rgba(255, 255, 255, 0.96);
+      --surface-strong: #ffffff;
+      --line: rgba(10, 21, 37, 0.09);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --danger: #d85a66;
+      --danger-soft: #fff1f2;
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --sidebar-width: 310px;
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0d141d;
+      --text: #e8f0ff;
+      --muted: #9db0c8;
+      --surface: #142030;
+      --surface-strong: #172537;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.4);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.28);
+      --danger-soft: rgba(216, 90, 102, 0.16);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f3f4f1 0%, #eef1f5 100%);
+    }
+
+    :root[data-theme="dark"] body {
+      background: linear-gradient(180deg, #0b1118 0%, #101824 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(10, 21, 37, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 21, 37, 0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 82%);
+      z-index: 0;
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      min-height: 100vh;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.1), transparent 22%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      color: #eaf1ff;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 14px 0 40px rgba(3, 10, 20, 0.14);
+      z-index: 20;
+    }
+
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 247, 255, 0.94));
+      color: #0a1525;
+      border-right-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 14px 0 36px rgba(8, 17, 34, 0.08);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115, 224, 194, 0.26);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-caption {
+      color: rgba(234, 241, 255, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    :root[data-theme="light"] .brand,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .sidebar-user strong {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .brand-caption,
+    :root[data-theme="light"] .sidebar-user span {
+      color: #66768b;
+    }
+
+    .home-btn,
+    .logout-btn,
+    .top-user,
+    .action-btn,
+    .small-link,
+    .participant-item,
+    .similar-card,
+    .summary-link {
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        opacity 0.18s ease;
+    }
+
+    .home-btn:hover,
+    .logout-btn:hover,
+    .top-user:hover,
+    .action-btn:hover,
+    .small-link:hover,
+    .participant-item:hover,
+    .similar-card:hover,
+    .summary-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: white;
+    }
+
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .logout-btn,
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link {
+      background: rgba(248, 251, 255, 0.92);
+      color: #13233a;
+      border-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.04);
+    }
+
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-user img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .sidebar-user strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .sidebar-user span {
+      display: block;
+      color: rgba(234, 241, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ebf2ff;
+    }
+
+    .sidebar-link:hover {
+      transform: translateX(2px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.2), rgba(144, 183, 255, 0.16));
+      border-color: rgba(115, 224, 194, 0.36);
+      color: white;
+      box-shadow: 0 18px 30px rgba(3, 10, 20, 0.24);
+    }
+
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 16px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(236, 242, 250, 0.96);
+      border-color: rgba(10, 21, 37, 0.08);
+      color: #365781;
+    }
+
+    .sidebar-badge {
+      min-width: 22px;
+      height: 22px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #73e0c2, #90b7ff);
+      color: #081321;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      box-shadow: 0 10px 20px rgba(8,17,34,0.18);
+    }
+
+    .sidebar-badge.is-visible { display: inline-flex; }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: inherit;
+      font-weight: 800;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 28px 28px 40px;
+    }
+
+    .page-frame {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      box-shadow: 0 22px 38px rgba(8, 17, 34, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    :root[data-theme="dark"] .topbar {
+      background: rgba(17, 30, 48, 0.84);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+
+    .product-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Sora", sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .topbar-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .topbar-copy span {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .top-user {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 14px 0 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      box-shadow: 0 16px 30px rgba(8, 17, 34, 0.08);
+    }
+
+    .top-user img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .back-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .back-link,
+    .crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .back-link:hover,
+    .crumb:hover {
+      color: var(--text);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .detail-column,
+    .detail-aside {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      border-radius: 28px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.95)),
+        rgba(247, 250, 255, 0.96);
+      box-shadow: 0 18px 34px rgba(8, 17, 34, 0.06);
+    }
+
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .top-user,
+    :root[data-theme="dark"] .action-btn.is-secondary,
+    :root[data-theme="dark"] .action-btn.is-danger,
+    :root[data-theme="dark"] .map-preview,
+    :root[data-theme="dark"] .meta-chip,
+    :root[data-theme="dark"] .activity-badge,
+    :root[data-theme="dark"] .small-link,
+    :root[data-theme="dark"] .modal-card,
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] textarea {
+      background: rgba(18, 34, 57, 0.9);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 28px 26px;
+    }
+
+    .hero-card::before,
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .hero-card::before {
+      top: -90px;
+      right: -40px;
+      background: radial-gradient(circle, rgba(144, 183, 255, 0.24), transparent 70%);
+    }
+
+    .hero-card::after {
+      left: -70px;
+      bottom: -120px;
+      background: radial-gradient(circle, rgba(115, 224, 194, 0.22), transparent 68%);
+    }
+
+    .detail-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(248, 251, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      color: #365781;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.04);
+    }
+
+    .detail-head {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .activity-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.14);
+      color: #1b5f84;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(49, 93, 168, 0.08);
+    }
+
+    .activity-badge.badge-today,
+    .activity-badge.badge-joined {
+      background: rgba(116, 224, 194, 0.18);
+      color: #15725f;
+    }
+
+    .activity-badge.badge-tomorrow,
+    .activity-badge.badge-organizer {
+      background: rgba(144, 183, 255, 0.18);
+      color: #3150a3;
+    }
+
+    .activity-badge.badge-warning {
+      background: rgba(255, 179, 71, 0.2);
+      color: #9a5a08;
+    }
+
+    .activity-badge.badge-past,
+    .activity-badge.badge-cancelled {
+      background: rgba(226, 232, 240, 0.84);
+      color: #56667d;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .detail-meta strong {
+      color: var(--text);
+    }
+
+    .meta-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(240, 245, 251, 0.96);
+      border: 1px solid rgba(10, 21, 37, 0.06);
+      color: #41566f;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .status-banner {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(248, 251, 255, 0.92);
+      color: #486077;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .status-banner.is-visible { display: block; }
+
+    .status-banner.is-warning {
+      background: rgba(255, 245, 230, 0.95);
+      border-color: rgba(255, 179, 71, 0.24);
+      color: #8a5609;
+    }
+
+    .status-banner.is-danger {
+      background: rgba(255, 240, 241, 0.98);
+      border-color: rgba(216, 90, 102, 0.18);
+      color: #8f3042;
+    }
+
+    .section-card {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .section-lead {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .organizer-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .organizer-avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 20px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      box-shadow: 0 14px 24px rgba(8,17,34,0.1);
+    }
+
+    .organizer-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .organizer-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .organizer-name {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .organizer-sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .inline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .small-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(248, 251, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      color: #365781;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .participants-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .participants-stack {
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+    }
+
+    .participants-stack img {
+      width: 42px;
+      height: 42px;
+      margin-left: -10px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.96);
+      box-shadow: 0 10px 18px rgba(8,17,34,0.08);
+      background: rgba(255,255,255,0.9);
+    }
+
+    .participants-copy {
+      display: grid;
+      gap: 3px;
+    }
+
+    .participants-copy strong {
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .participants-copy span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .participants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .participant-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(248, 251, 255, 0.76);
+      cursor: pointer;
+    }
+
+    .participant-item img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .participant-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .participant-copy strong {
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .participant-copy span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .description-text,
+    .info-list {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
+    .description-text.is-clamped {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      overflow: hidden;
+    }
+
+    .toggle-description {
+      padding: 0;
+      color: #365781;
+      font-size: 14px;
+      font-weight: 800;
+      justify-self: start;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .info-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(248, 251, 255, 0.76);
+      display: grid;
+      gap: 6px;
+    }
+
+    .info-item span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .info-item strong {
+      font-size: 15px;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+    }
+
+    .sticky-card {
+      position: sticky;
+      top: 28px;
+      display: grid;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(10, 21, 37, 0.07);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .summary-row span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .summary-row strong {
+      flex: 0 0 auto;
+      max-width: 58%;
+      text-align: right;
+      font-size: 14px;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+    }
+
+    .summary-note {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(244, 248, 253, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.06);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .cta-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 18px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      border: 1px solid transparent;
+    }
+
+    .action-btn.is-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      box-shadow: 0 16px 28px rgba(76, 131, 227, 0.18);
+    }
+
+    .action-btn.is-secondary {
+      background: rgba(248, 251, 255, 0.92);
+      border-color: rgba(10, 21, 37, 0.08);
+      color: #365781;
+    }
+
+    .action-btn.is-danger {
+      background: var(--danger-soft);
+      border-color: rgba(216, 90, 102, 0.14);
+      color: #a03a4c;
+    }
+
+    .action-btn.is-disabled,
+    .action-btn:disabled {
+      opacity: 0.56;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .feedback {
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .feedback.is-success { color: #18705d; }
+    .feedback.is-danger { color: #a03a4c; }
+
+    .map-preview {
+      position: relative;
+      min-height: 220px;
+      padding: 22px;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.22), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.2), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,248,253,0.95));
+      box-shadow: 0 16px 30px rgba(8,17,34,0.06);
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+
+    .map-preview::after {
+      content: "";
+      position: absolute;
+      right: 26px;
+      top: 26px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6c72, #d7263d);
+      box-shadow: 0 0 0 8px rgba(255, 108, 114, 0.12);
+    }
+
+    .map-copy {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 10px;
+    }
+
+    .map-title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .map-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .summary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      color: #365781;
+      font-size: 14px;
+      font-weight: 800;
+      justify-self: start;
+    }
+
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .similar-card {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(10,21,37,0.08);
+      background: rgba(248, 251, 255, 0.82);
+      cursor: pointer;
+      display: grid;
+      gap: 8px;
+    }
+
+    .similar-card:hover {
+      box-shadow: 0 16px 28px rgba(8,17,34,0.08);
+      border-color: rgba(49, 93, 168, 0.12);
+    }
+
+    .similar-card strong {
+      font-size: 1rem;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .similar-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      padding: 28px;
+      border-radius: 28px;
+      border: 1px dashed rgba(10,21,37,0.12);
+      background: rgba(255,255,255,0.7);
+      color: var(--muted);
+      display: grid;
+      gap: 12px;
+      justify-items: start;
+    }
+
+    .loading-card {
+      padding: 26px;
+      border-radius: 28px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(255,255,255,0.9);
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 10, 20, 0.62);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-overlay.is-open { display: flex; }
+
+    .modal-card {
+      width: min(720px, calc(100vw - 32px));
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+      padding: 24px;
+      border-radius: 28px;
+      background: var(--surface-strong);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 18px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .modal-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .modal-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: rgba(248, 251, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.is-full { grid-column: 1 / -1; }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      min-height: 50px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 21, 37, 0.1);
+      background: rgba(248, 251, 255, 0.96);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    textarea {
+      min-height: 120px;
+      padding: 14px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(49, 93, 168, 0.22);
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.12);
+      background: rgba(255,255,255,0.98);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; min-height: auto; }
+      .main { padding: 18px; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 12px 14px;
+      }
+
+      .top-user span {
+        display: none;
+      }
+
+      .hero-card,
+      .section-card,
+      .sticky-card,
+      .map-preview {
+        padding: 20px;
+        border-radius: 24px;
+      }
+
+      .detail-title {
+        font-size: 2rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn" type="button" aria-label="Domů">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link active" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn" type="button">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="topbar">
+          <div class="topbar-copy">
+            <a class="product-mark" href="app.html?scope=all">Zuno</a>
+            <span>Detail aktivity</span>
+          </div>
+          <div class="top-user" id="topUserCard" role="button" tabindex="0">
+            <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+            <span id="topUserName">Načítám...</span>
+          </div>
+        </div>
+
+        <div class="back-row">
+          <a class="back-link" href="app.html?scope=all">← Zpět na Aktivity</a>
+          <span class="crumb">Aktivity / Detail</span>
+        </div>
+
+        <div id="loadingState" class="loading-card">Načítám detail aktivity…</div>
+
+        <div class="detail-grid" id="detailGrid" hidden>
+          <div class="detail-column">
+            <section class="hero-card card">
+              <div class="detail-head">
+                <div class="detail-kicker">Aktivita</div>
+                <div class="badge-row" id="badgeRow"></div>
+                <div>
+                  <h1 class="detail-title" id="detailTitle">Aktivita</h1>
+                  <div class="detail-meta" id="detailMeta"></div>
+                </div>
+                <div class="meta-chip-row" id="metaChipRow"></div>
+                <div class="status-banner" id="statusBanner"></div>
+              </div>
+            </section>
+
+            <section class="section-card card" id="organizerSection"></section>
+            <section class="section-card card" id="participantsSection"></section>
+            <section class="section-card card" id="descriptionSection"></section>
+            <section class="section-card card" id="infoSection"></section>
+            <section class="section-card card" id="similarSection"></section>
+          </div>
+
+          <aside class="detail-aside">
+            <section class="sticky-card card">
+              <div class="section-head">
+                <div>
+                  <h2 class="section-title">Co dál</h2>
+                  <p class="section-lead">Hned vidíš, jestli se můžeš přidat a co udělat dál.</p>
+                </div>
+              </div>
+
+              <div class="summary-list" id="summaryList"></div>
+              <div class="summary-note" id="summaryNote"></div>
+              <div class="cta-stack" id="ctaStack"></div>
+              <div class="feedback" id="actionFeedback"></div>
+            </section>
+
+            <section class="map-preview" id="mapPreview"></section>
+          </aside>
+        </div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <strong id="emptyTitle">Aktivitu jsme nenašli.</strong>
+          <span id="emptyLead">Zkus se vrátit do seznamu aktivit a vybrat jinou.</span>
+          <a class="action-btn is-primary" href="app.html?scope=all">Zpět na Aktivity</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="editModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h2>Upravit aktivitu</h2>
+          <p>Dolaď základní informace bez zbytečného přepisování.</p>
+        </div>
+        <button class="modal-close" id="editModalClose" type="button" aria-label="Zavřít">×</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="field is-full">
+          <label for="editName">Název</label>
+          <input id="editName" placeholder="Např. Večerní běh v Letné" />
+        </div>
+        <div class="field">
+          <label for="editType">Typ</label>
+          <select id="editType">
+            <option value="Běh">Běh</option>
+            <option value="Tenis">Tenis</option>
+            <option value="Padel">Padel</option>
+            <option value="Kolo">Kolo</option>
+            <option value="Fotbal">Fotbal</option>
+            <option value="Volejbal">Volejbal</option>
+            <option value="Turistika">Turistika</option>
+            <option value="Jiný plán">Jiný plán</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="editLimit">Kapacita</label>
+          <input id="editLimit" type="number" min="1" placeholder="Např. 6" />
+        </div>
+        <div class="field is-full">
+          <label for="editPlace">Místo</label>
+          <input id="editPlace" placeholder="Např. Letná, Praha" />
+        </div>
+        <div class="field">
+          <label for="editDate">Datum</label>
+          <input id="editDate" type="date" />
+        </div>
+        <div class="field">
+          <label for="editTime">Čas</label>
+          <input id="editTime" type="time" />
+        </div>
+        <div class="field is-full">
+          <label for="editDescription">Popis</label>
+          <textarea id="editDescription" placeholder="Krátce napiš, co se bude dít a co je dobré vědět."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="action-btn is-secondary" id="editModalCancel" type="button">Zavřít</button>
+        <button class="action-btn is-primary" id="editSaveBtn" type="button">Uložit změny</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h2 id="confirmTitle">Potvrdit akci</h2>
+          <p id="confirmText">Opravdu chceš pokračovat?</p>
+        </div>
+        <button class="modal-close" id="confirmClose" type="button" aria-label="Zavřít">×</button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="action-btn is-secondary" id="confirmCancelBtn" type="button">Zpět</button>
+        <button class="action-btn is-danger" id="confirmActionBtn" type="button">Potvrdit</button>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    window.addEventListener("load", async function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const activityId = new URLSearchParams(window.location.search).get("id");
+
+      try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      } catch (e) {
+        console.error(e);
+      }
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const topUserCard = document.getElementById("topUserCard");
+      const sidebarHomeBtn = document.getElementById("sidebarHomeBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const loadingState = document.getElementById("loadingState");
+      const detailGrid = document.getElementById("detailGrid");
+      const emptyState = document.getElementById("emptyState");
+      const emptyTitle = document.getElementById("emptyTitle");
+      const emptyLead = document.getElementById("emptyLead");
+      const badgeRow = document.getElementById("badgeRow");
+      const detailTitle = document.getElementById("detailTitle");
+      const detailMeta = document.getElementById("detailMeta");
+      const metaChipRow = document.getElementById("metaChipRow");
+      const statusBanner = document.getElementById("statusBanner");
+      const organizerSection = document.getElementById("organizerSection");
+      const participantsSection = document.getElementById("participantsSection");
+      const descriptionSection = document.getElementById("descriptionSection");
+      const infoSection = document.getElementById("infoSection");
+      const similarSection = document.getElementById("similarSection");
+      const summaryList = document.getElementById("summaryList");
+      const summaryNote = document.getElementById("summaryNote");
+      const ctaStack = document.getElementById("ctaStack");
+      const actionFeedback = document.getElementById("actionFeedback");
+      const mapPreview = document.getElementById("mapPreview");
+      const editModal = document.getElementById("editModal");
+      const editModalClose = document.getElementById("editModalClose");
+      const editModalCancel = document.getElementById("editModalCancel");
+      const editSaveBtn = document.getElementById("editSaveBtn");
+      const editName = document.getElementById("editName");
+      const editType = document.getElementById("editType");
+      const editLimit = document.getElementById("editLimit");
+      const editPlace = document.getElementById("editPlace");
+      const editDate = document.getElementById("editDate");
+      const editTime = document.getElementById("editTime");
+      const editDescription = document.getElementById("editDescription");
+      const confirmModal = document.getElementById("confirmModal");
+      const confirmTitle = document.getElementById("confirmTitle");
+      const confirmText = document.getElementById("confirmText");
+      const confirmClose = document.getElementById("confirmClose");
+      const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+      const confirmActionBtn = document.getElementById("confirmActionBtn");
+
+      let currentUser = null;
+      let currentProfile = null;
+      let currentActivity = null;
+      let organizerProfile = null;
+      let allActivities = [];
+      let descriptionExpanded = false;
+      let unsubscribeActivity = null;
+      let unsubscribeActivities = null;
+      let unsubscribeOrganizer = null;
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let confirmCallback = null;
+
+      function createProfileFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seeds = Array.from(safeName).reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0);
+        const hueA = seeds % 360;
+        const hueB = (hueA + 42) % 360;
+        const hueC = (hueA + 110) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 76% 60%)" />
+                <stop offset="55%" stop-color="hsl(${hueB} 78% 56%)" />
+                <stop offset="100%" stop-color="hsl(${hueC} 62% 44%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="76" fill="url(#bg)" />
+            <circle cx="160" cy="132" r="64" fill="rgba(255,255,255,0.88)" />
+            <path d="M82 256C105 214 132 194 160 194C188 194 215 214 238 256" fill="rgba(255,255,255,0.88)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getProfileAvatarSrc(photo, name) {
+        return photo || createProfileFallbackAvatar(name);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function saveProfileCache(data) {
+        try {
+          localStorage.setItem("zunoProfile", JSON.stringify(data));
+        } catch (e) {
+          console.error("Failed to save profile cache:", e);
+        }
+      }
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count || 0);
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+
+        if (!user?.uid) {
+          setSidebarBadge(notificationsNavBadge, 0);
+          setSidebarBadge(messagesNavBadge, 0);
+          return;
+        }
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .where("read", "==", false)
+          .onSnapshot((snapshot) => {
+            setSidebarBadge(notificationsNavBadge, snapshot.size);
+          }, (error) => console.error("Failed to subscribe to notifications:", error));
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((count, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const lastMessageAt = Number(data.lastMessageAt || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && lastMessageAt > readAt);
+              return count + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          }, (error) => console.error("Failed to subscribe to messages:", error));
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = getProfileAvatarSrc(profile?.photo || user?.photoURL || "", profile?.name || user?.displayName || "Uživatel");
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "Nepřihlášený uživatel";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+      }
+
+      async function ensureCurrentUserProfile(user) {
+        if (!user?.uid) return null;
+        const profileRef = db.collection("profiles").doc(user.uid);
+        const profileSnap = await profileRef.get();
+        if (profileSnap.exists) return profileSnap.data();
+
+        const payload = {
+          uid: user.uid,
+          name: user.displayName || "Uživatel",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          city: "",
+          bio: "",
+          hobbies: ""
+        };
+        await profileRef.set(payload, { merge: true });
+        return payload;
+      }
+
+      function readActivityDate(activity) {
+        if (!activity?.date) return null;
+        const time = String(activity.time || "18:00");
+        const raw = `${activity.date}T${time.length === 5 ? time : "18:00"}`;
+        const parsed = new Date(raw);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      }
+
+      function isPastActivity(activity) {
+        const date = readActivityDate(activity);
+        return Boolean(date && date.getTime() < Date.now());
+      }
+
+      function isCancelledActivity(activity) {
+        return activity?.status === "cancelled" || Boolean(activity?.cancelledAt);
+      }
+
+      function readActivityCoords(activity) {
+        const lat = Number(activity?.lat ?? activity?.latitude);
+        const lng = Number(activity?.lng ?? activity?.lon ?? activity?.longitude);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          return { lat, lng };
+        }
+        return null;
+      }
+
+      function getExternalMapUrl(activity) {
+        const coords = readActivityCoords(activity);
+        if (coords) {
+          return `https://mapy.com/zakladni?x=${encodeURIComponent(coords.lng)}&y=${encodeURIComponent(coords.lat)}&z=17`;
+        }
+        return `https://mapy.com/cs/zakladni?q=${encodeURIComponent(activity?.place || "")}`;
+      }
+
+      function getDetailUrl(activity) {
+        return `activity-detail.html?id=${encodeURIComponent(activity?.id || "")}`;
+      }
+
+      function formatActivityDay(activity) {
+        const value = readActivityDate(activity);
+        if (!value) return "Bez data";
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const target = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+
+        if (target.getTime() === today.getTime()) return "Dnes";
+        if (target.getTime() === tomorrow.getTime()) return "Zítra";
+
+        return new Intl.DateTimeFormat("cs-CZ", {
+          day: "numeric",
+          month: "long"
+        }).format(value);
+      }
+
+      function formatActivityDateTime(activity) {
+        const day = formatActivityDay(activity);
+        const time = activity?.time ? `v ${activity.time}` : "bez času";
+        return `${day} ${time}`;
+      }
+
+      function formatFullDate(activity) {
+        const value = readActivityDate(activity);
+        if (!value) return "Bez data";
+        return new Intl.DateTimeFormat("cs-CZ", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(value);
+      }
+
+      function isJoinedBy(activity, uid) {
+        return Array.isArray(activity?.people) && activity.people.some((person) => person.uid === uid);
+      }
+
+      function getSpotsLeft(activity) {
+        const limit = Number(activity?.limit || 0);
+        const peopleCount = Array.isArray(activity?.people) ? activity.people.length : 0;
+        if (!limit) return null;
+        return Math.max(limit - peopleCount, 0);
+      }
+
+      function getSocialProof(activity) {
+        const peopleCount = Array.isArray(activity?.people) ? activity.people.length : 0;
+        const limit = Number(activity?.limit || 0);
+        const spotsLeft = getSpotsLeft(activity);
+
+        if (!peopleCount) {
+          return "Zatím je tady volno.";
+        }
+
+        if (limit && spotsLeft === 1) {
+          return "Chybí poslední místo.";
+        }
+
+        if (limit && spotsLeft === 0) {
+          return `Už jdou ${peopleCount} lidi. Aktivita je plná.`;
+        }
+
+        if (limit && spotsLeft > 0) {
+          return `Už jdou ${peopleCount} lidi. Přidáš se taky?`;
+        }
+
+        return `Už jdou ${peopleCount} lidi.`;
+      }
+
+      function buildBadges(activity) {
+        const badges = [];
+        const peopleCount = Array.isArray(activity?.people) ? activity.people.length : 0;
+        const spotsLeft = getSpotsLeft(activity);
+        const isPast = isPastActivity(activity);
+        const isCancelled = isCancelledActivity(activity);
+        const joined = currentUser?.uid ? isJoinedBy(activity, currentUser.uid) : false;
+        const organizer = currentUser?.uid && activity?.authorUid === currentUser.uid;
+        const day = formatActivityDay(activity);
+
+        if (isCancelled) badges.push({ label: "Zrušeno", className: "badge-cancelled" });
+        else if (isPast) badges.push({ label: "Proběhlo", className: "badge-past" });
+        else if (day === "Dnes") badges.push({ label: "Dnes", className: "badge-today" });
+        else if (day === "Zítra") badges.push({ label: "Zítra", className: "badge-tomorrow" });
+
+        if (organizer) badges.push({ label: "Organizuješ", className: "badge-organizer" });
+        else if (joined) badges.push({ label: "Přihlášený", className: "badge-joined" });
+
+        if (!isPast && !isCancelled && spotsLeft === 1) badges.push({ label: "Poslední místo", className: "badge-warning" });
+        else if (!isPast && !isCancelled && typeof spotsLeft === "number" && spotsLeft > 1) badges.push({ label: "Volná místa", className: "badge-warning" });
+
+        return badges;
+      }
+
+      function setFeedback(message, tone = "") {
+        actionFeedback.textContent = message || "";
+        actionFeedback.className = `feedback${tone ? ` is-${tone}` : ""}`;
+      }
+
+      function openConfirm(options) {
+        confirmTitle.textContent = options.title || "Potvrdit akci";
+        confirmText.textContent = options.text || "Opravdu chceš pokračovat?";
+        confirmActionBtn.textContent = options.confirmLabel || "Potvrdit";
+        confirmActionBtn.className = `action-btn ${options.tone === "primary" ? "is-primary" : "is-danger"}`;
+        confirmCallback = options.onConfirm || null;
+        confirmModal.classList.add("is-open");
+        confirmModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeConfirm() {
+        confirmCallback = null;
+        confirmModal.classList.remove("is-open");
+        confirmModal.setAttribute("aria-hidden", "true");
+      }
+
+      function openEditModal() {
+        if (!currentActivity) return;
+        editName.value = currentActivity.name || "";
+        editType.value = currentActivity.type || "Jiný plán";
+        editLimit.value = currentActivity.limit || "";
+        editPlace.value = currentActivity.place || "";
+        editDate.value = currentActivity.date || "";
+        editTime.value = currentActivity.time || "";
+        editDescription.value = currentActivity.description || "";
+        editModal.classList.add("is-open");
+        editModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeEditModal() {
+        editModal.classList.remove("is-open");
+        editModal.setAttribute("aria-hidden", "true");
+      }
+
+      async function saveActivityEdits() {
+        if (!currentActivity?.id) return;
+        const name = editName.value.trim();
+        const place = editPlace.value.trim();
+        const description = editDescription.value.trim();
+        const limitValue = editLimit.value.trim();
+
+        if (!name) {
+          setFeedback("Doplň název aktivity.", "danger");
+          return;
+        }
+
+        editSaveBtn.disabled = true;
+        try {
+          const payload = {
+            name,
+            type: editType.value || "Jiný plán",
+            place,
+            date: editDate.value || "",
+            time: editTime.value || "",
+            description,
+            limit: limitValue ? Math.max(Number(limitValue), 1) : null,
+            updatedAt: Date.now()
+          };
+          await db.collection("activities").doc(currentActivity.id).set(payload, { merge: true });
+          closeEditModal();
+          setFeedback("Změny jsme uložili.", "success");
+        } catch (error) {
+          console.error(error);
+          setFeedback("Nepodařilo se uložit změny.", "danger");
+        } finally {
+          editSaveBtn.disabled = false;
+        }
+      }
+
+      async function handleJoin() {
+        if (!currentActivity?.id) return;
+
+        if (!currentUser) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        if (isPastActivity(currentActivity)) {
+          setFeedback("Tahle aktivita už proběhla.", "danger");
+          return;
+        }
+
+        if (isCancelledActivity(currentActivity)) {
+          setFeedback("Tahle aktivita byla zrušena.", "danger");
+          return;
+        }
+
+        const peopleNow = Array.isArray(currentActivity.people) ? currentActivity.people : [];
+        const alreadyJoined = peopleNow.some((person) => person.uid === currentUser.uid);
+        if (alreadyJoined) {
+          setFeedback("Už jsi přihlášený.", "success");
+          return;
+        }
+
+        const spotsLeft = getSpotsLeft(currentActivity);
+        if (typeof spotsLeft === "number" && spotsLeft <= 0) {
+          setFeedback("Aktivita je plně obsazená.", "danger");
+          return;
+        }
+
+        try {
+          const nextPeople = [
+            ...peopleNow,
+            {
+              uid: currentUser.uid,
+              name: currentProfile?.name || currentUser.displayName || "Uživatel",
+              photo: currentProfile?.photo || currentUser.photoURL || ""
+            }
+          ];
+          await db.collection("activities").doc(currentActivity.id).update({ people: nextPeople });
+          setFeedback("Jsi přidaný. Můžeš otevřít chat.", "success");
+        } catch (error) {
+          console.error(error);
+          setFeedback("Nepodařilo se tě přidat.", "danger");
+        }
+      }
+
+      async function handleLeave() {
+        if (!currentActivity?.id || !currentUser?.uid) return;
+        const peopleNow = Array.isArray(currentActivity.people) ? currentActivity.people : [];
+        const nextPeople = peopleNow.filter((person) => person.uid !== currentUser.uid);
+
+        try {
+          await db.collection("activities").doc(currentActivity.id).update({ people: nextPeople });
+          setFeedback("Aktivitu jsi opustil.", "success");
+        } catch (error) {
+          console.error(error);
+          setFeedback("Nepodařilo se aktivitu opustit.", "danger");
+        }
+      }
+
+      async function handleCancelActivity() {
+        if (!currentActivity?.id) return;
+        try {
+          await db.collection("activities").doc(currentActivity.id).set({
+            status: "cancelled",
+            cancelledAt: Date.now()
+          }, { merge: true });
+          setFeedback("Aktivitu jsme označili jako zrušenou.", "success");
+        } catch (error) {
+          console.error(error);
+          setFeedback("Nepodařilo se aktivitu zrušit.", "danger");
+        }
+      }
+
+      async function shareActivity() {
+        const shareUrl = window.location.href;
+        const title = currentActivity?.name || "Aktivita na Zuno";
+
+        try {
+          if (navigator.share) {
+            await navigator.share({ title, url: shareUrl });
+          } else if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(shareUrl);
+            setFeedback("Odkaz jsme zkopírovali.", "success");
+            return;
+          }
+          setFeedback("Odkaz je připravený ke sdílení.", "success");
+        } catch (error) {
+          if (error?.name === "AbortError") return;
+          console.error(error);
+          setFeedback("Sdílení se tentokrát nepovedlo.", "danger");
+        }
+      }
+
+      function createStatusMessage(activity) {
+        if (isCancelledActivity(activity)) {
+          return { tone: "danger", text: "Tahle aktivita byla zrušena. Pokud potřebuješ detail, napiš organizátorovi." };
+        }
+
+        if (isPastActivity(activity)) {
+          return { tone: "", text: "Tahle aktivita už proběhla. Můžeš se podívat na organizátora nebo vybrat další plán." };
+        }
+
+        const spotsLeft = getSpotsLeft(activity);
+        if (typeof spotsLeft === "number" && spotsLeft <= 0) {
+          return { tone: "warning", text: "Aktivita je plně obsazená. Když se uvolní místo, uvidíš to v seznamu aktivit." };
+        }
+
+        if (!activity?.place) {
+          return { tone: "", text: "Přesné místo organizátor doplní později." };
+        }
+
+        return null;
+      }
+
+      function renderHeader(activity) {
+        const peopleCount = Array.isArray(activity.people) ? activity.people.length : 0;
+        const limit = Number(activity.limit || 0);
+        const badges = buildBadges(activity);
+        const locationText = activity.place || "Místo se doplní";
+        const capacityText = limit ? `${peopleCount} / ${limit} lidí` : `${peopleCount} lidí`;
+
+        badgeRow.innerHTML = badges.map((badge) => `<span class="activity-badge ${badge.className}">${escapeHtml(badge.label)}</span>`).join("");
+        detailTitle.textContent = activity.name || "Aktivita";
+        detailMeta.innerHTML = `
+          <strong>${escapeHtml(formatActivityDateTime(activity))}</strong>
+          <span>•</span>
+          <span>${escapeHtml(locationText)}</span>
+          <span>•</span>
+          <span>${escapeHtml(capacityText)}</span>
+        `;
+
+        metaChipRow.innerHTML = `
+          <span class="meta-chip">${escapeHtml(activity.type || "Jiný plán")}</span>
+          <span class="meta-chip">${escapeHtml(activity.time ? `${activity.time}` : "Bez času")}</span>
+          <span class="meta-chip">${escapeHtml(limit ? `${peopleCount} z ${limit} míst obsazeno` : `${peopleCount} lidí potvrzeno`)}</span>
+        `;
+
+        const status = createStatusMessage(activity);
+        if (status) {
+          statusBanner.textContent = status.text;
+          statusBanner.className = `status-banner is-visible${status.tone ? ` is-${status.tone}` : ""}`;
+        } else {
+          statusBanner.textContent = "";
+          statusBanner.className = "status-banner";
+        }
+      }
+
+      function renderOrganizer(activity) {
+        const uid = activity.authorUid || "";
+        const name = activity.authorName || organizerProfile?.name || "Uživatel";
+        const photo = getProfileAvatarSrc(activity.authorPhoto || organizerProfile?.photo || "", name);
+        const city = organizerProfile?.city || activity.authorCity || "Bez uvedeného města";
+
+        organizerSection.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Organizátor</h2>
+              <p class="section-lead">Důvěryhodný kontakt pro detail, změny a domluvu.</p>
+            </div>
+          </div>
+          <div class="organizer-row">
+            <img class="organizer-avatar" src="${escapeHtml(photo)}" alt="Organizátor">
+            <div class="organizer-copy">
+              <div class="organizer-label">Organizuje tuto aktivitu</div>
+              <div class="organizer-name">${escapeHtml(name)}</div>
+              <div class="organizer-sub">${escapeHtml(city)}</div>
+            </div>
+          </div>
+          <div class="inline-actions">
+            <a class="small-link" href="profil.html?uid=${encodeURIComponent(uid)}">Zobrazit profil</a>
+            <a class="small-link" href="messages.html?uid=${encodeURIComponent(uid)}">Napsat</a>
+          </div>
+        `;
+      }
+
+      function renderParticipants(activity) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        const limit = Number(activity.limit || 0);
+        const spotsLeft = getSpotsLeft(activity);
+        const peopleStack = people.slice(0, 5).map((person) => `
+          <img src="${escapeHtml(getProfileAvatarSrc(person.photo || "", person.name || "Uživatel"))}" alt="${escapeHtml(person.name || "Účastník")}">
+        `).join("");
+
+        const helper = typeof spotsLeft === "number"
+          ? (spotsLeft === 0 ? "Aktivita je plná." : spotsLeft === 1 ? "Chybí 1 místo." : `Volná jsou ještě ${spotsLeft} místa.`)
+          : "Kapacita je otevřená.";
+
+        const participantItems = people.length
+          ? people.map((person) => `
+              <button class="participant-item" type="button" data-uid="${person.uid || ""}">
+                <img src="${escapeHtml(getProfileAvatarSrc(person.photo || "", person.name || "Uživatel"))}" alt="${escapeHtml(person.name || "Účastník")}">
+                <div class="participant-copy">
+                  <strong>${escapeHtml(person.name || "Uživatel")}</strong>
+                  <span>${escapeHtml(person.uid === activity.authorUid ? "Organizátor" : "Účastník")}</span>
+                </div>
+              </button>
+            `).join("")
+          : `
+            <div class="empty-state">
+              <strong>Tady zatím nikdo není.</strong>
+              <span>Jakmile se někdo přidá, uvidíš ho tady.</span>
+            </div>
+          `;
+
+        participantsSection.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Účastníci</h2>
+              <p class="section-lead">${getSocialProof(activity)}</p>
+            </div>
+          </div>
+          <div class="participants-summary">
+            <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+              <div class="participants-stack">${peopleStack || `<img src="${getProfileAvatarSrc("", "Zuno")}" alt="První účastník">`}</div>
+              <div class="participants-copy">
+                <strong>${people.length ? `Už jdou ${people.length} lidi` : "Zatím bez potvrzených účastníků"}</strong>
+                <span>${limit ? `${people.length} z ${limit} míst obsazeno` : `${people.length} potvrzených účastníků`} • ${helper}</span>
+              </div>
+            </div>
+          </div>
+          <div class="participants-grid">${participantItems}</div>
+        `;
+
+        participantsSection.querySelectorAll(".participant-item").forEach((button) => {
+          button.addEventListener("click", () => {
+            const uid = button.dataset.uid;
+            if (uid) {
+              window.location.href = `profil.html?uid=${encodeURIComponent(uid)}`;
+            }
+          });
+        });
+      }
+
+      function renderDescription(activity) {
+        const rawText = (activity.description || "").trim();
+        const description = rawText || "Organizátor zatím nepřidal detail. Stačí dorazit včas a domluvit se podle situace.";
+        const isLong = description.length > 220;
+
+        descriptionSection.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">O aktivitě</h2>
+              <p class="section-lead">Krátce a jasně, co tě čeká.</p>
+            </div>
+          </div>
+          <div class="description-text ${isLong && !descriptionExpanded ? "is-clamped" : ""}" id="descriptionText">${escapeHtml(description)}</div>
+          ${isLong ? `<button class="toggle-description" id="toggleDescriptionBtn" type="button">${descriptionExpanded ? "Zobrazit míň" : "Zobrazit víc"}</button>` : ""}
+        `;
+
+        const toggleBtn = document.getElementById("toggleDescriptionBtn");
+        toggleBtn?.addEventListener("click", () => {
+          descriptionExpanded = !descriptionExpanded;
+          renderDescription(activity);
+        });
+      }
+
+      function renderInfo(activity) {
+        const limit = Number(activity.limit || 0);
+        const coords = readActivityCoords(activity);
+        const items = [
+          { label: "Typ", value: activity.type || "Jiný plán" },
+          { label: "Kapacita", value: limit ? `${limit} míst` : "Bez omezení" },
+          { label: "Přihlášení", value: "Stačí potvrdit v aplikaci" },
+          { label: "Místo", value: coords ? "Přesný bod je v mapě" : (activity.place ? "Sraz podle adresy" : "Organizátor doplní později") },
+          { label: "Cena", value: "Zdarma nebo domluva na místě" },
+          { label: "Co s sebou", value: "Věci podle typu aktivity" }
+        ];
+
+        infoSection.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Co je dobré vědět</h2>
+              <p class="section-lead">Praktické detaily bez zbytečného šumu.</p>
+            </div>
+          </div>
+          <div class="info-grid">
+            ${items.map((item) => `
+              <div class="info-item">
+                <span>${escapeHtml(item.label)}</span>
+                <strong>${escapeHtml(item.value)}</strong>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      function renderSummary(activity) {
+        const peopleCount = Array.isArray(activity.people) ? activity.people.length : 0;
+        const limit = Number(activity.limit || 0);
+        const spotsLeft = getSpotsLeft(activity);
+        const organizerName = activity.authorName || organizerProfile?.name || "Uživatel";
+        const placeLabel = activity.place || "Přesné místo organizátor doplní";
+
+        summaryList.innerHTML = `
+          <div class="summary-row"><span>Kdy</span><strong>${escapeHtml(formatFullDate(activity))}</strong></div>
+          <div class="summary-row"><span>Kde</span><strong>${escapeHtml(placeLabel)}</strong></div>
+          <div class="summary-row"><span>Kapacita</span><strong>${escapeHtml(limit ? `${peopleCount} z ${limit} míst` : `${peopleCount} potvrzených`)}</strong></div>
+          <div class="summary-row"><span>Organizuje</span><strong>${escapeHtml(organizerName)}</strong></div>
+        `;
+
+        const baseNote = isCancelledActivity(activity)
+          ? "Aktivita je zrušená. Když potřebuješ upřesnění, napiš organizátorovi."
+          : isPastActivity(activity)
+            ? "Tahle aktivita už proběhla. Mrkni na další podobné plány níž."
+            : typeof spotsLeft === "number" && spotsLeft === 0
+              ? "Momentálně je plno. Když se uvolní místo, uvidíš to v Aktivitách."
+              : getSocialProof(activity);
+        summaryNote.textContent = baseNote;
+      }
+
+      function renderMap(activity) {
+        const coords = readActivityCoords(activity);
+        const placeText = activity.place || "Přesné místo organizátor doplní později.";
+
+        mapPreview.innerHTML = `
+          <div class="map-copy">
+            <div class="map-title">Místo konání</div>
+            <p>${escapeHtml(placeText)}</p>
+            <p>${escapeHtml(coords ? `Přesný bod je připravený v mapě.` : `Mapa bude tady, jakmile bude známé přesnější místo.`)}</p>
+          </div>
+          ${activity.place || coords ? `<a class="summary-link" href="${getExternalMapUrl(activity)}" target="_blank" rel="noopener">Otevřít v mapě</a>` : `<span class="summary-link" style="opacity:0.7; cursor:default;">Mapa bude zde</span>`}
+        `;
+      }
+
+      function renderSimilar(activity) {
+        const items = allActivities
+          .filter((item) => item.id !== activity.id)
+          .filter((item) => item.type === activity.type || item.place === activity.place)
+          .filter((item) => !isCancelledActivity(item))
+          .slice(0, 3);
+
+        similarSection.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Podobné aktivity</h2>
+              <p class="section-lead">Ještě pár plánů, které by ti mohly sednout.</p>
+            </div>
+          </div>
+          ${items.length ? `
+            <div class="similar-grid">
+              ${items.map((item) => `
+                <a class="similar-card" href="${getDetailUrl(item)}">
+                  <strong>${escapeHtml(item.name || "Aktivita")}</strong>
+                  <span>${escapeHtml(`${item.type || "Jiný plán"} • ${item.place || "Bez místa"}`)}</span>
+                  <span>${escapeHtml(formatActivityDateTime(item))}</span>
+                </a>
+              `).join("")}
+            </div>
+          ` : `
+            <div class="empty-state">
+              <strong>Zatím nic podobného.</strong>
+              <span>Až se objeví další aktivity, uvidíš je tady.</span>
+            </div>
+          `}
+        `;
+      }
+
+      function renderActions(activity) {
+        const alreadyJoined = currentUser?.uid ? isJoinedBy(activity, currentUser.uid) : false;
+        const isOrganizer = currentUser?.uid && activity.authorUid === currentUser.uid;
+        const isPast = isPastActivity(activity);
+        const isCancelled = isCancelledActivity(activity);
+        const spotsLeft = getSpotsLeft(activity);
+        const isFull = typeof spotsLeft === "number" && spotsLeft <= 0;
+        const organizerUid = encodeURIComponent(activity.authorUid || "");
+
+        const actions = [];
+
+        if (isOrganizer) {
+          actions.push({ kind: "button", label: "Upravit aktivitu", className: "action-btn is-primary", id: "editActivityBtn" });
+          actions.push({ kind: "link", label: "Pozvat lidi", className: "action-btn is-secondary", href: `https://wa.me/?text=${encodeURIComponent(`Pojď na ${activity.name || "aktivitu"}: ${window.location.href}`)}` });
+          if (!isCancelled) {
+            actions.push({ kind: "button", label: "Zrušit aktivitu", className: "action-btn is-danger", id: "cancelActivityBtn" });
+          }
+        } else if (!currentUser) {
+          actions.push({ kind: "button", label: "Přidat se", className: "action-btn is-primary", id: "joinActivityBtn" });
+          actions.push({ kind: "button", label: "Sdílet", className: "action-btn is-secondary", id: "shareActivityBtn" });
+        } else if (alreadyJoined && !isCancelled) {
+          actions.push({ kind: "link", label: "Otevřít chat", className: "action-btn is-primary", href: organizerUid ? `messages.html?uid=${organizerUid}` : "messages.html" });
+          if (!isPast) {
+            actions.push({ kind: "button", label: "Opustit aktivitu", className: "action-btn is-secondary", id: "leaveActivityBtn" });
+          }
+        } else if (!isPast && !isCancelled && !isFull) {
+          actions.push({ kind: "button", label: "Přidat se", className: "action-btn is-primary", id: "joinActivityBtn" });
+          actions.push({ kind: "button", label: "Sdílet", className: "action-btn is-secondary", id: "shareActivityBtn" });
+        } else if (isFull) {
+          actions.push({ kind: "button", label: "Aktivita je plná", className: "action-btn is-primary is-disabled", id: "fullActivityBtn", disabled: true });
+          actions.push({ kind: "button", label: "Sdílet", className: "action-btn is-secondary", id: "shareActivityBtn" });
+        } else {
+          actions.push({ kind: "link", label: "Zobrazit profil", className: "action-btn is-primary", href: organizerUid ? `profil.html?uid=${organizerUid}` : "profil.html" });
+          actions.push({ kind: "button", label: "Sdílet", className: "action-btn is-secondary", id: "shareActivityBtn" });
+        }
+
+        ctaStack.innerHTML = actions.map((action) => {
+          if (action.kind === "link") {
+            return `<a class="${action.className}" href="${action.href}">${action.label}</a>`;
+          }
+          return `<button class="${action.className}" id="${action.id}" type="button" ${action.disabled ? "disabled" : ""}>${action.label}</button>`;
+        }).join("");
+
+        document.getElementById("joinActivityBtn")?.addEventListener("click", handleJoin);
+        document.getElementById("shareActivityBtn")?.addEventListener("click", shareActivity);
+        document.getElementById("editActivityBtn")?.addEventListener("click", openEditModal);
+        document.getElementById("leaveActivityBtn")?.addEventListener("click", () => {
+          openConfirm({
+            title: "Opustit aktivitu",
+            text: "Opravdu chceš tuto aktivitu opustit?",
+            confirmLabel: "Opustit",
+            onConfirm: async () => {
+              closeConfirm();
+              await handleLeave();
+            }
+          });
+        });
+        document.getElementById("cancelActivityBtn")?.addEventListener("click", () => {
+          openConfirm({
+            title: "Zrušit aktivitu",
+            text: "Aktivita zůstane v detailu označená jako zrušená. Opravdu chceš pokračovat?",
+            confirmLabel: "Zrušit aktivitu",
+            onConfirm: async () => {
+              closeConfirm();
+              await handleCancelActivity();
+            }
+          });
+        });
+      }
+
+      function renderDetail() {
+        if (!currentActivity) return;
+        renderHeader(currentActivity);
+        renderOrganizer(currentActivity);
+        renderParticipants(currentActivity);
+        renderDescription(currentActivity);
+        renderInfo(currentActivity);
+        renderSummary(currentActivity);
+        renderMap(currentActivity);
+        renderSimilar(currentActivity);
+        renderActions(currentActivity);
+        loadingState.hidden = true;
+        emptyState.hidden = true;
+        detailGrid.hidden = false;
+      }
+
+      function renderNotFound(title, lead) {
+        loadingState.hidden = true;
+        detailGrid.hidden = true;
+        emptyState.hidden = false;
+        emptyTitle.textContent = title;
+        emptyLead.textContent = lead;
+      }
+
+      function subscribeOrganizer(uid) {
+        unsubscribeOrganizer?.();
+        organizerProfile = null;
+
+        if (!uid) {
+          renderDetail();
+          return;
+        }
+
+        unsubscribeOrganizer = db.collection("profiles").doc(uid).onSnapshot((docSnap) => {
+          organizerProfile = docSnap.exists ? docSnap.data() : null;
+          renderDetail();
+        }, (error) => {
+          console.error("Failed to load organizer profile:", error);
+          organizerProfile = null;
+          renderDetail();
+        });
+      }
+
+      function subscribeActivity() {
+        if (!activityId) {
+          renderNotFound("Aktivitu jsme nenašli.", "Zkus se vrátit do seznamu aktivit a otevřít jinou.");
+          return;
+        }
+
+        unsubscribeActivity?.();
+        unsubscribeActivities?.();
+
+        unsubscribeActivity = db.collection("activities").doc(activityId).onSnapshot((docSnap) => {
+          if (!docSnap.exists) {
+            currentActivity = null;
+            renderNotFound("Aktivita už tady není.", "Možná byla smazaná nebo má jiný odkaz.");
+            return;
+          }
+
+          currentActivity = { id: docSnap.id, ...docSnap.data() };
+          subscribeOrganizer(currentActivity.authorUid || "");
+          renderDetail();
+        }, (error) => {
+          console.error(error);
+          renderNotFound("Detail se nepodařilo načíst.", "Zkus to prosím za chvíli znovu.");
+        });
+
+        unsubscribeActivities = db.collection("activities").onSnapshot((snapshot) => {
+          allActivities = [];
+          snapshot.forEach((docSnap) => {
+            allActivities.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          if (currentActivity) {
+            renderSimilar(currentActivity);
+          }
+        }, (error) => {
+          console.error("Failed to load similar activities:", error);
+        });
+      }
+
+      sidebarHomeBtn.onclick = () => {
+        window.location.href = "index.html";
+      };
+
+      topUserCard.addEventListener("click", () => {
+        if (!currentUser?.uid) return;
+        window.location.href = "profil.html";
+      });
+
+      topUserCard.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          topUserCard.click();
+        }
+      });
+
+      logoutBtn.onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      editModalClose.onclick = closeEditModal;
+      editModalCancel.onclick = closeEditModal;
+      editSaveBtn.onclick = saveActivityEdits;
+      confirmClose.onclick = closeConfirm;
+      confirmCancelBtn.onclick = closeConfirm;
+      confirmActionBtn.onclick = async () => {
+        const callback = confirmCallback;
+        if (callback) {
+          confirmActionBtn.disabled = true;
+          try {
+            await callback();
+          } finally {
+            confirmActionBtn.disabled = false;
+          }
+        }
+      };
+
+      editModal.addEventListener("click", (event) => {
+        if (event.target === editModal) closeEditModal();
+      });
+
+      confirmModal.addEventListener("click", (event) => {
+        if (event.target === confirmModal) closeConfirm();
+      });
+
+      auth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+
+        if (user) {
+          try {
+            currentProfile = await ensureCurrentUserProfile(user);
+            saveProfileCache({
+              uid: user.uid,
+              name: currentProfile?.name || user.displayName || "",
+              email: user.email || "",
+              photo: currentProfile?.photo || user.photoURL || "",
+              city: currentProfile?.city || "",
+              bio: currentProfile?.bio || "",
+              hobbies: currentProfile?.hobbies || ""
+            });
+          } catch (error) {
+            console.error("Failed to ensure profile:", error);
+          }
+
+          setHeaderUser(currentProfile, user);
+          subscribeSidebarBadges(user);
+        } else {
+          currentProfile = null;
+          const cached = readProfileCache();
+          if (cached) {
+            setHeaderUser(cached, null);
+          } else {
+            sidebarUserPhoto.src = getProfileAvatarSrc("", "Host");
+            sidebarUserName.textContent = "Host";
+            sidebarUserEmail.textContent = "Přihlas se pro přidání do aktivit";
+            topUserPhoto.src = getProfileAvatarSrc("", "Host");
+            topUserName.textContent = "Host";
+          }
+          setSidebarBadge(notificationsNavBadge, 0);
+          setSidebarBadge(messagesNavBadge, 0);
+        }
+
+        subscribeActivity();
+      });
+    });
+  </script>
+</body>
+</html>

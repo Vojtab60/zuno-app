@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Komunita</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --text: #0a1525;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --sidebar-width: 310px;
+      --shadow: 0 24px 60px rgba(8,17,34,0.12);
+      --shadow-soft: 0 16px 38px rgba(8,17,34,0.08);
+    }
+    :root[data-theme="dark"] {
+      --text: #e8f0ff;
+      --muted: #9db0c8;
+      --shadow: 0 24px 60px rgba(1,8,18,0.4);
+      --shadow-soft: 0 16px 38px rgba(1,8,18,0.28);
+    }
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115,224,194,0.28), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144,183,255,0.26), transparent 22%),
+        radial-gradient(circle at 22% 72%, rgba(255,205,129,0.18), transparent 18%),
+        linear-gradient(135deg, #f3f8ff 0%, #eef4fb 42%, #e9f1fb 100%);
+    }
+    :root[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115,224,194,0.14), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144,183,255,0.14), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.28) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.3), transparent 78%);
+    }
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+    }
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115,224,194,0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(242,247,255,0.94));
+      color: #0a1525;
+      border-right-color: rgba(10,21,37,0.08);
+      box-shadow: 14px 0 36px rgba(8,17,34,0.08);
+    }
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .logout-btn {
+      background: rgba(248,251,255,0.92);
+      color: #13233a;
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 12px 24px rgba(8,17,34,0.04);
+    }
+    :root[data-theme="light"] .sidebar-user strong,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .brand {
+      color: #13233a;
+    }
+    :root[data-theme="light"] .brand-caption,
+    :root[data-theme="light"] .sidebar-user span {
+      color: #66768b;
+    }
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(236,242,250,0.96);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+    }
+    :root[data-theme="light"] .sidebar-link:hover {
+      background: rgba(255,255,255,0.98);
+    }
+    :root[data-theme="light"] .sidebar-bottom {
+      border-top-color: rgba(10,21,37,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main {
+      color: #13233a;
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.18), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.16), transparent 24%),
+        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(240,247,255,0.94));
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 24px 42px rgba(8,17,34,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main h1 {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .hero-main p {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .hero-kicker {
+      background: rgba(248,251,255,0.92);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+      box-shadow: 0 12px 22px rgba(8,17,34,0.04);
+    }
+    :root[data-theme="dark"] .topbar,
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .user-card,
+    :root[data-theme="dark"] .top-user,
+    :root[data-theme="dark"] .pill-btn,
+    :root[data-theme="dark"] .empty-state,
+    :root[data-theme="dark"] .status-card,
+    :root[data-theme="dark"] .search-input {
+      background: rgba(18,34,57,0.9);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    :root[data-theme="dark"] .hero-side p,
+    :root[data-theme="dark"] .top-user span,
+    :root[data-theme="dark"] .user-card span,
+    :root[data-theme="dark"] .user-meta p,
+    :root[data-theme="dark"] .empty-state,
+    :root[data-theme="dark"] .status-card span,
+    :root[data-theme="dark"] .search-meta {
+      color: var(--muted);
+    }
+    :root[data-theme="dark"] .section-badge,
+    :root[data-theme="dark"] .search-tag,
+    :root[data-theme="dark"] .follow-btn.secondary {
+      background: linear-gradient(135deg, rgba(115,224,194,0.16), rgba(144,183,255,0.18));
+      color: #cde0ff;
+      border-color: rgba(255,255,255,0.08);
+    }
+    :root[data-theme="dark"] .profile-btn {
+      background: rgba(255,255,255,0.08);
+      color: #edf4ff;
+      border-color: rgba(255,255,255,0.12);
+    }
+    :root[data-theme="dark"] .user-card .profile-btn {
+      background: rgba(255,255,255,0.08);
+      color: #edf4ff;
+      border-color: rgba(255,255,255,0.12);
+    }
+    :root[data-theme="dark"] .user-card .follow-btn.secondary {
+      background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.2));
+      color: #eef5ff;
+      border-color: rgba(255,255,255,0.12);
+    }
+    :root[data-theme="dark"] .follow-btn.primary {
+      background: linear-gradient(135deg, #73e0c2, #90b7ff);
+      color: #081321;
+      box-shadow: 0 16px 30px rgba(115,224,194,0.16);
+    }
+    :root[data-theme="dark"] .search-input::placeholder {
+      color: rgba(232,240,255,0.58);
+    }
+    :root[data-theme="dark"] .tab-btn {
+      background: rgba(18,34,57,0.9);
+      color: #cbdcff;
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    :root[data-theme="dark"] .tab-btn.active {
+      background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.2));
+      color: #eef5ff;
+      border-color: rgba(255,255,255,0.12);
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      min-height: 100vh;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top left, rgba(115,224,194,0.1), transparent 22%),
+        linear-gradient(180deg, rgba(8,19,33,0.98), rgba(12,29,51,0.98));
+      color: #eaf1ff;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 14px 0 40px rgba(3,10,20,0.14);
+    }
+    .sidebar-brand,.brand-block,.sidebar-nav,.topbar,.top-left,.top-right,.user-actions,.user-head {
+      display: flex;
+    }
+    .sidebar-brand { align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .brand-block { align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); color: #081321; font-family: "Sora", sans-serif; font-size: 19px; font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115,224,194,0.26);
+    }
+    .brand { font-family: "Sora", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+    .brand-caption { color: rgba(234,241,255,0.62); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
+    .home-btn,.pill-btn,.sidebar-link,.settings-btn,.logout-btn,.follow-btn,.profile-btn {
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+    .home-btn:hover,.pill-btn:hover,.sidebar-link:hover,.settings-btn:hover,.logout-btn:hover,.follow-btn:hover,.profile-btn:hover { transform: translateY(-1px); }
+    .sidebar-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(115,224,194,0.96), rgba(134,190,255,0.96));
+      color: #10243e;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 12px 30px rgba(115,224,194,0.22);
+    }
+    .sidebar-badge.is-visible { display: inline-flex; }
+    .home-btn {
+      width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; background: rgba(255,255,255,0.06); color: white; cursor: pointer;
+    }
+    .sidebar-user {
+      display: flex; gap: 12px; align-items: center; padding: 16px; margin-bottom: 20px; border-radius: 22px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-user img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.1); }
+    .sidebar-user strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .sidebar-user span { display: block; color: rgba(234,241,255,0.68); font-size: 13px; line-height: 1.45; word-break: break-word; }
+    .sidebar-nav { flex-direction: column; gap: 10px; }
+    .sidebar-link {
+      align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; font-size: 14px; font-weight: 700;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); color: #ebf2ff;
+    }
+    .sidebar-icon { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); font-size: 16px; }
+    .sidebar-link.active { background: linear-gradient(135deg, rgba(115,224,194,0.2), rgba(144,183,255,0.16)); border-color: rgba(115,224,194,0.36); color: white; box-shadow: 0 18px 30px rgba(3,10,20,0.24); }
+    .sidebar-bottom { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: grid; gap: 10px; }
+    .settings-btn,.logout-btn { width: 100%; padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); }
+    .settings-btn { background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #081321; border-color: transparent; }
+    .logout-btn { background: rgba(255,255,255,0.04); color: white; }
+    .main { padding: 24px; }
+    .page-frame { max-width: 1380px; margin: 0 auto; }
+    .topbar {
+      justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; padding: 14px 16px;
+      border-radius: 22px; background: linear-gradient(135deg, rgba(255,255,255,0.82), rgba(250,252,255,0.66)), rgba(255,255,255,0.66);
+      border: 1px solid rgba(10,21,37,0.06); backdrop-filter: blur(18px); box-shadow: var(--shadow-soft);
+    }
+    .top-left,.top-right { align-items: center; gap: 10px; flex-wrap: wrap; }
+    .pill-btn {
+      border: 1px solid rgba(10,21,37,0.08); border-radius: 999px; padding: 11px 15px; background: white;
+      font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .top-user {
+      display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 999px; background: white;
+      border: 1px solid rgba(10,21,37,0.08); box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .top-user img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #dbe4ef; }
+    .top-user span { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 700; color: #20314a; }
+    .hero,.content-grid { display: grid; gap: 18px; }
+    .hero { grid-template-columns: 1fr; margin-bottom: 18px; }
+    .content-grid { grid-template-columns: 1fr; }
+    .card { border-radius: 24px; border: 1px solid rgba(10,21,37,0.07); background: rgba(255,255,255,0.84); backdrop-filter: blur(18px); box-shadow: var(--shadow-soft); }
+    .hero-main {
+      padding: 24px 26px; color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.18), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.14), transparent 22%),
+        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(242,247,255,0.94));
+    }
+    .hero-kicker,.section-badge,.search-tag {
+      display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 999px;
+      background: rgba(248,251,255,0.92); border: 1px solid rgba(10,21,37,0.08); color: #365781; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 8px rgba(115,224,194,0.1); }
+    .hero-main h1 { margin: 14px 0 8px; max-width: 760px; font-family: "Sora", sans-serif; font-size: clamp(1.9rem, 3vw, 2.7rem); line-height: 1.02; letter-spacing: -0.05em; color: #13233a; }
+    .hero-main p,.lead { margin: 0; color: #66768b; font-size: 0.98rem; line-height: 1.6; }
+    .hero-side,.panel { padding: 22px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(246,250,255,0.84)), rgba(255,255,255,0.84); }
+    .hero-side h2,.panel h2 { margin: 0 0 8px; font-family: "Sora", sans-serif; font-size: 1.5rem; line-height: 1.08; letter-spacing: -0.04em; }
+    .hero-side p,.lead,.search-meta { color: var(--muted); }
+    .section-badge,.search-tag { margin-top: 16px; background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.18)); color: #315da8; border: 1px solid rgba(115,224,194,0.18); }
+    .status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+    .status-card { padding: 16px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92); border: 1px solid rgba(10,21,37,0.08); }
+    .status-card strong { display: block; margin-bottom: 4px; font-size: 1.4rem; }
+    .status-card span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+    .search-row { display: grid; gap: 12px; margin-bottom: 18px; }
+    .community-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(10,21,37,0.08);
+      background: rgba(255,255,255,0.72);
+      color: #254062;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .tab-btn:hover { transform: translateY(-1px); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(115,224,194,0.22), rgba(144,183,255,0.2));
+      color: #12345a;
+      border-color: rgba(115,224,194,0.28);
+      box-shadow: 0 14px 28px rgba(8,17,34,0.08);
+    }
+    .search-input {
+      width: 100%;
+      border: 1px solid rgba(10,21,37,0.08);
+      border-radius: 16px;
+      padding: 14px 15px;
+      font-size: 15px;
+      background: rgba(255,255,255,0.95);
+      color: var(--text);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: #8ab4ff;
+      box-shadow: 0 0 0 4px rgba(138,180,255,0.16);
+    }
+    .users-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .user-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(10,21,37,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92);
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+    }
+    .user-card:hover {
+      border-color: rgba(115,224,194,0.28);
+      box-shadow: 0 18px 30px rgba(8,17,34,0.09);
+      transform: translateY(-1px);
+    }
+    .user-head { align-items: center; gap: 16px; min-width: 0; }
+    .user-head img {
+      width: 78px;
+      height: 78px;
+      border-radius: 24px;
+      object-fit: cover;
+      background: #dbe4ef;
+      flex-shrink: 0;
+    }
+    .user-meta { min-width: 0; }
+    .user-meta strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.2rem;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+    .user-meta span {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .user-meta p {
+      display: block;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+      word-break: break-word;
+    }
+    .user-actions {
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .follow-btn,.profile-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(10,21,37,0.08);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: white;
+      color: var(--text);
+    }
+    .follow-btn.primary {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(11,30,53,0.18);
+    }
+    .follow-btn.secondary {
+      background: rgba(11,30,53,0.08);
+      color: #173b63;
+    }
+    .empty-state {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px dashed rgba(10,21,37,0.18);
+      background: rgba(255,255,255,0.62);
+      text-align: left;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    @media (max-width: 1200px) { .hero { grid-template-columns: 1fr; } }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } .sidebar { position: static; min-height: auto; } .main { padding: 18px; } }
+    @media (max-width: 880px) {
+      .user-card {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+      .user-actions {
+        justify-content: flex-start;
+      }
+    }
+    @media (max-width: 760px) { .status-grid, .users-grid { grid-template-columns: 1fr; } .top-user span { max-width: 120px; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link active" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" id="settingsBtn" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </div>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="topbar">
+          <div class="top-left"></div>
+          <div class="top-right">
+            <div class="top-user">
+              <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+              <span id="topUserName">Načítám...</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="hero">
+          <div class="card hero-main">
+            <div class="hero-kicker">Komunita</div>
+            <h1>Komunita</h1>
+            <p>Najdi lidi podle sportu, města nebo zájmů.</p>
+            <div class="status-grid">
+              <div class="status-card"><strong id="usersCount">0</strong><span>profilů</span></div>
+              <div class="status-card"><strong id="followingCount">0</strong><span>sleduješ</span></div>
+              <div class="status-card"><strong id="searchCount">0</strong><span>výsledků</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="communityPanelTitle">Komunita</h2>
+              <p class="lead" id="communityPanelLead">Feed lidí, které můžeš sledovat nebo jim napsat.</p>
+            </div>
+            <div class="search-tag" id="communityContextTag">Lidé</div>
+          </div>
+
+          <div class="search-row">
+            <div class="community-tabs">
+              <button class="tab-btn" id="allTabBtn" type="button">Všichni</button>
+              <button class="tab-btn" id="followersTabBtn" type="button">Kdo mě sleduje</button>
+              <button class="tab-btn" id="followingTabBtn" type="button">Koho sleduju já</button>
+            </div>
+            <input class="search-input" id="userSearchInput" placeholder="Hledat podle jména, města nebo sportu" />
+            <div class="search-meta" id="searchMeta">Načítám uživatele...</div>
+          </div>
+
+          <div class="users-grid" id="usersGrid">
+            <div class="empty-state">Načítám uživatele...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const params = new URLSearchParams(window.location.search);
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const usersGrid = document.getElementById("usersGrid");
+      const userSearchInput = document.getElementById("userSearchInput");
+      const usersCount = document.getElementById("usersCount");
+      const followingCount = document.getElementById("followingCount");
+      const searchCount = document.getElementById("searchCount");
+      const searchMeta = document.getElementById("searchMeta");
+      const allTabBtn = document.getElementById("allTabBtn");
+      const followersTabBtn = document.getElementById("followersTabBtn");
+      const followingTabBtn = document.getElementById("followingTabBtn");
+      const communityPanelTitle = document.getElementById("communityPanelTitle");
+      const communityPanelLead = document.getElementById("communityPanelLead");
+      const communityContextTag = document.getElementById("communityContextTag");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+
+      let currentUser = null;
+      let currentViewedUid = params.get("uid") || null;
+      let activeTab = params.get("tab") === "followers" || params.get("tab") === "following" ? params.get("tab") : "all";
+      let viewedProfileName = "Komunita";
+      let allUsers = [];
+      let allFollowers = [];
+      let allFollowing = [];
+      let followingSet = new Set();
+      let unsubscribeCurrentProfile = null;
+      let unsubscribeViewedProfile = null;
+      let unsubscribeFollowers = null;
+      let unsubscribeFollowing = null;
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function createProfileFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seeds = Array.from(safeName).reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0);
+        const hueA = seeds % 360;
+        const hueB = (hueA + 42) % 360;
+        const hueC = (hueA + 110) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 76% 60%)" />
+                <stop offset="55%" stop-color="hsl(${hueB} 78% 56%)" />
+                <stop offset="100%" stop-color="hsl(${hueC} 62% 44%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="76" fill="url(#bg)" />
+            <circle cx="160" cy="132" r="64" fill="rgba(255,255,255,0.88)" />
+            <path d="M82 256C105 214 132 194 160 194C188 194 215 214 238 256" fill="rgba(255,255,255,0.88)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getProfileAvatarSrc(photo, name) {
+        return photo || createProfileFallbackAvatar(name);
+      }
+
+      function normalize(value) {
+        return (value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+      }
+
+      async function createNotification(payload) {
+        try {
+          await db.collection("notifications").add({
+            ...payload,
+            createdAt: Date.now(),
+            read: false
+          });
+        } catch (e) {
+          console.error("Failed to create notification:", e);
+        }
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count || 0);
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+
+        if (!user?.uid) {
+          setSidebarBadge(notificationsNavBadge, 0);
+          setSidebarBadge(messagesNavBadge, 0);
+          return;
+        }
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .where("read", "==", false)
+          .onSnapshot((snapshot) => {
+            setSidebarBadge(notificationsNavBadge, snapshot.size);
+          }, (error) => {
+            console.error("Failed to subscribe to unread notifications:", error);
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((count, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const lastMessageAt = Number(data.lastMessageAt || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && lastMessageAt > readAt);
+              return count + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          }, (error) => {
+            console.error("Failed to subscribe to unread conversations:", error);
+          });
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = getProfileAvatarSrc(profile?.photo || user?.photoURL || "", profile?.name || user?.displayName || "Uživatel");
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+      }
+
+      async function ensureCurrentUserProfile(user) {
+        if (!user?.uid) return;
+        const profileRef = db.collection("profiles").doc(user.uid);
+        const snap = await profileRef.get();
+        if (snap.exists) return;
+
+        await profileRef.set({
+          uid: user.uid,
+          name: user.displayName || "Uživatel",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          city: "",
+          bio: "",
+          hobbies: "",
+          followersCount: 0,
+          followingCount: 0,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      }
+
+      async function getProfileByUid(uid) {
+        if (!uid) return null;
+        try {
+          const snap = await db.collection("profiles").doc(uid).get();
+          return snap.exists ? snap.data() : null;
+        } catch (e) {
+          console.error("Failed to fetch profile by uid:", e);
+          return null;
+        }
+      }
+
+      function getActiveSource() {
+        if (activeTab === "followers") return allFollowers;
+        if (activeTab === "following") return allFollowing;
+        return allUsers;
+      }
+
+      function updateCommunityUi() {
+        allTabBtn.classList.toggle("active", activeTab === "all");
+        followersTabBtn.classList.toggle("active", activeTab === "followers");
+        followingTabBtn.classList.toggle("active", activeTab === "following");
+
+        if (activeTab === "followers") {
+          communityPanelTitle.textContent = currentViewedUid === currentUser?.uid ? "Kdo mě sleduje" : `Kdo sleduje ${viewedProfileName}`;
+          communityPanelLead.textContent = "Na jednom místě vidíš všechny lidi, kteří tento profil sledují. Každý profil můžeš hned otevřít, sledovat nebo mu napsat.";
+          communityContextTag.textContent = "Sledující";
+          return;
+        }
+
+        if (activeTab === "following") {
+          communityPanelTitle.textContent = currentViewedUid === currentUser?.uid ? "Koho sleduju já" : `Koho sleduje ${viewedProfileName}`;
+          communityPanelLead.textContent = "Tady je přehled profilů, které tento uživatel sleduje. Je to rychlá cesta, jak objevit další lidi a propojení v komunitě.";
+          communityContextTag.textContent = "Sledované";
+          return;
+        }
+
+        communityPanelTitle.textContent = "Komunita";
+        communityPanelLead.textContent = "Feed lidí, které můžeš sledovat nebo jim napsat.";
+        communityContextTag.textContent = "Lidé";
+      }
+
+      async function hydrateFollowDocs(docs, direction) {
+        const profiles = await Promise.all(docs.map(async (docSnap) => {
+          const data = docSnap.data() || {};
+          const uid = direction === "followers" ? data.followerUid : data.followingUid;
+          const fallbackName = direction === "followers" ? data.followerName : data.followingName;
+          const fallbackPhoto = direction === "followers" ? data.followerPhoto : data.followingPhoto;
+          const profile = await getProfileByUid(uid);
+          return {
+            uid,
+            name: profile?.name || fallbackName || "Uživatel",
+            photo: profile?.photo || fallbackPhoto || "",
+            city: profile?.city || "",
+            bio: profile?.bio || "",
+            hobbies: profile?.hobbies || "",
+            email: profile?.email || ""
+          };
+        }));
+
+        if (direction === "followers") {
+          allFollowers = profiles.filter((item) => item.uid);
+        } else {
+          allFollowing = profiles.filter((item) => item.uid);
+        }
+
+        renderUsers();
+      }
+
+      function subscribeFollowLists() {
+        unsubscribeFollowers?.();
+        unsubscribeFollowing?.();
+
+        if (!currentViewedUid) return;
+
+        unsubscribeFollowers = db.collection("follows")
+          .where("followingUid", "==", currentViewedUid)
+          .onSnapshot(async (snapshot) => {
+            await hydrateFollowDocs(snapshot.docs, "followers");
+          });
+
+        unsubscribeFollowing = db.collection("follows")
+          .where("followerUid", "==", currentViewedUid)
+          .onSnapshot(async (snapshot) => {
+            await hydrateFollowDocs(snapshot.docs, "following");
+          });
+      }
+
+      function filterUsers() {
+        const query = normalize((userSearchInput.value || "").trim());
+        const source = getActiveSource();
+        if (!query) return source;
+        return source.filter((profile) => {
+          const haystack = normalize([
+            profile.name,
+            profile.city,
+            profile.bio,
+            profile.hobbies,
+            profile.email
+          ].join(" "));
+          return haystack.includes(query);
+        });
+      }
+
+      function renderUsers() {
+        const visibleUsers = filterUsers();
+        usersGrid.innerHTML = "";
+        usersCount.textContent = allUsers.length;
+        followingCount.textContent = allFollowing.length;
+        searchCount.textContent = visibleUsers.length;
+
+        if (activeTab === "followers") {
+          searchMeta.textContent = visibleUsers.length
+            ? `${visibleUsers.length} sledujících odpovídá hledání`
+            : "Tady zatím nikdo není nebo nic neodpovídá hledání.";
+        } else if (activeTab === "following") {
+          searchMeta.textContent = visibleUsers.length
+            ? `${visibleUsers.length} sledovaných profilů odpovídá hledání`
+            : "Tenhle seznam je zatím prázdný nebo nic neodpovídá hledání.";
+        } else {
+          searchMeta.textContent = visibleUsers.length
+            ? `${visibleUsers.length} profilů odpovídá hledání`
+            : "Nikdo zatím neodpovídá zadanému filtru.";
+        }
+
+        if (!visibleUsers.length) {
+          const emptyText = activeTab === "all"
+            ? "Zkus jiné jméno, město nebo sport. Jakmile se do Zuno přihlásí další lidé, objeví se tady."
+            : activeTab === "followers"
+              ? "Tady zatím nikdo není nebo nic neodpovídá hledání."
+              : "Tenhle seznam je zatím prázdný nebo nic neodpovídá hledání.";
+          usersGrid.innerHTML = `<div class="empty-state">Nic jsme nenašli. ${emptyText}</div>`;
+          return;
+        }
+
+        visibleUsers.forEach((profile) => {
+          const card = document.createElement("div");
+          card.className = "user-card";
+          const isFollowing = followingSet.has(profile.uid);
+
+          card.innerHTML = `
+            <div class="user-head">
+              <img src="${getProfileAvatarSrc(profile.photo || "", profile.name || "Uživatel")}" alt="Profil">
+              <div class="user-meta">
+                <strong>${profile.name || "Uživatel"}</strong>
+                <span>${profile.city || profile.email || "Zuno komunita"}</span>
+                <p>${profile.bio || "Profil zatím čeká na doplnění, ale už je připravený k propojení v komunitě."}</p>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="profile-btn" data-action="message">Napsat</button>
+              <button class="follow-btn ${isFollowing ? "secondary" : "primary"}" data-action="follow">${isFollowing ? "Sleduješ" : "Sledovat"}</button>
+            </div>
+          `;
+
+          card.addEventListener("click", (event) => {
+            if (event.target.closest("button")) return;
+            window.location.href = `profil.html?uid=${profile.uid}`;
+          });
+
+          card.querySelector('[data-action="message"]').onclick = () => {
+            window.location.href = `messages.html?uid=${profile.uid}`;
+          };
+
+          card.querySelector('[data-action="follow"]').onclick = async () => {
+            const followRef = db.collection("follows").doc(`${currentUser.uid}_${profile.uid}`);
+            try {
+              if (followingSet.has(profile.uid)) {
+                await followRef.delete();
+              } else {
+                await followRef.set({
+                  followerUid: currentUser.uid,
+                  followingUid: profile.uid,
+                  followerName: sidebarUserName.textContent || currentUser.displayName || "Uživatel",
+                  followerPhoto: sidebarUserPhoto.src || currentUser.photoURL || "",
+                  followingName: profile.name || "Uživatel",
+                  followingPhoto: profile.photo || "",
+                  createdAt: Date.now()
+                }, { merge: true });
+
+                await createNotification({
+                  recipientUid: profile.uid,
+                  actorUid: currentUser.uid,
+                  actorName: sidebarUserName.textContent || currentUser.displayName || "Uživatel",
+                  actorPhoto: sidebarUserPhoto.src || currentUser.photoURL || "",
+                  type: "follow",
+                  title: `${sidebarUserName.textContent || currentUser.displayName || "Uživatel"} tě začal(a) sledovat`,
+                  body: "Otevři profil nebo zprávy a navaz kontakt."
+                });
+              }
+            } catch (e) {
+              console.error("Failed to toggle follow from users page:", e);
+            }
+          };
+
+          usersGrid.appendChild(card);
+        });
+      }
+
+      document.getElementById("sidebarHomeBtn").onclick = () => { window.location.href = "index.html"; };
+      document.getElementById("settingsBtn").onclick = () => { window.location.href = "settings.html"; };
+      document.getElementById("logoutBtn").onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+      userSearchInput.addEventListener("input", renderUsers);
+      allTabBtn.onclick = () => {
+        activeTab = "all";
+        updateCommunityUi();
+        renderUsers();
+      };
+      followersTabBtn.onclick = () => {
+        activeTab = "followers";
+        updateCommunityUi();
+        renderUsers();
+      };
+      followingTabBtn.onclick = () => {
+        activeTab = "following";
+        updateCommunityUi();
+        renderUsers();
+      };
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        currentViewedUid = currentViewedUid || user.uid;
+        setHeaderUser(readProfileCache(), user);
+        await ensureCurrentUserProfile(user);
+        subscribeSidebarBadges(user);
+        updateCommunityUi();
+
+        unsubscribeCurrentProfile?.();
+        unsubscribeCurrentProfile = db.collection("profiles").doc(user.uid).onSnapshot((snap) => {
+          const profile = snap.exists ? snap.data() : readProfileCache();
+          setHeaderUser(profile, user);
+          localStorage.setItem("zunoProfile", JSON.stringify({
+            ...(readProfileCache() || {}),
+            ...(profile || {}),
+            uid: user.uid,
+            email: user.email || ""
+          }));
+        });
+
+        unsubscribeViewedProfile?.();
+        unsubscribeViewedProfile = db.collection("profiles").doc(currentViewedUid).onSnapshot((snap) => {
+          const profile = snap.exists ? snap.data() : null;
+          viewedProfileName = profile?.name || "Komunita";
+          updateCommunityUi();
+        });
+
+        db.collection("follows").where("followerUid", "==", user.uid).onSnapshot((snapshot) => {
+          followingSet = new Set(snapshot.docs.map((docSnap) => docSnap.data().followingUid).filter(Boolean));
+          renderUsers();
+        });
+
+        db.collection("profiles").onSnapshot((snapshot) => {
+          allUsers = snapshot.docs
+            .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+            .filter((profile) => profile.uid && profile.uid !== user.uid)
+            .sort((a, b) => (a.name || "").localeCompare(b.name || "", "cs"));
+          renderUsers();
+        });
+
+        subscribeFollowLists();
+      });
+    });
+  </script>
+</body>
+</html>

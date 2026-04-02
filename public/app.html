@@ -1,0 +1,3884 @@
+
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Aktivity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #eef4fb;
+      --text: #0a1525;
+      --muted: #607089;
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-strong: #ffffff;
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --danger: #da4b5a;
+      --line: rgba(10, 21, 37, 0.09);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --sidebar-width: 310px;
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0d141d;
+      --text: #e8f0ff;
+      --muted: #9db0c8;
+      --surface: #142030;
+      --surface-strong: #172537;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.4);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.28);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f3f4f1 0%, #eef1f5 100%);
+    }
+
+    :root[data-theme="dark"] body {
+      background: linear-gradient(180deg, #0b1118 0%, #101824 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(10, 21, 37, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 21, 37, 0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 82%);
+      z-index: 0;
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    }
+
+    :root[data-theme="dark"] .page-frame::before {
+      opacity: 0.5;
+    }
+
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 247, 255, 0.94));
+      color: #0a1525;
+      border-right-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 14px 0 36px rgba(8, 17, 34, 0.08);
+    }
+
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .logout-btn {
+      background: rgba(248, 251, 255, 0.92);
+      color: #13233a;
+      border-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.04);
+    }
+
+    :root[data-theme="light"] .brand,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .sidebar-user strong {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .brand-caption,
+    :root[data-theme="light"] .sidebar-user span {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(236, 242, 250, 0.96);
+      border-color: rgba(10, 21, 37, 0.08);
+      color: #365781;
+    }
+
+    :root[data-theme="light"] .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.98);
+    }
+
+    :root[data-theme="light"] .sidebar-bottom {
+      border-top-color: rgba(10, 21, 37, 0.08);
+    }
+
+    :root[data-theme="light"] .hero-main {
+      color: #13233a;
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.18), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.16), transparent 24%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 255, 0.94));
+      border-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 0 24px 42px rgba(8, 17, 34, 0.08);
+    }
+
+    :root[data-theme="light"] .hero-main h1 {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .hero-main p {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .hero-kicker {
+      background: rgba(248, 251, 255, 0.92);
+      border-color: rgba(10, 21, 37, 0.08);
+      color: #365781;
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.04);
+    }
+
+    :root[data-theme="light"] .hero-main::before {
+      background: radial-gradient(circle, rgba(115, 224, 194, 0.22), transparent 68%);
+      opacity: 0.7;
+    }
+
+    :root[data-theme="light"] .hero-main::after {
+      background: radial-gradient(circle, rgba(144, 183, 255, 0.22), transparent 72%);
+      opacity: 0.7;
+    }
+
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .hero-side,
+    :root[data-theme="dark"] .hero-tip,
+    :root[data-theme="dark"] .sport-card,
+    :root[data-theme="dark"] .activity-card,
+    :root[data-theme="dark"] .notice-item,
+    :root[data-theme="dark"] .settings-item,
+    :root[data-theme="dark"] .map-note,
+    :root[data-theme="dark"] .toolbar,
+    :root[data-theme="dark"] .top-user,
+    :root[data-theme="dark"] .pill-btn,
+    :root[data-theme="dark"] .person-chip,
+    :root[data-theme="dark"] .empty-state,
+    :root[data-theme="dark"] .secondary-btn,
+    :root[data-theme="dark"] .place-suggestions,
+    :root[data-theme="dark"] .place-suggestion,
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] textarea {
+      background: rgba(18, 34, 57, 0.9);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+    }
+
+    :root[data-theme="dark"] .sport-card,
+    :root[data-theme="dark"] .activity-card,
+    :root[data-theme="dark"] .notice-item,
+    :root[data-theme="dark"] .settings-item,
+    :root[data-theme="dark"] .map-note,
+    :root[data-theme="dark"] .empty-state,
+    :root[data-theme="dark"] .secondary-btn,
+    :root[data-theme="dark"] .place-suggestions,
+    :root[data-theme="dark"] .place-suggestion,
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] textarea {
+      backdrop-filter: blur(18px);
+    }
+
+    :root[data-theme="dark"] .top-user span,
+    :root[data-theme="dark"] .field label,
+    :root[data-theme="dark"] .sport-card span,
+    :root[data-theme="dark"] .hero-tip span,
+    :root[data-theme="dark"] .author-sub,
+    :root[data-theme="dark"] .activity-meta,
+    :root[data-theme="dark"] .panel .lead,
+    :root[data-theme="dark"] .hero-side p,
+    :root[data-theme="dark"] .notice-item span,
+    :root[data-theme="dark"] .settings-item span,
+    :root[data-theme="dark"] .map-top p,
+    :root[data-theme="dark"] .map-note,
+    :root[data-theme="dark"] .place-helper,
+    :root[data-theme="dark"] .picker-map-note,
+    :root[data-theme="dark"] .place-suggestion span,
+    :root[data-theme="dark"] .mini-stat span,
+    :root[data-theme="dark"] .hero-tip span {
+      color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .activity-badge,
+    :root[data-theme="dark"] .section-badge,
+    :root[data-theme="dark"] .quick-chip,
+    :root[data-theme="dark"] .map-action-btn {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.16), rgba(144, 183, 255, 0.18));
+      color: #cde0ff;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    :root[data-theme="dark"] .map-action-btn.is-active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.3), rgba(144, 183, 255, 0.26));
+      color: #eef4ff;
+    }
+
+    :root[data-theme="dark"] .zuno-map-popup span {
+      color: #8fa7c7;
+    }
+
+    :root[data-theme="dark"] .zuno-map-popup-actions a {
+      background: rgba(115, 224, 194, 0.16);
+      color: #d9ecff;
+    }
+
+    :root[data-theme="dark"] .top-user img,
+    :root[data-theme="dark"] .person-chip img,
+    :root[data-theme="dark"] .author-avatar {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    :root[data-theme="dark"] .hero-tip strong,
+    :root[data-theme="dark"] .sport-card strong,
+    :root[data-theme="dark"] .notice-item strong,
+    :root[data-theme="dark"] .settings-item strong {
+      color: var(--text);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.1), transparent 22%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      color: #eaf1ff;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 14px 0 40px rgba(3, 10, 20, 0.14);
+      z-index: 20;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115, 224, 194, 0.26);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-caption {
+      color: rgba(234, 241, 255, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .home-btn,
+    .settings-btn,
+    .logout-btn,
+    .pill-btn,
+    .save-btn,
+    .secondary-btn,
+    .danger-btn,
+    .join-btn,
+    .whatsapp-btn,
+    .quick-chip {
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
+    }
+
+    .home-btn:hover,
+    .settings-btn:hover,
+    .logout-btn:hover,
+    .pill-btn:hover,
+    .save-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover,
+    .join-btn:hover,
+    .whatsapp-btn:hover,
+    .quick-chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: white;
+      cursor: pointer;
+    }
+
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-user img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .sidebar-user strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .sidebar-user span {
+      display: block;
+      color: rgba(234, 241, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ebf2ff;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+    .sidebar-badge {
+      min-width: 22px;
+      height: 22px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #73e0c2, #90b7ff);
+      color: #081321;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      box-shadow: 0 10px 20px rgba(8,17,34,0.18);
+    }
+    .sidebar-badge.is-visible {
+      display: inline-flex;
+    }
+
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .sidebar-link-label {
+      flex: 1;
+    }
+
+    .sidebar-link:hover {
+      transform: translateX(2px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.2), rgba(144, 183, 255, 0.16));
+      border-color: rgba(115, 224, 194, 0.36);
+      color: white;
+      box-shadow: 0 18px 30px rgba(3, 10, 20, 0.24);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .settings-btn,
+    .logout-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #081321;
+      border-color: transparent;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: white;
+    }
+
+    .main {
+      padding: 20px 24px 28px;
+    }
+
+    .page-frame {
+      max-width: 1380px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .product-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin: 0 auto 18px;
+      padding: 0 4px 14px;
+      border-bottom: 1px solid rgba(10, 21, 37, 0.08);
+    }
+
+    :root[data-theme="dark"] .product-nav {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .product-nav-left,
+    .product-nav-right,
+    .product-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .product-nav-right {
+      margin-left: auto;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .product-section-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .product-mark {
+      font-family: "Sora", sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #0f1f35;
+    }
+
+    :root[data-theme="dark"] .product-mark {
+      color: #eef4ff;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.18s ease;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      color: var(--text);
+    }
+
+    .nav-link.active {
+      position: relative;
+    }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -15px;
+      height: 2px;
+      background: linear-gradient(90deg, #73e0c2, #90b7ff);
+    }
+
+    .pill-btn {
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      border-radius: 12px;
+      padding: 11px 15px;
+      background: var(--surface-strong);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.05);
+    }
+
+    .pill-btn.primary,
+    .save-btn,
+    .join-btn,
+    .whatsapp-btn {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(11, 30, 53, 0.18);
+    }
+
+    .pill-btn:focus-visible,
+    .top-user:focus-visible,
+    .view-tab:focus-visible,
+    .filter-reset-btn:focus-visible,
+    .inline-action:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.18);
+    }
+
+    .top-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 11px;
+      border-radius: 12px;
+      background: var(--surface-strong);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.05);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .top-user:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(8, 17, 34, 0.07);
+      border-color: rgba(49, 93, 168, 0.14);
+    }
+
+    .top-user img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .top-user span {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 700;
+      color: #20314a;
+    }
+
+    .hero {
+      max-width: 1180px;
+      margin: 0 auto 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      border-radius: 20px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 250, 255, 0.92)),
+        rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 34px rgba(8, 17, 34, 0.05);
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      padding: 24px 26px 22px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.16), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.14), transparent 22%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(241, 247, 255, 0.94));
+    }
+
+    .hero-kicker {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      color: #315da8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 8px rgba(115, 224, 194, 0.08);
+    }
+
+    .hero-main h1 {
+      position: relative;
+      margin: 0 0 8px;
+      max-width: 760px;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.9rem, 3vw, 2.7rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-main p {
+      position: relative;
+      margin: 0;
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .hero-stats {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .mini-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(10, 21, 37, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .mini-stat strong {
+      display: inline-block;
+      margin-bottom: 0;
+      font-size: 0.98rem;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .section-badge {
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.18), rgba(144, 183, 255, 0.18));
+      color: #315da8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .quick-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .quick-chip {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.18), rgba(144, 183, 255, 0.18));
+      color: #2b5aa0;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid rgba(115, 224, 194, 0.16);
+      cursor: pointer;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+
+    .section-stack {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .panel h2,
+    .map-top h2 {
+      margin: 0 0 8px;
+      font-family: "Sora", sans-serif;
+      font-size: 1.55rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .panel .lead,
+    .map-top p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    .place-field {
+      position: relative;
+    }
+
+    .field label {
+      color: #30435c;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(10, 21, 37, 0.1);
+      border-radius: 10px;
+      padding: 14px 15px;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #8ab4ff;
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.16);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    .place-tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .place-helper {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .place-suggestions {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(10,21,37,0.08);
+      background: rgba(255,255,255,0.92);
+      box-shadow: var(--shadow-soft);
+    }
+    .place-suggestions.is-visible {
+      display: grid;
+      gap: 8px;
+    }
+    .place-suggestion {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(10,21,37,0.08);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.92);
+      text-align: left;
+      cursor: pointer;
+    }
+    .place-suggestion strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    .place-suggestion span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .picker-map-wrap {
+      display: none;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .picker-map-wrap.is-visible {
+      display: grid;
+    }
+    .picker-map-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    #locationPickerMap {
+      height: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(10,21,37,0.08);
+      touch-action: auto;
+      cursor: grab;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .save-btn,
+    .secondary-btn,
+    .danger-btn,
+    .join-btn,
+    .whatsapp-btn {
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+    }
+
+    .secondary-btn {
+      background: white;
+      color: var(--text);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #f06d7a, #da4b5a);
+      color: white;
+    }
+
+    .success-text {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #ecfff7;
+      color: #16745f;
+      border: 1px solid rgba(22, 116, 95, 0.14);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .toolbar-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-height: 24px;
+    }
+
+    .toolbar-count {
+      display: none;
+    }
+
+    .view-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px;
+      border-radius: 999px;
+      background: rgba(244, 247, 251, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.07);
+      box-shadow: 0 10px 20px rgba(8, 17, 34, 0.04);
+    }
+
+    .view-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 18px;
+      border-radius: 999px;
+      color: #617186;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .view-tab:hover {
+      color: #13233a;
+      background: rgba(255, 255, 255, 0.54);
+      transform: translateY(-1px);
+    }
+
+    .view-tab.active {
+      background: linear-gradient(135deg, #ffffff, #f5f9ff);
+      color: #13233a;
+      box-shadow: 0 10px 22px rgba(8, 17, 34, 0.08);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(10, 21, 37, 0.06);
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 1 1 720px;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      flex: 1 1 180px;
+      max-width: 250px;
+      min-height: 44px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(10, 21, 37, 0.07);
+      box-shadow: none;
+    }
+
+    .filter-reset-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(10, 21, 37, 0.07);
+      background: rgba(255, 255, 255, 0.92);
+      color: #30435c;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .filter-reset-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(8, 17, 34, 0.05);
+      border-color: rgba(49, 93, 168, 0.16);
+    }
+
+    .sports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .sport-card {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--surface-strong);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      text-align: center;
+    }
+
+    .sport-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .sport-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .activity-card {
+      padding: 20px 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(10, 21, 37, 0.07);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.95)),
+        rgba(247, 250, 255, 0.96);
+      box-shadow: 0 12px 26px rgba(8, 17, 34, 0.05);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 34px rgba(8, 17, 34, 0.09);
+      border-color: rgba(49, 93, 168, 0.12);
+    }
+
+    .activity-card:focus-within {
+      border-color: rgba(49, 93, 168, 0.18);
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.12);
+    }
+
+    .activity-card:active {
+      transform: translateY(0);
+    }
+
+    .activity-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .activity-head-main {
+      flex: 1 1 520px;
+      min-width: 0;
+    }
+
+    .activity-title {
+      margin-bottom: 6px;
+      font-size: 1.28rem;
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.03em;
+    }
+
+    .activity-meta {
+      color: #54647a;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .activity-meta-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .activity-detail-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .activity-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: rgba(240, 245, 251, 0.95);
+      color: #41566f;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .activity-description {
+      max-width: 68ch;
+      margin-top: 4px;
+      color: #607089;
+    }
+
+    .activity-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.14);
+      color: #1b5f84;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(49, 93, 168, 0.08);
+    }
+
+    .activity-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .activity-badge.is-soft {
+      background: rgba(240, 245, 251, 0.95);
+      color: #4d6078;
+      box-shadow: inset 0 0 0 1px rgba(10, 21, 37, 0.06);
+    }
+
+    .activity-badge.badge-today {
+      background: rgba(116, 224, 194, 0.18);
+      color: #15725f;
+    }
+
+    .activity-badge.badge-tomorrow {
+      background: rgba(144, 183, 255, 0.18);
+      color: #3150a3;
+    }
+
+    .activity-badge.badge-warning {
+      background: rgba(255, 179, 71, 0.2);
+      color: #9a5a08;
+    }
+
+    .activity-badge.badge-joined {
+      background: rgba(115, 224, 194, 0.14);
+      color: #15725f;
+    }
+
+    .activity-badge.badge-organizer {
+      background: rgba(208, 224, 255, 0.62);
+      color: #264d81;
+    }
+
+    .activity-badge.badge-past {
+      background: rgba(226, 232, 240, 0.78);
+      color: #5c6d84;
+    }
+
+    .activity-badge.badge-open {
+      background: rgba(240, 245, 251, 0.95);
+      color: #506278;
+    }
+
+    .activity-badge.badge-full {
+      background: rgba(255, 238, 241, 0.92);
+      color: #a64a59;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(248, 251, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.06);
+      width: fit-content;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .author-row:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.05);
+      border-color: rgba(49, 93, 168, 0.12);
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2563eb;
+      cursor: pointer;
+    }
+
+    .author-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .activity-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .people-stack {
+      display: inline-flex;
+      align-items: center;
+      padding-left: 8px;
+    }
+
+    .people-stack-item {
+      width: 30px;
+      height: 30px;
+      margin-left: -8px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      color: #13233a;
+      border: 2px solid white;
+      background: linear-gradient(135deg, #dce8ff, #b4f0de);
+      box-shadow: 0 8px 18px rgba(8, 17, 34, 0.08);
+    }
+
+    .activity-social {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #54647a;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .activity-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(10, 21, 37, 0.08);
+    }
+
+    .activity-actions-left,
+    .activity-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .inline-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(248, 251, 255, 0.96);
+      color: #30435c;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+    }
+
+    .inline-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.06);
+      border-color: rgba(49, 93, 168, 0.16);
+    }
+
+    .inline-action.is-primary {
+      background: linear-gradient(135deg, #0f2138, #1d476f);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 14px 28px rgba(15, 33, 56, 0.18);
+    }
+
+    .inline-action.is-danger {
+      background: rgba(255, 247, 248, 0.92);
+      color: #b74456;
+      border-color: rgba(218, 75, 90, 0.12);
+      box-shadow: none;
+    }
+
+    .empty-state {
+      padding: 28px;
+      border-radius: 22px;
+      border: 1px dashed rgba(10, 21, 37, 0.16);
+      background: rgba(248, 251, 255, 0.76);
+      text-align: left;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 8px;
+      color: #13233a;
+      font-family: "Sora", sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+    }
+
+    .empty-state p {
+      margin: 0;
+    }
+
+    .empty-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .product-nav {
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .product-nav-left,
+      .product-nav-right,
+      .product-nav-links {
+        flex-wrap: wrap;
+      }
+    }
+
+    .create-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(5, 12, 24, 0.66);
+      backdrop-filter: blur(10px);
+      z-index: 40;
+    }
+
+    .create-modal.is-open {
+      display: flex;
+    }
+
+    .create-modal-panel {
+      position: relative;
+      width: min(840px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      border-radius: 16px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: white;
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .loading-row {
+      padding: 8px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .map-card {
+      overflow: hidden;
+      padding: 0;
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.14), transparent 22%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 249, 255, 0.88));
+    }
+
+    .map-top {
+      padding: 26px 26px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    #activityMap {
+      width: 100%;
+      height: 440px;
+      margin-top: 18px;
+      border-top: 1px solid rgba(10, 21, 37, 0.08);
+      touch-action: auto;
+      cursor: grab;
+    }
+
+    #activityMap:active,
+    #locationPickerMap:active {
+      cursor: grabbing;
+    }
+
+    .map-note {
+      padding: 0 26px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .map-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .map-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .map-action-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .map-action-btn.is-active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.2), rgba(144, 183, 255, 0.2));
+      color: #264d81;
+      border-color: rgba(49, 93, 168, 0.14);
+    }
+
+    .map-action-btn[aria-disabled="true"] {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 18px;
+    }
+
+    .zuno-map-popup {
+      min-width: 180px;
+      line-height: 1.55;
+    }
+
+    .zuno-map-popup strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .zuno-map-popup span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .zuno-map-popup-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .zuno-map-popup-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.14);
+      color: #264d81;
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .notice-list,
+    .settings-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .notice-item,
+    .settings-item {
+      padding: 16px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 250, 255, 0.88)),
+        rgba(247, 250, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+    }
+
+    .notice-item strong,
+    .settings-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .notice-item span,
+    .settings-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 1280px) {
+      .dashboard-grid,
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .sports-grid,
+      .hero-stats,
+      .hero-tip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .main {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .two-col,
+      .three-col,
+      .sports-grid,
+      .hero-stats,
+      .hero-tip-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-main,
+      .panel,
+      .map-top,
+      .map-note {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .hero-main h1 {
+        font-size: 1.95rem;
+      }
+
+      .top-user span {
+        max-width: 120px;
+      }
+
+      .product-nav,
+      .filter-bar,
+      .activity-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .product-nav-right,
+      .filter-group,
+      .filter-actions,
+      .activity-actions-left,
+      .activity-actions-right {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil">
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html">
+          <span class="sidebar-icon" aria-hidden="true">◉</span>
+          <span class="sidebar-link-label">Profil</span>
+        </a>
+        <a class="sidebar-link" id="navActivities" href="app.html?scope=all">
+          <span class="sidebar-icon" aria-hidden="true">✦</span>
+          <span class="sidebar-link-label">Aktivity</span>
+        </a>
+        <a class="sidebar-link" href="users.html">
+          <span class="sidebar-icon" aria-hidden="true">☻</span>
+          <span class="sidebar-link-label">Komunita</span>
+        </a>
+        <a class="sidebar-link" href="messages.html">
+          <span class="sidebar-icon" aria-hidden="true">✉</span>
+          <span class="sidebar-link-label">Zprávy</span>
+          <span class="sidebar-badge" id="messagesNavBadge">0</span>
+        </a>
+        <a class="sidebar-link" href="notifications.html">
+          <span class="sidebar-icon" aria-hidden="true">✳</span>
+          <span class="sidebar-link-label">Notifikace</span>
+          <span class="sidebar-badge" id="notificationsNavBadge">0</span>
+        </a>
+        <a class="sidebar-link" href="settings.html">
+          <span class="sidebar-icon" aria-hidden="true">⚙</span>
+          <span class="sidebar-link-label">Nastavení</span>
+        </a>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="product-nav">
+          <div class="product-nav-left">
+            <a class="product-mark" href="app.html?scope=all">Zuno</a>
+            <span class="product-section-label">Aktivity</span>
+          </div>
+          <div class="product-nav-right">
+            <button class="pill-btn primary" id="createNavBtn">+ Aktivita</button>
+            <div class="top-user">
+              <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil">
+              <span id="topUserName">Načítám...</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="hero">
+          <div class="card hero-main">
+            <div class="hero-kicker" id="heroKicker">Aktivity</div>
+            <h1 id="heroTitle">Aktivity</h1>
+            <p id="heroLead">
+              Vše na jednom místě.
+            </p>
+
+            <div class="hero-stats" aria-label="Souhrn aktivit">
+              <div class="mini-stat">
+                <strong id="totalActivitiesCount">0</strong>
+                <span>aktuálně</span>
+              </div>
+
+              <div class="mini-stat">
+                <strong id="myCreatedCount">0</strong>
+                <span>pořádáš</span>
+              </div>
+
+              <div class="mini-stat">
+                <strong id="myJoinedCount">0</strong>
+                <span>přihlášené</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="dashboard-grid">
+          <div class="section-stack">
+            <div class="card panel" id="activitiesFeedPanel">
+              <div class="toolbar">
+                <div class="toolbar-summary">
+                  <span class="toolbar-count" id="toolbarCount">Načítám aktivity…</span>
+                </div>
+                <div class="view-switcher" role="tablist" aria-label="Pohled aktivit">
+                  <a class="view-tab" id="viewTabMine" role="tab" href="app.html?scope=mine">Moje</a>
+                  <a class="view-tab" id="viewTabAll" role="tab" href="app.html?scope=all">Objevovat</a>
+                  <a class="view-tab" id="viewTabPast" role="tab" href="app.html?scope=past">Archiv</a>
+                </div>
+              </div>
+
+              <div class="filter-bar">
+                <div class="filter-group">
+                  <select id="filterType">
+                    <option value="Vše">Všechny typy</option>
+                    <option value="Padel">Padel</option>
+                    <option value="Tenis">Tenis</option>
+                    <option value="Běh">Běh</option>
+                    <option value="Plavání">Plavání</option>
+                    <option value="Kolo">Kolo</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Turistika">Turistika</option>
+                  </select>
+
+                  <input id="searchPlace" placeholder="Místo" />
+                  <input id="searchText" placeholder="Název nebo popis" />
+                </div>
+
+                <div class="filter-actions">
+                  <button class="filter-reset-btn" id="clearFiltersBtn" type="button">Vyčistit filtry</button>
+                </div>
+              </div>
+
+              <div class="activity-list" id="activitiesList" style="margin-top:16px;">
+                <div class="loading-row">Načítám aktivity...</div>
+              </div>
+            </div>
+
+            <div class="card panel" id="notifications" style="display:none;">
+              <div class="panel-head">
+                <div>
+                  <h2>Notifikace</h2>
+                  <p class="lead">
+                    Důležité události kolem tvých aktivit a komunity.
+                  </p>
+                </div>
+                <div class="section-badge">Aktuality</div>
+              </div>
+
+              <div class="notice-list" id="noticeList">
+                <div class="notice-item">
+                  <strong>Zatím tu nejsou notifikace</strong>
+                  <span>
+                    Jakmile se někdo přidá nebo ti napíše, objeví se to tady.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card map-card" id="mapCard" style="display:none;">
+              <div class="map-top">
+                <div>
+                  <h2>Mapa aktivit</h2>
+                  <p>Rychlý přehled míst, kde se právě něco děje.</p>
+                </div>
+                <div class="map-actions">
+                  <button class="map-action-btn is-active" id="mapStandardBtn" type="button">Mapa</button>
+                  <button class="map-action-btn" id="mapSatelliteBtn" type="button">Satelit</button>
+                  <button class="map-action-btn" id="mapFitBtn" type="button">Zobrazit body</button>
+                  <a class="map-action-btn" id="mapStreetViewLink" href="#" target="_blank" rel="noopener" aria-disabled="true">Mapy.com</a>
+                </div>
+              </div>
+
+              <div id="activityMap"></div>
+
+              <div class="map-note">
+                Když místo nepůjde přesně dohledat, aktivita zůstane normálně v seznamu.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="create-modal" id="createModal" aria-hidden="true">
+    <div class="create-modal-panel">
+      <button class="modal-close" id="createModalClose" type="button" aria-label="Zavřít vytvoření aktivity">×</button>
+      <div class="card panel" id="createPanel">
+              <div class="panel-head">
+                <div>
+                  <h2>Vytvořit aktivitu</h2>
+                  <p class="lead">
+                    Krátce, jasně a bez zbytečností.
+                  </p>
+                </div>
+                <div class="section-badge">Nová akce</div>
+              </div>
+
+              <div class="field-grid">
+                <div class="two-col">
+                  <div class="field">
+                    <label for="activityName">Název aktivity</label>
+                    <input id="activityName" placeholder="Např. Padel dnes večer" />
+                  </div>
+
+                  <div class="field">
+                    <label for="activityType">Sport</label>
+                    <select id="activityType">
+                      <option value="Padel">Padel</option>
+                      <option value="Tenis">Tenis</option>
+                      <option value="Běh">Běh</option>
+                      <option value="Plavání">Plavání</option>
+                      <option value="Kolo">Kolo</option>
+                      <option value="Fitness">Fitness</option>
+                      <option value="Turistika">Turistika</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field place-field">
+                  <label for="activityPlace">Místo</label>
+                  <input id="activityPlace" placeholder="Např. Praha 4, Padel Club" />
+                  <div class="place-tools">
+                    <button class="secondary-btn" id="toggleLocationPickerBtn" type="button">Vybrat start na mapě</button>
+                    <span class="place-helper" id="placeHelperText">Můžeš napsat místo, vybrat návrh nebo položit přesný pin.</span>
+                  </div>
+                  <div class="place-suggestions" id="placeSuggestions"></div>
+                  <div class="picker-map-wrap" id="locationPickerWrap">
+                    <div id="locationPickerMap"></div>
+                    <div class="picker-map-note" id="locationPickerNote">Klikni do mapy a nastav přesný start aktivity.</div>
+                  </div>
+                </div>
+
+                <div class="three-col">
+                  <div class="field">
+                    <label for="activityDate">Datum</label>
+                    <input type="date" id="activityDate" />
+                  </div>
+
+                  <div class="field">
+                    <label for="activityHour">Hodina</label>
+                    <select id="activityHour"></select>
+                  </div>
+
+                  <div class="field">
+                    <label for="activityMinute">Minuta</label>
+                    <select id="activityMinute"></select>
+                  </div>
+                </div>
+
+                <div class="two-col">
+                  <div class="field">
+                    <label for="activityLimit">Max lidí</label>
+                    <input id="activityLimit" type="number" placeholder="Např. 4" />
+                  </div>
+
+                  <div class="field">
+                    <label for="activityDescription">Popis</label>
+                    <input id="activityDescription" placeholder="Krátký detail..." />
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="save-btn" id="saveActivityBtn">Vytvořit aktivitu</button>
+                  <button class="secondary-btn" id="clearActivityBtn">Vymazat</button>
+                </div>
+
+                <div class="success-text" id="activitySuccess">Aktivita byla úspěšně vytvořena.</div>
+              </div>
+            </div>
+    </div>
+  </div>
+    <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    window.addEventListener("load", async function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const scopeParam = new URLSearchParams(window.location.search).get("scope");
+      const viewScope = scopeParam === "mine" || scopeParam === "past" ? scopeParam : "all";
+
+      try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      } catch (e) {
+        console.error(e);
+      }
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const topUserCard = document.querySelector(".top-user");
+      const heroKicker = document.getElementById("heroKicker");
+      const heroTitle = document.getElementById("heroTitle");
+      const heroLead = document.getElementById("heroLead");
+      const createNavBtn = document.getElementById("createNavBtn");
+      const navActivities = document.getElementById("navActivities");
+
+      const sidebarHomeBtn = document.getElementById("sidebarHomeBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const createModal = document.getElementById("createModal");
+      const createModalClose = document.getElementById("createModalClose");
+      const createPanel = document.getElementById("createPanel");
+      const mapCard = document.getElementById("mapCard");
+      const notificationsPanel = document.getElementById("notifications");
+      const activitiesFeedPanel = document.getElementById("activitiesFeedPanel");
+      const toolbarCount = document.getElementById("toolbarCount");
+      const viewTabMine = document.getElementById("viewTabMine");
+      const viewTabAll = document.getElementById("viewTabAll");
+      const viewTabPast = document.getElementById("viewTabPast");
+
+      const activityName = document.getElementById("activityName");
+      const activityType = document.getElementById("activityType");
+      const activityPlace = document.getElementById("activityPlace");
+      const toggleLocationPickerBtn = document.getElementById("toggleLocationPickerBtn");
+      const placeHelperText = document.getElementById("placeHelperText");
+      const placeSuggestions = document.getElementById("placeSuggestions");
+      const locationPickerWrap = document.getElementById("locationPickerWrap");
+      const locationPickerNote = document.getElementById("locationPickerNote");
+      const activityDate = document.getElementById("activityDate");
+      const activityHour = document.getElementById("activityHour");
+      const activityMinute = document.getElementById("activityMinute");
+      const activityLimit = document.getElementById("activityLimit");
+      const activityDescription = document.getElementById("activityDescription");
+      const saveActivityBtn = document.getElementById("saveActivityBtn");
+      const clearActivityBtn = document.getElementById("clearActivityBtn");
+      const activitySuccess = document.getElementById("activitySuccess");
+
+      const filterType = document.getElementById("filterType");
+      const searchPlace = document.getElementById("searchPlace");
+      const searchText = document.getElementById("searchText");
+      const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+      const activitiesList = document.getElementById("activitiesList");
+      const mapStandardBtn = document.getElementById("mapStandardBtn");
+      const mapSatelliteBtn = document.getElementById("mapSatelliteBtn");
+      const mapFitBtn = document.getElementById("mapFitBtn");
+      const mapStreetViewLink = document.getElementById("mapStreetViewLink");
+
+      const totalActivitiesCount = document.getElementById("totalActivitiesCount");
+      const myCreatedCount = document.getElementById("myCreatedCount");
+      const myJoinedCount = document.getElementById("myJoinedCount");
+      const noticeList = document.getElementById("noticeList");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+
+      let currentUser = null;
+      let currentProfile = null;
+      let allActivities = [];
+      let socialNotifications = [];
+      let map = null;
+      let markerLayer = null;
+      let mapBaseLayer = null;
+      let locationPickerMap = null;
+      let locationPickerMarker = null;
+      let locationPickerBaseLayer = null;
+      let selectedPlaceCoords = null;
+      let selectedPlaceLabel = "";
+      let selectedResolvedPlaceLabel = "";
+      let suggestionRequestId = 0;
+      let activityTypeTouched = false;
+      let geocodeCache = {};
+      const profileLookup = new Map();
+      let unsubscribeCurrentProfile = null;
+      let unsubscribeProfiles = null;
+      let unsubscribeNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let currentMapMode = "standard";
+      let currentMapBounds = null;
+      let currentMapFocus = null;
+      const SPORT_RULES = [
+        { label: "Padel", keywords: ["padel"] },
+        { label: "Tenis", keywords: ["tenis", "tennis"] },
+        { label: "Běh", keywords: ["beh", "běh", "behani", "běhání", "run", "running", "jogging", "klus"] },
+        { label: "Plavání", keywords: ["plavani", "plavání", "swim", "swimming", "bazen", "bazén"] },
+        { label: "Kolo", keywords: ["kolo", "cyklo", "cyklistika", "bike", "biking", "mtb", "gravel", "silnice"] },
+        { label: "Fitness", keywords: ["fitness", "workout", "posilovna", "gym", "kruhac", "kruháč", "crossfit"] },
+        { label: "Turistika", keywords: ["turistika", "vylet", "výlet", "hike", "hiking", "tura", "túra", "trek"] }
+      ];
+      const MAPY_API_KEY = "swcDIK2LE9oUFXEHmayhto73g2cGiWSwBy-YN4Svsfo";
+      const KNOWN_VENUES = [
+        {
+          label: "Plavecký stadion Podolí, Praha",
+          canonicalQuery: "Plavecký stadion Podolí, Praha, Czechia",
+          sport: "Plavání",
+          aliases: ["plavani podoli", "plavání podolí", "podoli plavani", "podolí plavání", "plavecky stadion podoli", "plavecký stadion podolí", "bazen podoli", "bazén podolí", "plavani v podoli", "plavání v podolí"],
+          coords: { lat: 50.05593, lng: 14.42058 }
+        },
+        {
+          label: "NERIDE, Praha",
+          canonicalQuery: "NERIDE sport club, Praha, Czechia",
+          sport: "Padel",
+          aliases: ["neride", "padel neride", "neride padel", "padel v neride", "neride sport club", "padel klub neride"]
+        },
+        {
+          label: "Stromovka, Praha",
+          canonicalQuery: "Stromovka, Praha, Czechia",
+          sport: "Běh",
+          aliases: ["stromovka", "beh stromovka", "běh stromovka", "behat stromovka", "běhat stromovka", "running stromovka", "stromovka park"],
+          coords: { lat: 50.10643, lng: 14.43133 }
+        }
+      ];
+      const MAP_TILESETS = {
+        standard: {
+          url: `https://api.mapy.cz/v1/maptiles/basic/256/{z}/{x}/{y}?apikey=${MAPY_API_KEY}&lang=cs`,
+          options: {
+            maxZoom: 20,
+            subdomains: "",
+            attribution: '&copy; <a href="https://api.mapy.cz/copyright" target="_blank" rel="noopener">Seznam.cz a přispěvatelé</a>'
+          }
+        },
+        fallback: {
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          options: {
+            maxZoom: 20,
+            attribution: "&copy; OpenStreetMap"
+          }
+        },
+        satellite: {
+          url: `https://api.mapy.cz/v1/maptiles/aerial/256/{z}/{x}/{y}?apikey=${MAPY_API_KEY}&lang=cs`,
+          options: {
+            maxZoom: 19,
+            subdomains: "",
+            attribution: '&copy; <a href="https://api.mapy.cz/copyright" target="_blank" rel="noopener">Seznam.cz a přispěvatelé</a>'
+          }
+        }
+      };
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function saveProfileCache(profile) {
+        localStorage.setItem("zunoProfile", JSON.stringify(profile));
+      }
+
+      function readGeocodeCache() {
+        try {
+          geocodeCache = JSON.parse(localStorage.getItem("zunoGeocodeCache") || "{}");
+        } catch (e) {
+          geocodeCache = {};
+        }
+      }
+
+      function saveGeocodeCache() {
+        localStorage.setItem("zunoGeocodeCache", JSON.stringify(geocodeCache));
+      }
+
+      async function getProfileByUid(uid) {
+        if (!uid) return null;
+        if (profileLookup.has(uid)) return profileLookup.get(uid);
+
+        try {
+          const snap = await db.collection("profiles").doc(uid).get();
+          const profile = snap.exists ? snap.data() : null;
+          profileLookup.set(uid, profile);
+          return profile;
+        } catch (e) {
+          console.error("Failed to fetch profile by uid:", e);
+          profileLookup.set(uid, null);
+          return null;
+        }
+      }
+
+      async function hydrateActivitiesWithProfiles(items) {
+        const uidSet = new Set();
+
+        items.forEach((activity) => {
+          if (activity.authorUid) uidSet.add(activity.authorUid);
+          const people = Array.isArray(activity.people) ? activity.people : [];
+          people.forEach((person) => {
+            if (person?.uid) uidSet.add(person.uid);
+          });
+        });
+
+        await Promise.all(Array.from(uidSet).map((uid) => getProfileByUid(uid)));
+
+        items.forEach((activity) => {
+          const authorProfile = profileLookup.get(activity.authorUid);
+          if (authorProfile?.photo) {
+            activity.authorPhoto = authorProfile.photo;
+          }
+          if (authorProfile?.name) {
+            activity.authorName = authorProfile.name;
+          }
+
+          const people = Array.isArray(activity.people) ? activity.people : [];
+          activity.people = people.map((person) => {
+            const profile = profileLookup.get(person?.uid);
+            return {
+              ...person,
+              name: profile?.name || person?.name || "Uživatel",
+              photo: profile?.photo || person?.photo || ""
+            };
+          });
+        });
+      }
+
+      function normalizePlaceKey(place) {
+        return (place || "").trim().toLowerCase();
+      }
+
+      function normalizeSearchText(value) {
+        return (value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, " ")
+          .trim();
+      }
+
+      function getActiveThemeName() {
+        return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      }
+
+      function buildMapTileLayer(mode) {
+        if (mode === "satellite") {
+          const layer = L.tileLayer(MAP_TILESETS.satellite.url, MAP_TILESETS.satellite.options);
+          layer.on("tileerror", () => {
+            if (!map || currentMapMode !== "satellite") return;
+            if (mapBaseLayer === layer) {
+              map.removeLayer(layer);
+            }
+            mapBaseLayer = L.tileLayer(MAP_TILESETS.fallback.url, MAP_TILESETS.fallback.options).addTo(map);
+          });
+          return layer;
+        }
+
+        const layer = L.tileLayer(MAP_TILESETS.standard.url, MAP_TILESETS.standard.options);
+        layer.on("tileerror", () => {
+          if (!map || currentMapMode !== "standard") return;
+          if (mapBaseLayer === layer) {
+            map.removeLayer(layer);
+          }
+          mapBaseLayer = L.tileLayer(MAP_TILESETS.fallback.url, MAP_TILESETS.fallback.options).addTo(map);
+        });
+        return layer;
+      }
+
+      function setMainMapMode(mode) {
+        currentMapMode = mode === "satellite" ? "satellite" : "standard";
+        if (!map) return;
+
+        if (mapBaseLayer) {
+          map.removeLayer(mapBaseLayer);
+        }
+        mapBaseLayer = buildMapTileLayer(currentMapMode).addTo(map);
+
+        mapStandardBtn?.classList.toggle("is-active", currentMapMode === "standard");
+        mapSatelliteBtn?.classList.toggle("is-active", currentMapMode === "satellite");
+      }
+
+      function syncPickerMapTiles() {
+        if (!locationPickerMap) return;
+        if (locationPickerBaseLayer) {
+          locationPickerMap.removeLayer(locationPickerBaseLayer);
+        }
+        locationPickerBaseLayer = buildMapTileLayer("standard").addTo(locationPickerMap);
+      }
+
+      function getStreetViewUrl(target) {
+        const coords = target?.lat && target?.lng ? target : readActivityCoords(target);
+        if (!coords) return "#";
+        return `https://mapy.com/zakladni?x=${encodeURIComponent(coords.lng)}&y=${encodeURIComponent(coords.lat)}&z=17`;
+      }
+
+      function updateStreetViewLink() {
+        if (!mapStreetViewLink) return;
+        const href = currentMapFocus ? getStreetViewUrl(currentMapFocus) : "#";
+        mapStreetViewLink.href = href;
+        mapStreetViewLink.setAttribute("aria-disabled", href === "#" ? "true" : "false");
+      }
+
+      function focusMapOnCurrentMarkers() {
+        if (!map) return;
+        if (currentMapBounds) {
+          map.fitBounds(currentMapBounds.pad(0.18));
+          return;
+        }
+        if (currentMapFocus) {
+          map.setView([currentMapFocus.lat, currentMapFocus.lng], 15);
+          return;
+        }
+        map.setView([50.0755, 14.4378], 11);
+      }
+
+      async function searchPlacesWithNominatim(query, limit = 5) {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=${limit}&q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (!Array.isArray(data)) return [];
+        return data
+          .map((item) => ({
+            title: item.name || item.display_name?.split(",")[0] || query.trim(),
+            label: item.display_name || query.trim(),
+            lat: Number(item.lat),
+            lng: Number(item.lon)
+          }))
+          .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+      }
+
+      async function searchPlacesWithPhoton(query, limit = 5) {
+        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=${limit}&lang=cs`);
+        const data = await res.json();
+        if (!Array.isArray(data?.features)) return [];
+        return data.features
+          .map((item) => {
+            const props = item.properties || {};
+            const coords = Array.isArray(item.geometry?.coordinates) ? item.geometry.coordinates : [];
+            const labelParts = [
+              props.name,
+              props.street,
+              props.city,
+              props.state,
+              props.country
+            ].filter(Boolean);
+            return {
+              title: props.name || query.trim(),
+              label: labelParts.join(", ") || query.trim(),
+              lat: Number(coords[1]),
+              lng: Number(coords[0])
+            };
+          })
+          .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
+      }
+
+      async function searchPlacesAcrossProviders(query, limit = 5) {
+        const providerSearches = [
+          searchPlacesWithNominatim(query, limit),
+          searchPlacesWithPhoton(query, limit)
+        ];
+
+        const settled = await Promise.allSettled(providerSearches);
+        const merged = [];
+        settled.forEach((result) => {
+          if (result.status === "fulfilled" && Array.isArray(result.value)) {
+            merged.push(...result.value);
+          }
+        });
+        return merged;
+      }
+
+      function ensureSelectOption(select, value, label = value) {
+        if (!select || !value) return;
+        const exists = Array.from(select.options).some((option) => option.value === value);
+        if (exists) return;
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        select.appendChild(option);
+      }
+
+      function ensureQuickChip(type) {
+        if (!type || type === "Vše") return;
+        const chipRow = document.querySelector(".quick-chip-row");
+        if (!chipRow) return;
+        if (chipRow.querySelector(`[data-quick-type="${type}"]`)) return;
+        const chip = document.createElement("div");
+        chip.className = "quick-chip";
+        chip.setAttribute("data-quick-type", type);
+        chip.textContent = type;
+        chip.onclick = () => {
+          filterType.value = type;
+          renderActivities();
+        };
+        chipRow.appendChild(chip);
+      }
+
+      function inferSportType({ name = "", place = "", type = "" } = {}) {
+        const combined = normalizeSearchText([name, place, type].filter(Boolean).join(" "));
+        if (!combined) return type || "";
+
+        const venueMatch = KNOWN_VENUES.find((venue) =>
+          venue.aliases.some((alias) => combined.includes(normalizeSearchText(alias)))
+        );
+        if (venueMatch?.sport) return venueMatch.sport;
+
+        const rule = SPORT_RULES.find((item) =>
+          item.keywords.some((keyword) => combined.includes(normalizeSearchText(keyword)))
+        );
+        return rule?.label || type || "";
+      }
+
+      function resolveKnownVenue(place, context = {}) {
+        const combined = normalizeSearchText([
+          place,
+          context.name,
+          context.type
+        ].filter(Boolean).join(" "));
+
+        if (!combined) return null;
+
+        return KNOWN_VENUES.find((venue) =>
+          venue.aliases.some((alias) => combined.includes(normalizeSearchText(alias)))
+        ) || null;
+      }
+
+      function syncActivityTypeFromInputs() {
+        const inferredType = inferSportType({
+          name: activityName.value.trim(),
+          place: activityPlace.value.trim(),
+          type: activityType.value
+        });
+
+        if (!inferredType) return;
+
+        ensureSelectOption(activityType, inferredType);
+        ensureSelectOption(filterType, inferredType);
+        ensureQuickChip(inferredType);
+
+        if (!activityTypeTouched || !activityType.value || activityType.value === "Padel") {
+          activityType.value = inferredType;
+        }
+      }
+
+      function applyDetectedPlaceSelection(item, options = {}) {
+        if (!item?.lat || !item?.lng) return;
+        const coords = {
+          lat: Number(item.lat),
+          lng: Number(item.lng)
+        };
+        if (!Number.isFinite(coords.lat) || !Number.isFinite(coords.lng)) return;
+
+        selectedPlaceCoords = coords;
+        selectedPlaceLabel = options.rawInput || activityPlace.value.trim() || item.label;
+        selectedResolvedPlaceLabel = item.label || activityPlace.value.trim();
+
+        if (options.replaceInput && item.label) {
+          activityPlace.value = item.label;
+          selectedPlaceLabel = item.label;
+        }
+
+        initLocationPickerMap();
+        const markerLatLng = [coords.lat, coords.lng];
+        if (locationPickerMarker) {
+          locationPickerMarker.setLatLng(markerLatLng);
+        } else {
+          locationPickerMarker = L.marker(markerLatLng).addTo(locationPickerMap);
+        }
+        locationPickerMap.setView(markerLatLng, Math.max(locationPickerMap.getZoom(), 15));
+        locationPickerNote.textContent = options.note || `Rozpoznaný start aktivity: ${item.label}`;
+      }
+
+      function buildGeocodeQueries(place, cityHint, context = {}) {
+        const cleanPlace = (place || "").trim();
+        const cleanCity = (cityHint || "").trim();
+        const parts = [];
+        const inferredType = inferSportType({
+          name: context.name || "",
+          place: cleanPlace,
+          type: context.type || ""
+        });
+        const knownVenue = resolveKnownVenue(cleanPlace, context);
+
+        if (knownVenue?.canonicalQuery) {
+          parts.push(knownVenue.canonicalQuery);
+        }
+
+        if (inferredType) {
+          parts.push(
+            `${inferredType} ${cleanPlace}, Praha, Czechia`,
+            `${inferredType} ${cleanPlace}, ${cleanCity || "Praha"}, Czechia`,
+            `${cleanPlace}, ${inferredType}, ${cleanCity || "Praha"}, Czechia`
+          );
+        }
+
+        if (cleanCity) {
+          parts.push(
+            `${cleanPlace}, ${cleanCity}, Czechia`,
+            `${cleanPlace}, ${cleanCity}, Cesko`,
+            `${cleanPlace}, ${cleanCity}`
+          );
+        }
+
+        parts.push(
+          `${cleanPlace}, Praha, Czechia`,
+          `${cleanPlace}, Praha`,
+          `${cleanPlace}, Prague, Czechia`,
+          `${cleanPlace}, Czechia`,
+          `${cleanPlace}, Cesko`,
+          cleanPlace
+        );
+
+        return Array.from(new Set(parts.filter(Boolean)));
+      }
+
+      function readActivityCoords(activity) {
+        if (!activity || typeof activity !== "object") return null;
+
+        const candidateSets = [
+          activity.coordinates,
+          activity.coords,
+          activity.location,
+          activity.geo
+        ];
+
+        for (const candidate of candidateSets) {
+          if (!candidate || typeof candidate !== "object") continue;
+          const lat = Number(candidate.lat ?? candidate.latitude);
+          const lng = Number(candidate.lng ?? candidate.lon ?? candidate.longitude);
+          if (Number.isFinite(lat) && Number.isFinite(lng)) {
+            return { lat, lng };
+          }
+        }
+
+        const lat = Number(activity.lat ?? activity.latitude);
+        const lng = Number(activity.lng ?? activity.lon ?? activity.longitude);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          return { lat, lng };
+        }
+
+        return null;
+      }
+
+      function buildMarkerIcon(activity) {
+        return L.divIcon({
+          className: "zuno-map-marker",
+          html: `
+            <div style="
+              position: relative;
+              width: 24px;
+              height: 24px;
+              border-radius: 50% 50% 50% 0;
+              transform: rotate(-45deg);
+              background: linear-gradient(135deg, #ff5b66, #d7263d);
+              border: 2px solid #ffffff;
+              box-shadow: 0 10px 20px rgba(8,17,34,0.28);
+            ">
+              <span style="
+                position:absolute;
+                inset:6px;
+                border-radius:50%;
+                background:#ffffff;
+              "></span>
+            </div>
+          `,
+          iconSize: [24, 24],
+          iconAnchor: [12, 24],
+          popupAnchor: [0, -24]
+        });
+      }
+
+      function offsetCoords(coords, index) {
+        if (!index) return coords;
+        const angle = index * 0.9;
+        const distance = 0.0012 * Math.ceil(index / 2);
+        return {
+          lat: coords.lat + Math.sin(angle) * distance,
+          lng: coords.lng + Math.cos(angle) * distance
+        };
+      }
+
+      function createProfileFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seeds = Array.from(safeName).reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0);
+        const hueA = seeds % 360;
+        const hueB = (hueA + 42) % 360;
+        const hueC = (hueA + 110) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 76% 60%)" />
+                <stop offset="55%" stop-color="hsl(${hueB} 78% 56%)" />
+                <stop offset="100%" stop-color="hsl(${hueC} 62% 44%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="76" fill="url(#bg)" />
+            <circle cx="160" cy="132" r="64" fill="rgba(255,255,255,0.88)" />
+            <path d="M82 256C105 214 132 194 160 194C188 194 215 214 238 256" fill="rgba(255,255,255,0.88)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getProfileAvatarSrc(photo, name) {
+        return photo || createProfileFallbackAvatar(name);
+      }
+
+      function getExternalMapUrl(activity) {
+        const coords = readActivityCoords(activity);
+        if (coords) {
+          return `https://mapy.com/zakladni?x=${encodeURIComponent(coords.lng)}&y=${encodeURIComponent(coords.lat)}&z=17`;
+        }
+        return `https://mapy.com/cs/zakladni?q=${encodeURIComponent(activity?.place || "")}`;
+      }
+
+      function getActivityDetailUrl(activity) {
+        return `activity-detail.html?id=${encodeURIComponent(activity?.id || "")}`;
+      }
+
+      function buildMapPopup(activity, coords) {
+        return `
+          <div class="zuno-map-popup">
+            <strong>${activity.name || "Aktivita"}</strong>
+            <span>${activity.type || "Aktivita"} • ${activity.place || "Bez místa"}<br>${activity.date || ""} ${activity.time || ""}</span>
+            <div class="zuno-map-popup-actions">
+              <a href="${getExternalMapUrl({ ...activity, coordinates: coords })}" target="_blank" rel="noopener">Mapa</a>
+              <a href="${getStreetViewUrl(coords)}" target="_blank" rel="noopener">Mapy.com</a>
+            </div>
+          </div>
+        `;
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = getProfileAvatarSrc(profile?.photo || user?.photoURL || "", profile?.name || user?.displayName || "Uživatel");
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+
+      }
+
+      async function rerenderWithLatestProfiles() {
+        if (!allActivities.length) {
+          updateCounters();
+          renderActivities();
+          renderNotifications();
+          await renderMap();
+          return;
+        }
+
+        await hydrateActivitiesWithProfiles(allActivities);
+        updateCounters();
+        renderActivities();
+        renderNotifications();
+        await renderMap();
+      }
+
+      async function ensureCurrentUserProfile(user) {
+        if (!user?.uid) return;
+        const profileRef = db.collection("profiles").doc(user.uid);
+        const profileSnap = await profileRef.get();
+        if (profileSnap.exists) return profileSnap.data();
+
+        const payload = {
+          uid: user.uid,
+          name: user.displayName || "Uživatel",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          city: "",
+          bio: "",
+          hobbies: "",
+          followersCount: 0,
+          followingCount: 0,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await profileRef.set(payload, { merge: true });
+        profileLookup.set(user.uid, payload);
+        return payload;
+      }
+
+      function fillTimeSelects() {
+        activityHour.innerHTML = "";
+        activityMinute.innerHTML = "";
+
+        for (let h = 0; h < 24; h++) {
+          const v = String(h).padStart(2, "0");
+          activityHour.innerHTML += `<option value="${v}">${v}</option>`;
+        }
+
+        ["00","05","10","15","20","25","30","35","40","45","50","55"].forEach((v) => {
+          activityMinute.innerHTML += `<option value="${v}">${v}</option>`;
+        });
+
+        activityHour.value = "18";
+        activityMinute.value = "00";
+      }
+
+      function clearActivityForm() {
+        activityName.value = "";
+        activityType.value = "Padel";
+        activityTypeTouched = false;
+        activityPlace.value = "";
+        selectedPlaceCoords = null;
+        selectedPlaceLabel = "";
+        selectedResolvedPlaceLabel = "";
+        placeSuggestions.innerHTML = "";
+        placeSuggestions.classList.remove("is-visible");
+        locationPickerWrap.classList.remove("is-visible");
+        locationPickerNote.textContent = "Klikni do mapy a nastav přesný start aktivity.";
+        toggleLocationPickerBtn.textContent = "Vybrat start na mapě";
+        if (locationPickerMarker) {
+          locationPickerMap?.removeLayer(locationPickerMarker);
+          locationPickerMarker = null;
+        }
+        activityDate.value = "";
+        activityHour.value = "18";
+        activityMinute.value = "00";
+        activityLimit.value = "";
+        activityDescription.value = "";
+      }
+
+      function renderPlaceSuggestions(items) {
+        placeSuggestions.innerHTML = "";
+        if (!items.length) {
+          placeSuggestions.classList.remove("is-visible");
+          return;
+        }
+
+        items.forEach((item) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "place-suggestion";
+          button.innerHTML = `
+            <strong>${item.title}</strong>
+            <span>${item.label}</span>
+          `;
+          button.onclick = () => {
+            activityPlace.value = item.label;
+            applyDetectedPlaceSelection(item, {
+              replaceInput: true,
+              rawInput: item.label,
+              note: "Místo je vybrané z návrhů a uloží se přesně podle mapy."
+            });
+            placeSuggestions.classList.remove("is-visible");
+            placeHelperText.textContent = "Místo je vybrané z návrhů a uloží se přesně podle mapy.";
+          };
+          placeSuggestions.appendChild(button);
+        });
+
+        placeSuggestions.classList.add("is-visible");
+      }
+
+      async function fetchPlaceSuggestions(query, cityHint = "", context = {}) {
+        if (!query || query.trim().length < 2) {
+          renderPlaceSuggestions([]);
+          return;
+        }
+
+        const requestId = ++suggestionRequestId;
+        const knownVenue = resolveKnownVenue(query, context);
+        const inferredType = inferSportType({
+          name: context.name || "",
+          place: query,
+          type: context.type || ""
+        });
+        const searchQuery = knownVenue?.canonicalQuery
+          || `${[inferredType, query.trim(), cityHint || "Praha", "Czechia"].filter(Boolean).join(", ")}`;
+
+        try {
+          const providerSuggestions = await searchPlacesAcrossProviders(searchQuery, 5);
+          if (requestId !== suggestionRequestId) return;
+
+          const suggestions = [...providerSuggestions];
+
+          if (knownVenue?.coords) {
+            suggestions.unshift({
+              title: knownVenue.label.split(",")[0],
+              label: knownVenue.label,
+              lat: knownVenue.coords.lat,
+              lng: knownVenue.coords.lng
+            });
+          }
+
+          const deduped = [];
+          const seen = new Set();
+          suggestions.forEach((item) => {
+            const key = `${item.lat.toFixed(5)},${item.lng.toFixed(5)}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            deduped.push(item);
+          });
+
+          if (knownVenue && deduped[0]) {
+            applyDetectedPlaceSelection(deduped[0], {
+              rawInput: query.trim(),
+              note: `Rozpoznal jsem místo a připravil přesný bod: ${deduped[0].label}`
+            });
+            placeHelperText.textContent = `Rozpoznaný sport: ${knownVenue.sport || inferredType || activityType.value}. Bod jsem připravil rovnou do mapy.`;
+            if (!activityTypeTouched && (knownVenue.sport || inferredType)) {
+              activityType.value = knownVenue.sport || inferredType;
+            }
+          }
+
+          renderPlaceSuggestions(deduped);
+        } catch (e) {
+          console.error("Place suggestions error:", e);
+          if (requestId === suggestionRequestId) renderPlaceSuggestions([]);
+        }
+      }
+
+      function toDateTime(activity) {
+        if (!activity?.date) return null;
+        const time = activity.time || "00:00";
+        const iso = `${activity.date}T${time.length === 5 ? time : "00:00"}`;
+        const dt = new Date(iso);
+        return isNaN(dt.getTime()) ? null : dt;
+      }
+
+      function formatShortDate(activity) {
+        if (!activity?.date) return "Bez data";
+        const dt = toDateTime(activity) || new Date(activity.date);
+        return dt.toLocaleDateString("cs-CZ", {
+          day: "numeric",
+          month: "long"
+        });
+      }
+
+      function makeWhatsappLink(activity) {
+        const message = `Ahoj, přidej se na ${activity.name} – ${activity.date} v ${activity.time}, ${activity.place}. Mrkni sem: https://co-se-dnes-deje.web.app`;
+        return `https://wa.me/?text=${encodeURIComponent(message)}`;
+      }
+
+      function isJoinedBy(activity, uid) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        return people.some((person) => person.uid === uid);
+      }
+
+      function uniqueActivities(items) {
+        const map = new Map();
+        items.forEach((item) => map.set(item.id, item));
+        return Array.from(map.values());
+      }
+
+      function isPastActivity(activity) {
+        const dt = toDateTime(activity);
+        return dt ? dt < new Date() : false;
+      }
+
+      function sortActivities(items) {
+        return [...items].sort((a, b) => {
+          const aTime = toDateTime(a)?.getTime() || 0;
+          const bTime = toDateTime(b)?.getTime() || 0;
+          return aTime - bTime;
+        });
+      }
+
+      function renderEmpty(target, config) {
+        const safeConfig = typeof config === "string"
+          ? { title: "Nic jsme nenašli", body: config, actions: [] }
+          : { title: config?.title || "Nic jsme nenašli", body: config?.body || "", actions: config?.actions || [] };
+
+        const actionsHtml = safeConfig.actions.length
+          ? `
+            <div class="empty-actions">
+              ${safeConfig.actions.map((action) => {
+                if (action.href) {
+                  return `<a class="inline-action${action.primary ? " is-primary" : ""}" href="${action.href}">${action.label}</a>`;
+                }
+                return `<button class="inline-action${action.primary ? " is-primary" : ""}" type="button" data-empty-action="${action.id || ""}">${action.label}</button>`;
+              }).join("")}
+            </div>
+          `
+          : "";
+
+        target.innerHTML = `
+          <div class="empty-state">
+            <h3>${safeConfig.title}</h3>
+            <p>${safeConfig.body}</p>
+            ${actionsHtml}
+          </div>
+        `;
+
+        target.querySelectorAll("[data-empty-action]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const actionId = button.getAttribute("data-empty-action");
+            if (actionId === "reset-filters") resetActivityFilters();
+            if (actionId === "create-activity") openCreateModal();
+          });
+        });
+      }
+
+      function openCreateModal() {
+        if (!createModal) return;
+        createModal.classList.add("is-open");
+        createModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          activityName?.focus();
+        }, 40);
+      }
+
+      function closeCreateModal() {
+        if (!createModal) return;
+        createModal.classList.remove("is-open");
+        createModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      function resetActivityFilters() {
+        filterType.value = "Vše";
+        searchPlace.value = "";
+        searchText.value = "";
+        renderActivities();
+      }
+
+      function configureActivityScope() {
+        const scopeConfig = {
+          all: {
+            kicker: "Aktivity",
+            title: "Objevuj aktivity",
+            lead: "Najdi aktivitu během pár sekund.",
+            showCreate: true,
+            showExtras: false
+          },
+          mine: {
+            kicker: "Aktivity",
+            title: "Moje aktivity",
+            lead: "Přehled toho, kam jdeš a co pořádáš.",
+            showCreate: true,
+            showExtras: false
+          },
+          past: {
+            kicker: "Aktivity",
+            title: "Archiv aktivit",
+            lead: "Minulé aktivity přehledně pohromadě.",
+            showCreate: false,
+            showExtras: false
+          }
+        };
+
+        const config = scopeConfig[viewScope] || scopeConfig.all;
+        heroKicker.textContent = config.kicker;
+        heroTitle.textContent = config.title;
+        heroLead.textContent = config.lead;
+
+        createNavBtn.style.display = "";
+        mapCard.style.display = config.showExtras ? "" : "none";
+        notificationsPanel.style.display = config.showExtras ? "" : "none";
+
+        navActivities?.classList.add("active");
+        viewTabMine?.classList.toggle("active", viewScope === "mine");
+        viewTabMine?.setAttribute("aria-selected", viewScope === "mine" ? "true" : "false");
+        viewTabAll?.classList.toggle("active", viewScope === "all");
+        viewTabAll?.setAttribute("aria-selected", viewScope === "all" ? "true" : "false");
+        viewTabPast?.classList.toggle("active", viewScope === "past");
+        viewTabPast?.setAttribute("aria-selected", viewScope === "past" ? "true" : "false");
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count) || 0;
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function formatDateTime(value) {
+        if (!value) return "";
+        const dt = new Date(value);
+        if (isNaN(dt.getTime())) return "";
+        return dt.toLocaleString("cs-CZ", {
+          day: "numeric",
+          month: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+
+      function isTodayActivity(activity) {
+        const dt = toDateTime(activity);
+        if (!dt) return false;
+        const now = new Date();
+        return dt.getDate() === now.getDate()
+          && dt.getMonth() === now.getMonth()
+          && dt.getFullYear() === now.getFullYear();
+      }
+
+      function isTomorrowActivity(activity) {
+        const dt = toDateTime(activity);
+        if (!dt) return false;
+        const tomorrow = new Date();
+        tomorrow.setHours(0, 0, 0, 0);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return dt.getDate() === tomorrow.getDate()
+          && dt.getMonth() === tomorrow.getMonth()
+          && dt.getFullYear() === tomorrow.getFullYear();
+      }
+
+      function getPeoplePreview(activity) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        if (!people.length) return "";
+        return people.slice(0, 3).map((person, index) => {
+          const label = (person.name || "?").trim().charAt(0).toUpperCase() || "?";
+          return `<span class="people-stack-item" style="z-index:${10 - index};">${label}</span>`;
+        }).join("");
+      }
+
+      function getActivityBadges(activity, { isOrganizer, alreadyJoined, isPast }) {
+        const joinedCount = Array.isArray(activity.people) ? activity.people.length : 0;
+        const limit = Number(activity.limit || 0);
+        const spotsLeft = limit ? limit - joinedCount : null;
+
+        if (isPast) {
+          return [{ label: "Proběhlo", className: "badge-past" }];
+        }
+
+        const badges = [];
+        if (isOrganizer) badges.push({ label: "Organizuješ", className: "badge-organizer" });
+        if (alreadyJoined) badges.push({ label: "Přihlášený", className: "badge-joined" });
+        if (isTodayActivity(activity)) {
+          badges.push({ label: "Dnes", className: "badge-today" });
+        } else if (isTomorrowActivity(activity)) {
+          badges.push({ label: "Zítra", className: "badge-tomorrow" });
+        }
+
+        if (spotsLeft === 1) {
+          badges.push({ label: "Poslední místo", className: "badge-warning" });
+        } else if (spotsLeft === 0 && limit) {
+          badges.push({ label: "Plno", className: "badge-full" });
+        } else if (spotsLeft && spotsLeft > 1) {
+          badges.push({ label: "Volná místa", className: "badge-warning" });
+        }
+
+        if (!badges.length) {
+          badges.push({ label: "Otevřené", className: "badge-open" });
+        }
+
+        return badges;
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeNotifications?.();
+        unsubscribeUnreadMessages?.();
+        if (!user?.uid) return;
+
+        unsubscribeNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .onSnapshot((snapshot) => {
+            const items = snapshot.docs
+              .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+              .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            socialNotifications = items;
+            setSidebarBadge(notificationsNavBadge, items.filter((item) => item.read === false).length);
+            renderNotifications();
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((total, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const hasUnread = (data.lastSenderUid && data.lastSenderUid !== user.uid && Number(data.lastMessageAt || 0) > readAt);
+              return total + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          });
+      }
+
+      function createActivityCard(activity) {
+        const people = Array.isArray(activity.people) ? activity.people : [];
+        const alreadyJoined = isJoinedBy(activity, currentUser.uid);
+        const isOrganizer = activity.authorUid === currentUser.uid;
+        const isPast = isPastActivity(activity);
+        const limit = Number(activity.limit || 0);
+        const spotsLeft = limit ? Math.max(limit - people.length, 0) : null;
+        const joinedCount = `${people.length}${activity.limit ? ` / ${activity.limit}` : ""}`;
+        const badges = getActivityBadges(activity, { isOrganizer, alreadyJoined, isPast });
+        const primaryBadge = badges[0];
+        const secondaryBadges = badges.slice(1);
+        const socialLabel = alreadyJoined
+          ? "Jsi součástí tohoto plánu."
+          : isOrganizer
+            ? "Tuhle aktivitu vedeš ty."
+            : people.length
+              ? `${people.length} lidí už je přihlášených.`
+              : "Zatím je volno.";
+        const detailUrl = getActivityDetailUrl(activity);
+        let primaryAction = { type: "link", label: "Otevřít", className: "inline-action is-primary", href: detailUrl, target: "" };
+
+        const secondaryActions = [];
+
+        if (viewScope === "all") {
+          if (!alreadyJoined && !isPast) {
+            primaryAction = { type: "button", label: "Přidat se", className: "inline-action is-primary join-toggle-btn" };
+            secondaryActions.push({ type: "link", label: "Otevřít", className: "inline-action", href: detailUrl, target: "" });
+          } else if (alreadyJoined && !isPast) {
+            secondaryActions.push({ type: "button", label: "Opustit", className: "inline-action join-toggle-btn" });
+          }
+        } else if (viewScope === "mine") {
+          if (isOrganizer) {
+            secondaryActions.push({ type: "link", label: "Pozvat", className: "inline-action", href: makeWhatsappLink(activity), target: "_blank" });
+            secondaryActions.push({ type: "button", label: "Smazat", className: "inline-action is-danger delete-btn" });
+          } else if (!isPast) {
+            secondaryActions.push({ type: "button", label: "Opustit", className: "inline-action join-toggle-btn" });
+          }
+        }
+
+        const primaryActionHtml = primaryAction.type === "link"
+          ? `<a class="${primaryAction.className}" href="${primaryAction.href}" ${primaryAction.target ? `target="${primaryAction.target}"` : ""}>${primaryAction.label}</a>`
+          : `<button class="${primaryAction.className}" type="button">${primaryAction.label}</button>`;
+
+        const secondaryActionsHtml = secondaryActions.map((action) => {
+          if (action.type === "link") {
+            return `<a class="${action.className}" href="${action.href}" ${action.target ? `target="${action.target}"` : ""}>${action.label}</a>`;
+          }
+          return `<button class="${action.className}" type="button">${action.label}</button>`;
+        }).join("");
+
+        const card = document.createElement("div");
+        card.className = "activity-card";
+
+        card.innerHTML = `
+          <div class="activity-head">
+            <div class="activity-head-main">
+              <div class="activity-title">${activity.name || "Bez názvu"}</div>
+              <div class="activity-meta">
+                <div class="activity-meta-line">
+                  <span class="activity-meta-chip">${activity.type || "Jiný plán"}</span>
+                  <span class="activity-meta-chip">${activity.place || "Bez místa"}</span>
+                </div>
+                <div class="activity-detail-row">
+                  <span class="activity-meta-chip">${formatShortDate(activity)}</span>
+                  <span class="activity-meta-chip">${activity.time || "Bez času"}</span>
+                  <span class="activity-meta-chip">${people.length} / ${limit || "∞"} přihlášeno</span>
+                  ${limit ? `<span class="activity-meta-chip">${spotsLeft === 0 ? "Plno" : spotsLeft === 1 ? "1 místo volné" : `${spotsLeft} místa volná`}</span>` : ""}
+                </div>
+                ${activity.description ? `<div class="activity-description">${activity.description}</div>` : ""}
+                ${secondaryBadges.length ? `
+                  <div class="activity-badge-row">
+                    ${secondaryBadges.map((item) => `<span class="activity-badge is-soft ${item.className}">${item.label}</span>`).join("")}
+                  </div>
+                ` : ""}
+              </div>
+
+              <div class="author-row">
+                <img class="author-avatar" src="${getProfileAvatarSrc(activity.authorPhoto || "", activity.authorName || "Uživatel")}" alt="Organizátor">
+                <div>
+                  <div class="author-sub">Organizátor</div>
+                  <div class="author-name" data-uid="${activity.authorUid}">${activity.authorName || "Uživatel"}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="activity-badge ${primaryBadge.className}">${primaryBadge.label}</div>
+          </div>
+
+          <div class="activity-summary">
+            <div class="activity-social">
+              <span class="people-stack">${getPeoplePreview(activity)}</span>
+              <span>${socialLabel}</span>
+            </div>
+            <div><strong>${joinedCount}</strong> účast</div>
+          </div>
+
+          <div class="activity-actions">
+            <div class="activity-actions-left">${primaryActionHtml}</div>
+            <div class="activity-actions-right">${secondaryActionsHtml}</div>
+          </div>
+        `;
+
+        const authorName = card.querySelector(".author-name");
+        authorName.onclick = () => {
+          window.location.href = `profil.html?uid=${activity.authorUid}`;
+        };
+
+        const authorRow = card.querySelector(".author-row");
+        authorRow.onclick = () => {
+          window.location.href = `profil.html?uid=${activity.authorUid}`;
+        };
+
+        const joinBtn = card.querySelector(".join-toggle-btn");
+        if (joinBtn) {
+          joinBtn.onclick = async () => {
+            const peopleNow = Array.isArray(activity.people) ? activity.people : [];
+            const joined = peopleNow.some((person) => person.uid === currentUser.uid);
+
+            const nextPeople = joined
+              ? peopleNow.filter((person) => person.uid !== currentUser.uid)
+              : [
+                  ...peopleNow,
+                  {
+                    uid: currentUser.uid,
+                    name: currentProfile.name || currentUser.displayName || "Uživatel",
+                    photo: currentProfile.photo || currentUser.photoURL || ""
+                  }
+                ];
+
+            await db.collection("activities").doc(activity.id).update({
+              people: nextPeople
+            });
+          };
+        }
+
+        const deleteBtn = card.querySelector(".delete-btn");
+        if (deleteBtn) {
+          deleteBtn.onclick = async () => {
+            const ok = confirm("Opravdu chceš tuto aktivitu smazat?");
+            if (!ok) return;
+            await db.collection("activities").doc(activity.id).delete();
+          };
+        }
+
+        card.addEventListener("click", (event) => {
+          if (event.target.closest("button, a, .author-row, .author-name")) return;
+          window.location.href = detailUrl;
+        });
+
+        return card;
+      }
+
+      function renderActivities() {
+        activitiesList.innerHTML = "";
+
+        let items = [...allActivities];
+
+        if (viewScope === "mine") {
+          items = items.filter((activity) => activity.authorUid === currentUser.uid || isJoinedBy(activity, currentUser.uid));
+          items = items.filter((activity) => !isPastActivity(activity));
+        } else if (viewScope === "past") {
+          items = items.filter((activity) => isPastActivity(activity));
+        } else {
+          items = items.filter((activity) => !isPastActivity(activity));
+        }
+
+        if (filterType.value !== "Vše") {
+          items = items.filter((activity) => activity.type === filterType.value);
+        }
+
+        const placeQuery = searchPlace.value.trim().toLowerCase();
+        if (placeQuery) {
+          items = items.filter((activity) => (activity.place || "").toLowerCase().includes(placeQuery));
+        }
+
+        const textQuery = searchText.value.trim().toLowerCase();
+        if (textQuery) {
+          items = items.filter((activity) => {
+            const joinedText = `${activity.name || ""} ${activity.description || ""} ${activity.type || ""}`.toLowerCase();
+            return joinedText.includes(textQuery);
+          });
+        }
+
+        items = sortActivities(items);
+        if (viewScope === "past") {
+          items = [...items].reverse();
+        }
+
+        if (!items.length) {
+          const emptyConfig = viewScope === "mine"
+            ? {
+                title: "Tady zatím nic není",
+                body: "Až něco vytvoříš nebo se k něčemu přidáš, uvidíš to tady.",
+                actions: [
+                  { id: "create-activity", label: "Vytvořit aktivitu", primary: true },
+                  { href: "app.html?scope=all", label: "Zobrazit všechny aktivity" }
+                ]
+              }
+            : viewScope === "past"
+              ? {
+                  title: "Archiv je zatím prázdný",
+                  body: "Až se objeví proběhlé aktivity, uvidíš je tady.",
+                  actions: [
+                    { href: "app.html?scope=all", label: "Zobrazit vše", primary: true }
+                  ]
+                }
+              : {
+                  title: "Nic jsme nenašli",
+                  body: "Zkus změnit filtr nebo zobrazit všechny aktivity.",
+                  actions: [
+                    { id: "reset-filters", label: "Vyčistit filtry", primary: true },
+                    { href: "app.html?scope=all", label: "Zobrazit vše" }
+                  ]
+                };
+          renderEmpty(activitiesList, emptyConfig);
+          return;
+        }
+
+        items.forEach((activity) => {
+          activitiesList.appendChild(createActivityCard(activity));
+        });
+      }
+
+      function updateCounters() {
+        totalActivitiesCount.textContent = allActivities.filter((a) => !isPastActivity(a)).length;
+        myCreatedCount.textContent = allActivities.filter((a) => a.authorUid === currentUser.uid && !isPastActivity(a)).length;
+        myJoinedCount.textContent = uniqueActivities(allActivities.filter((a) => isJoinedBy(a, currentUser.uid) && !isPastActivity(a))).length;
+      }
+
+      function renderNotifications() {
+        if (!socialNotifications.length) {
+          noticeList.innerHTML = `
+            <div class="notice-item">
+              <strong>Zatím tu nejsou notifikace</strong>
+              <span>Jakmile tě někdo začne sledovat nebo ti napíše, objeví se to tady.</span>
+            </div>
+          `;
+          return;
+        }
+
+        noticeList.innerHTML = "";
+        socialNotifications.slice(0, 6).forEach((item) => {
+          const div = document.createElement("div");
+          div.className = `notice-item${item.read === false ? " unread" : ""}`;
+          const typeLabel = item.type === "follow" ? "Sledování" : item.type === "message" ? "Zpráva" : "Aktivita";
+          div.innerHTML = `
+            <strong>${item.title || "Notifikace"}</strong>
+            <span>
+              ${item.body || "V aplikaci se něco změnilo."}
+            </span>
+            <div class="notice-meta">
+              <span>${formatDateTime(item.createdAt)}</span>
+              <span>${typeLabel}</span>
+            </div>
+          `;
+          div.onclick = async () => {
+            if (item.read === false) {
+              await db.collection("notifications").doc(item.id).set({ read: true }, { merge: true });
+            }
+            if (item.type === "follow" && item.actorUid) {
+              window.location.href = `profil.html?uid=${item.actorUid}`;
+              return;
+            }
+            if (item.type === "message") {
+              window.location.href = item.actorUid ? `messages.html?uid=${item.actorUid}` : "messages.html";
+              return;
+            }
+            window.location.href = "notifications.html";
+          };
+          noticeList.appendChild(div);
+        });
+      }
+
+      function initMap() {
+        if (map) return;
+
+        map = L.map("activityMap", {
+          zoomControl: true,
+          dragging: true,
+          touchZoom: true,
+          scrollWheelZoom: true,
+          doubleClickZoom: true,
+          boxZoom: true,
+          keyboard: true,
+          tap: false
+        }).setView([50.0755, 14.4378], 11);
+
+        setMainMapMode(currentMapMode);
+        markerLayer = L.layerGroup().addTo(map);
+      }
+
+      function initLocationPickerMap() {
+        if (locationPickerMap) return;
+
+        locationPickerMap = L.map("locationPickerMap", {
+          zoomControl: true,
+          attributionControl: false,
+          dragging: true,
+          touchZoom: true,
+          scrollWheelZoom: true,
+          doubleClickZoom: true,
+          boxZoom: true,
+          keyboard: true,
+          tap: false
+        }).setView([50.0755, 14.4378], 12);
+
+        syncPickerMapTiles();
+
+        locationPickerMap.on("click", async (event) => {
+          selectedPlaceCoords = {
+            lat: Number(event.latlng.lat.toFixed(6)),
+            lng: Number(event.latlng.lng.toFixed(6))
+          };
+          selectedPlaceLabel = activityPlace.value.trim();
+
+          if (locationPickerMarker) {
+            locationPickerMarker.setLatLng(event.latlng);
+          } else {
+            locationPickerMarker = L.marker(event.latlng).addTo(locationPickerMap);
+          }
+
+          locationPickerNote.textContent = `Start je vybraný přesně na mapě: ${selectedPlaceCoords.lat}, ${selectedPlaceCoords.lng}`;
+          currentMapFocus = selectedPlaceCoords;
+          updateStreetViewLink();
+
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${selectedPlaceCoords.lat}&lon=${selectedPlaceCoords.lng}`);
+            const data = await res.json();
+            if (data?.display_name) {
+              activityPlace.value = data.display_name;
+              selectedPlaceLabel = data.display_name;
+              selectedResolvedPlaceLabel = data.display_name;
+            }
+          } catch (e) {
+            console.error("Reverse geocode error:", e);
+          }
+        });
+      }
+
+      async function geocodePlace(place, cityHint = "", context = {}) {
+        if (!place) return null;
+        const inferredType = inferSportType({
+          name: context.name || "",
+          place,
+          type: context.type || ""
+        });
+        const cacheKey = `${normalizePlaceKey(place)}|${normalizePlaceKey(cityHint)}|${normalizePlaceKey(inferredType)}`;
+        if (geocodeCache[cacheKey]) return geocodeCache[cacheKey];
+
+        const knownVenue = resolveKnownVenue(place, context);
+        if (knownVenue?.coords) {
+          geocodeCache[cacheKey] = knownVenue.coords;
+          saveGeocodeCache();
+          return knownVenue.coords;
+        }
+
+        try {
+          const queries = buildGeocodeQueries(place, cityHint, context);
+
+          for (const query of queries) {
+            const suggestions = await searchPlacesAcrossProviders(query, 1);
+
+            if (Array.isArray(suggestions) && suggestions.length) {
+              const coords = {
+                lat: Number(suggestions[0].lat),
+                lng: Number(suggestions[0].lng)
+              };
+              geocodeCache[cacheKey] = coords;
+              saveGeocodeCache();
+              return coords;
+            }
+          }
+        } catch (e) {
+          console.error("Geocode error:", e);
+        }
+
+        return null;
+      }
+
+      async function ensureActivityCoords(activity) {
+        const existing = readActivityCoords(activity);
+        if (existing) return existing;
+
+        const coords = await geocodePlace(activity.place, currentProfile?.city || "Praha", {
+          name: activity.name,
+          type: activity.type
+        });
+        if (!coords) return null;
+
+        try {
+          await db.collection("activities").doc(activity.id).set({
+            coordinates: coords
+          }, { merge: true });
+        } catch (e) {
+          console.error("Failed to persist activity coordinates:", e);
+        }
+
+        activity.coordinates = coords;
+        return coords;
+      }
+
+      async function renderMap() {
+        initMap();
+        markerLayer.clearLayers();
+        const markers = [];
+        const seenCoords = new Map();
+        currentMapBounds = null;
+        currentMapFocus = null;
+        updateStreetViewLink();
+        const items = sortActivities(allActivities).filter((activity) => activity.place || readActivityCoords(activity));
+
+        for (const activity of items) {
+          const coords = await ensureActivityCoords(activity);
+          if (!coords) continue;
+
+          const coordKey = `${coords.lat.toFixed(5)},${coords.lng.toFixed(5)}`;
+          const offsetIndex = seenCoords.get(coordKey) || 0;
+          seenCoords.set(coordKey, offsetIndex + 1);
+          const finalCoords = offsetCoords(coords, offsetIndex);
+
+          const marker = L.marker([finalCoords.lat, finalCoords.lng], {
+            icon: buildMarkerIcon(activity)
+          }).bindPopup(buildMapPopup(activity, coords));
+
+          marker.on("click", () => {
+            currentMapFocus = coords;
+            updateStreetViewLink();
+          });
+
+          if (!currentMapFocus) {
+            currentMapFocus = coords;
+          }
+
+          marker.addTo(markerLayer);
+          markers.push(marker);
+        }
+
+        if (markers.length) {
+          const group = new L.featureGroup(markers);
+          currentMapBounds = group.getBounds();
+          map.fitBounds(currentMapBounds.pad(0.2));
+        } else {
+          map.setView([50.0755, 14.4378], 11);
+        }
+
+        updateStreetViewLink();
+
+        setTimeout(() => {
+          map.invalidateSize();
+          focusMapOnCurrentMarkers();
+        }, 120);
+
+        setTimeout(() => {
+          map.invalidateSize();
+          focusMapOnCurrentMarkers();
+        }, 420);
+      }
+
+      sidebarHomeBtn.onclick = () => {
+        window.location.href = "index.html";
+      };
+
+      topUserCard?.addEventListener("click", () => {
+        window.location.href = "profil.html";
+      });
+
+      createNavBtn?.addEventListener("click", () => {
+        openCreateModal();
+      });
+
+      logoutBtn.onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      saveActivityBtn.onclick = async () => {
+        if (!currentUser || !currentProfile) return;
+
+        const name = activityName.value.trim();
+        const place = activityPlace.value.trim();
+        syncActivityTypeFromInputs();
+        const type = inferSportType({
+          name,
+          place,
+          type: activityType.value
+        }) || activityType.value;
+        const date = activityDate.value;
+        const time = `${activityHour.value}:${activityMinute.value}`;
+        const limit = Number(activityLimit.value);
+        const description = activityDescription.value.trim();
+
+        if (!name || !place || !date || !limit) {
+          alert("Vyplň prosím název, místo, datum a maximální počet lidí.");
+          return;
+        }
+
+        ensureSelectOption(activityType, type);
+        ensureSelectOption(filterType, type);
+        ensureQuickChip(type);
+
+        const resolvedCoords = selectedPlaceCoords || await geocodePlace(place, currentProfile?.city || "Praha", {
+          name,
+          type
+        });
+        const storedPlace = selectedResolvedPlaceLabel || place;
+
+        await db.collection("activities").add({
+          name,
+          type,
+          place: storedPlace,
+          coordinates: resolvedCoords,
+          date,
+          time,
+          limit,
+          description,
+          authorUid: currentUser.uid,
+          authorName: currentProfile.name || currentUser.displayName || "Uživatel",
+          authorPhoto: currentProfile.photo || currentUser.photoURL || "",
+          people: [],
+          createdAt: Date.now()
+        });
+
+        clearActivityForm();
+        activitySuccess.style.display = "block";
+        closeCreateModal();
+
+        setTimeout(() => {
+          activitySuccess.style.display = "none";
+        }, 1800);
+      };
+
+      clearActivityBtn.onclick = () => {
+        clearActivityForm();
+      };
+
+      createModalClose?.addEventListener("click", () => {
+        closeCreateModal();
+      });
+
+      createModal?.addEventListener("click", (event) => {
+        if (event.target === createModal) {
+          closeCreateModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeCreateModal();
+        }
+      });
+
+      activityPlace.addEventListener("input", () => {
+        const typed = activityPlace.value.trim();
+        if (!typed || typed !== selectedPlaceLabel) {
+          selectedPlaceCoords = null;
+          selectedResolvedPlaceLabel = "";
+        }
+        syncActivityTypeFromInputs();
+        fetchPlaceSuggestions(typed, currentProfile?.city || "Praha", {
+          name: activityName.value.trim(),
+          type: activityType.value
+        });
+      });
+
+      activityName.addEventListener("input", () => {
+        syncActivityTypeFromInputs();
+        const typedPlace = activityPlace.value.trim();
+        if (typedPlace.length >= 2) {
+          fetchPlaceSuggestions(typedPlace, currentProfile?.city || "Praha", {
+            name: activityName.value.trim(),
+            type: activityType.value
+          });
+        }
+      });
+
+      activityPlace.addEventListener("focus", () => {
+        if (activityPlace.value.trim().length >= 2) {
+          fetchPlaceSuggestions(activityPlace.value.trim(), currentProfile?.city || "Praha", {
+            name: activityName.value.trim(),
+            type: activityType.value
+          });
+        }
+      });
+
+      activityType.addEventListener("change", () => {
+        activityTypeTouched = true;
+      });
+
+      document.addEventListener("click", (event) => {
+        const placeField = event.target.closest(".place-field");
+        if (!placeField) {
+          placeSuggestions.classList.remove("is-visible");
+        }
+      });
+
+      toggleLocationPickerBtn.onclick = () => {
+        const willOpen = !locationPickerWrap.classList.contains("is-visible");
+        locationPickerWrap.classList.toggle("is-visible", willOpen);
+        toggleLocationPickerBtn.textContent = willOpen ? "Skrýt mapu startu" : "Vybrat start na mapě";
+        if (willOpen) {
+          initLocationPickerMap();
+          setTimeout(() => {
+            locationPickerMap.invalidateSize();
+            if (selectedPlaceCoords) {
+              locationPickerMap.setView([selectedPlaceCoords.lat, selectedPlaceCoords.lng], 14);
+              if (locationPickerMarker) {
+                locationPickerMarker.setLatLng(selectedPlaceCoords);
+              } else {
+                locationPickerMarker = L.marker([selectedPlaceCoords.lat, selectedPlaceCoords.lng]).addTo(locationPickerMap);
+              }
+            }
+          }, 80);
+        }
+      };
+
+      mapStandardBtn?.addEventListener("click", () => {
+        setMainMapMode("standard");
+      });
+
+      mapSatelliteBtn?.addEventListener("click", () => {
+        setMainMapMode("satellite");
+      });
+
+      mapFitBtn?.addEventListener("click", () => {
+        focusMapOnCurrentMarkers();
+      });
+
+      filterType.addEventListener("change", renderActivities);
+      searchPlace.addEventListener("input", renderActivities);
+      searchText.addEventListener("input", renderActivities);
+      clearFiltersBtn?.addEventListener("click", resetActivityFilters);
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        await ensureCurrentUserProfile(user);
+        readGeocodeCache();
+        subscribeSidebarBadges(user);
+
+        const cached = readProfileCache();
+        if (cached) {
+          setHeaderUser(cached, user);
+        } else {
+          setHeaderUser(null, user);
+        }
+
+        try {
+          unsubscribeCurrentProfile?.();
+          unsubscribeProfiles?.();
+
+          unsubscribeCurrentProfile = db.collection("profiles").doc(user.uid).onSnapshot((profileSnap) => {
+            if (!profileSnap.exists) {
+              window.location.href = "profil.html";
+              return;
+            }
+
+            currentProfile = profileSnap.data();
+            profileLookup.set(user.uid, currentProfile);
+
+            saveProfileCache({
+              uid: user.uid,
+              name: currentProfile.name || user.displayName || "",
+              email: user.email || "",
+              photo: currentProfile.photo || user.photoURL || "",
+              city: currentProfile.city || "",
+              bio: currentProfile.bio || "",
+              hobbies: currentProfile.hobbies || ""
+            });
+
+            setHeaderUser(currentProfile, user);
+            rerenderWithLatestProfiles();
+          });
+
+          unsubscribeProfiles = db.collection("profiles").onSnapshot(async (snapshot) => {
+            snapshot.forEach((docSnap) => {
+              profileLookup.set(docSnap.id, docSnap.data());
+            });
+            await rerenderWithLatestProfiles();
+          });
+
+          db.collection("activities").onSnapshot(async (snapshot) => {
+            allActivities = [];
+            snapshot.forEach((docSnap) => {
+              allActivities.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            await hydrateActivitiesWithProfiles(allActivities);
+
+            updateCounters();
+            renderActivities();
+            renderNotifications();
+            await renderMap();
+          });
+        } catch (e) {
+          console.error(e);
+          renderEmpty(activitiesList, "Nepodařilo se načíst aktivity.");
+        }
+      });
+
+      fillTimeSelects();
+      clearActivityForm();
+      configureActivityScope();
+    });
+  </script>
+</body>
+</html>
+  
+      
+   

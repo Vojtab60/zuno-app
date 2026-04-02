@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Sporty a filtry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --text: #0a1525;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --line: rgba(10, 21, 37, 0.09);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --radius-xl: 32px;
+      --sidebar-width: 310px;
+    }
+
+    :root[data-theme="dark"] {
+      --text: #e8f0ff;
+      --muted: #9db0c8;
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.4);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.28);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.28), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.26), transparent 22%),
+        radial-gradient(circle at 22% 72%, rgba(255, 205, 129, 0.18), transparent 18%),
+        linear-gradient(135deg, #f3f8ff 0%, #eef4fb 42%, #e9f1fb 100%);
+    }
+
+    :root[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.14), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.14), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.28) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.3), transparent 78%);
+      z-index: 0;
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+    }
+
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115,224,194,0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(242,247,255,0.94));
+      color: #0a1525;
+      border-right-color: rgba(10,21,37,0.08);
+      box-shadow: 14px 0 36px rgba(8,17,34,0.08);
+    }
+
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .logout-btn {
+      background: rgba(248,251,255,0.92);
+      color: #13233a;
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 12px 24px rgba(8,17,34,0.04);
+    }
+
+    :root[data-theme="light"] .brand,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .sidebar-user strong {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .brand-caption,
+    :root[data-theme="light"] .sidebar-user span {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(236,242,250,0.96);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+    }
+
+    :root[data-theme="light"] .sidebar-link:hover {
+      background: rgba(255,255,255,0.98);
+    }
+
+    :root[data-theme="light"] .sidebar-bottom {
+      border-top-color: rgba(10,21,37,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main {
+      color: #13233a;
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.18), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.16), transparent 24%),
+        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(240,247,255,0.94));
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 24px 42px rgba(8,17,34,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main h1 {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .hero-main p {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .hero-kicker {
+      background: rgba(248,251,255,0.92);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+      box-shadow: 0 12px 22px rgba(8,17,34,0.04);
+    }
+
+    :root[data-theme="dark"] .topbar,
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .hero-side,
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .sport-card,
+    :root[data-theme="dark"] .guide-item,
+    :root[data-theme="dark"] .pill-btn,
+    :root[data-theme="dark"] .top-user,
+    :root[data-theme="dark"] .activity-tag {
+      background: rgba(18, 34, 57, 0.9);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+
+    :root[data-theme="dark"] .top-user span,
+    :root[data-theme="dark"] .hero-side p,
+    :root[data-theme="dark"] .panel .lead,
+    :root[data-theme="dark"] .sport-card p,
+    :root[data-theme="dark"] .guide-copy span {
+      color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .sport-pill,
+    :root[data-theme="dark"] .section-badge {
+      background: linear-gradient(135deg, rgba(115,224,194,0.16), rgba(144,183,255,0.18));
+      color: #cde0ff;
+    }
+
+    :root[data-theme="dark"] .guide-copy strong,
+    :root[data-theme="dark"] .sport-head strong {
+      color: var(--text);
+    }
+
+    :root[data-theme="dark"] .guide-number {
+      background: rgba(115,224,194,0.18);
+      color: #9bf0d4;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.1), transparent 22%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      color: #eaf1ff;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 14px 0 40px rgba(3, 10, 20, 0.14);
+    }
+
+    .sidebar-brand, .topbar, .top-left, .top-right, .brand-block, .sidebar-nav { display: flex; }
+    .sidebar-brand { align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .brand-block { align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321; font-family: "Sora", sans-serif; font-size: 19px; font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115, 224, 194, 0.26);
+    }
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
+    .brand { font-family: "Sora", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+    .brand-caption { color: rgba(234,241,255,0.62); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .home-btn, .pill-btn, .sidebar-link, .settings-btn, .logout-btn { transition: transform 0.18s ease, background 0.18s ease; }
+    .home-btn:hover, .pill-btn:hover, .sidebar-link:hover, .settings-btn:hover, .logout-btn:hover { transform: translateY(-1px); }
+    .home-btn {
+      width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
+      background: rgba(255,255,255,0.06); color: white; cursor: pointer;
+    }
+    .sidebar-user {
+      display: flex; gap: 12px; align-items: center; padding: 16px; margin-bottom: 20px; border-radius: 22px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-user img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.1); }
+    .sidebar-user strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .sidebar-user span { display: block; color: rgba(234,241,255,0.68); font-size: 13px; line-height: 1.45; word-break: break-word; }
+    .sidebar-nav { flex-direction: column; gap: 10px; }
+    .sidebar-link {
+      align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; font-size: 14px; font-weight: 700;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); color: #ebf2ff;
+    }
+    .sidebar-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(115,224,194,0.96), rgba(134,190,255,0.96));
+      color: #10243e;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 12px 30px rgba(115,224,194,0.22);
+    }
+    .sidebar-badge.is-visible { display: inline-flex; }
+    .sidebar-icon {
+      width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); font-size: 16px;
+    }
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115,224,194,0.2), rgba(144,183,255,0.16));
+      border-color: rgba(115,224,194,0.36); color: white; box-shadow: 0 18px 30px rgba(3,10,20,0.24);
+    }
+    .sidebar-bottom { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: grid; gap: 10px; }
+    .settings-btn, .logout-btn {
+      width: 100%; padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .settings-btn { background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #081321; border-color: transparent; }
+    .logout-btn { background: rgba(255,255,255,0.04); color: white; }
+
+    .main { padding: 24px; }
+    .page-frame { max-width: 1360px; margin: 0 auto; position: relative; }
+    .topbar {
+      justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; padding: 14px 16px;
+      border-radius: 22px; background: linear-gradient(135deg, rgba(255,255,255,0.82), rgba(250,252,255,0.66)), rgba(255,255,255,0.66);
+      border: 1px solid rgba(10,21,37,0.06); backdrop-filter: blur(18px); box-shadow: var(--shadow-soft);
+    }
+    .top-left, .top-right { align-items: center; gap: 10px; flex-wrap: wrap; }
+    .pill-btn {
+      border: 1px solid rgba(10,21,37,0.08); border-radius: 999px; padding: 11px 15px; background: white;
+      font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .top-user {
+      display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 999px; background: white;
+      border: 1px solid rgba(10,21,37,0.08); box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .top-user img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #dbe4ef; }
+    .top-user span { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 700; color: #20314a; }
+
+    .hero {
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 22px; margin-bottom: 22px;
+    }
+    .card {
+      border-radius: var(--radius-xl); border: 1px solid rgba(10,21,37,0.07); background: rgba(255,255,255,0.84);
+      backdrop-filter: blur(18px); box-shadow: var(--shadow);
+    }
+    .hero-main {
+      position: relative; overflow: hidden; padding: 28px; color: white;
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.22), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.18), transparent 24%),
+        linear-gradient(135deg, #0b182a 0%, #12345a 54%, #183f5a 100%);
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 10px 14px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); color: #dce9ff;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-kicker::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
+      box-shadow: 0 0 0 8px rgba(115,224,194,0.1);
+    }
+    .hero-main h1 {
+      margin: 0 0 12px; max-width: 720px; font-family: "Sora", sans-serif; font-size: clamp(2rem, 3.7vw, 3.55rem);
+      line-height: 1.06; letter-spacing: -0.05em;
+    }
+    .hero-main p { margin: 0; max-width: 720px; color: rgba(237,244,255,0.78); font-size: 0.98rem; line-height: 1.8; }
+    .hero-side {
+      padding: 24px; background: radial-gradient(circle at top right, rgba(115,224,194,0.12), transparent 24%), linear-gradient(135deg, rgba(255,255,255,0.96), rgba(243,248,255,0.92));
+    }
+    .hero-side h2, .panel h2 { margin: 0 0 8px; font-family: "Sora", sans-serif; font-size: 1.85rem; line-height: 1.08; letter-spacing: -0.04em; }
+    .hero-side p, .panel .lead { margin: 0; color: var(--muted); line-height: 1.75; font-size: 15px; }
+    .section-badge {
+      display: inline-flex; margin-top: 16px; padding: 9px 12px; border-radius: 999px;
+      background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.18));
+      color: #315da8; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    .content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+    .panel { padding: 26px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(246,250,255,0.84)), rgba(255,255,255,0.84); }
+    .sport-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+    .sport-card {
+      padding: 20px; border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92);
+      border: 1px solid rgba(10,21,37,0.08); box-shadow: var(--shadow-soft);
+    }
+    .sport-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .sport-head strong { font-size: 1.3rem; letter-spacing: -0.03em; }
+    .sport-pill {
+      padding: 7px 10px; border-radius: 999px;
+      background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.18));
+      color: #2b5aa0; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .sport-card p { color: var(--muted); font-size: 14px; line-height: 1.7; margin: 0 0 14px; }
+    .activity-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .activity-tag {
+      padding: 8px 10px; border-radius: 999px; background: white; border: 1px solid rgba(10,21,37,0.08);
+      color: #42536b; font-size: 12px; font-weight: 700;
+    }
+
+    .guide-list { display: grid; gap: 12px; margin-top: 18px; }
+    .guide-item {
+      display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92);
+      border: 1px solid rgba(10,21,37,0.08);
+    }
+    .guide-number {
+      width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      border-radius: 50%; background: rgba(115,224,194,0.18); color: #16745f; font-size: 13px; font-weight: 800;
+    }
+    .guide-copy strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .guide-copy span { color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+    @media (max-width: 1200px) {
+      .hero, .content-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .main { padding: 18px; }
+    }
+    @media (max-width: 760px) {
+      .sport-grid { grid-template-columns: 1fr; }
+      .hero-main h1 { font-size: 2rem; }
+      .top-user span { max-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link active" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="topbar">
+          <div class="top-left">
+            <button class="pill-btn" id="backToAppBtn">← Aktivity</button>
+            <button class="pill-btn" id="profileBtn">Profil</button>
+          </div>
+          <div class="top-right">
+            <div class="top-user">
+              <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+              <span id="topUserName">Načítám...</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="hero">
+          <div class="card hero-main">
+            <div class="hero-kicker">Filtry aktivit</div>
+            <h1>Sporty a formáty, podle kterých si v Zuno rychle vyfiltruješ správnou aktivitu.</h1>
+            <p>
+              Tahle stránka ti rychle ukáže, jaké typy aktivit mohou lidé v Zuno zakládat. Každý sport
+              má trochu jiný rytmus, jiný počet lidí a jiný styl domluvy. Cílem je, aby ses během chvíle
+              zorientoval a vytvořil akci, která dává smysl.
+            </p>
+          </div>
+
+          <div class="card hero-side">
+            <h2>Jak to používat</h2>
+            <p>Vyber si sport, promysli formát akce a pak se vrať do aplikace, kde ho během minuty naplánuješ.</p>
+            <div class="section-badge">Přehled formátů</div>
+            <div class="guide-list">
+              <div class="guide-item">
+                <div class="guide-number">1</div>
+                <div class="guide-copy">
+                  <strong>Zvol správný sport</strong>
+                  <span>Vyber to, co chceš opravdu hrát. Správné označení zlepší dohledatelnost i správnou partu lidí.</span>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-number">2</div>
+                <div class="guide-copy">
+                  <strong>Doplň jasný kontext</strong>
+                  <span>Místo, čas, počet lidí a krátký popis jsou to, co rozhoduje, jestli se někdo přidá.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="card panel">
+            <h2>Sporty v Zuno</h2>
+            <p class="lead">Každý blok níže ukazuje, jaké typy aktivit se pro daný sport nejčastěji hodí.</p>
+            <div class="sport-grid">
+              <article class="sport-card">
+                <div class="sport-head"><strong>Padel</strong><span class="sport-pill">4 hráči</span></div>
+                <p>Skvělý pro rychlou večerní hru, čtyřhru s doplněním lidí na poslední chvíli nebo pravidelný sparing.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Čtyřhra</span>
+                  <span class="activity-tag">Sparing</span>
+                  <span class="activity-tag">Dnes večer</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Tenis</strong><span class="sport-pill">2-4 hráči</span></div>
+                <p>Hodí se na singly, debly i trénink. Dobře funguje, když doplníš úroveň a typ hry.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Singly</span>
+                  <span class="activity-tag">Debl</span>
+                  <span class="activity-tag">Trénink</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Běh</strong><span class="sport-pill">2+ lidí</span></div>
+                <p>Ideální pro rychlou domluvu po práci. Lidé ocení tempo, délku trasy a místo srazu.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Lehký klus</span>
+                  <span class="activity-tag">Tempo run</span>
+                  <span class="activity-tag">Skupinový běh</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Plavání</strong><span class="sport-pill">1-8 lidí</span></div>
+                <p>Skvělé pro bazén, technické drily i kondiční trénink. Důležitý je přesný bazén nebo areál a délka plavání.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Bazén</span>
+                  <span class="activity-tag">Dráhy</span>
+                  <span class="activity-tag">Kondice</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Kolo</strong><span class="sport-pill">2+ lidí</span></div>
+                <p>Může jít o silniční výjezd, gravel, MTB nebo jen pohodovou projížďku. Doporučuje se uvést styl i tempo.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Silnice</span>
+                  <span class="activity-tag">Gravel</span>
+                  <span class="activity-tag">MTB</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Fitness</strong><span class="sport-pill">1-6 lidí</span></div>
+                <p>Perfektní na společný workout, kruhový trénink nebo gym session s jasným časem a cílem.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Workout</span>
+                  <span class="activity-tag">Gym session</span>
+                  <span class="activity-tag">Kruháč</span>
+                </div>
+              </article>
+
+              <article class="sport-card">
+                <div class="sport-head"><strong>Turistika</strong><span class="sport-pill">2+ lidí</span></div>
+                <p>Výborná na víkendové akce. Vyplatí se doplnit náročnost, délku a jestli jde o půldenní nebo celodenní plán.</p>
+                <div class="activity-tags">
+                  <span class="activity-tag">Výlet</span>
+                  <span class="activity-tag">Hike</span>
+                  <span class="activity-tag">Víkend</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <h2>Co pomáhá, aby se lidé přidali</h2>
+            <p class="lead">Dobře vyplněná aktivita působí důvěryhodněji a má výrazně větší šanci, že se rychle naplní.</p>
+            <div class="guide-list">
+              <div class="guide-item">
+                <div class="guide-number">01</div>
+                <div class="guide-copy">
+                  <strong>Název, který dává smysl</strong>
+                  <span>Místo obecného názvu zkus například „Padel dnes v 19:00“ nebo „Běh Stromovka 7 km“.</span>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-number">02</div>
+                <div class="guide-copy">
+                  <strong>Konkrétní místo a čas</strong>
+                  <span>Lidé se rozhodují rychleji, když vidí jasný termín a přesný bod setkání.</span>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-number">03</div>
+                <div class="guide-copy">
+                  <strong>Kolik lidí hledáš</strong>
+                  <span>Kapacita pomáhá ostatním poznat, jestli je aktivita skoro plná nebo má ještě prostor.</span>
+                </div>
+              </div>
+              <div class="guide-item">
+                <div class="guide-number">04</div>
+                <div class="guide-copy">
+                  <strong>Krátký popis bez chaosu</strong>
+                  <span>Stačí jedna až dvě věty. Napiš úroveň, styl a jestli je aktivita volnější nebo výkonnostní.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+      const sidebarHomeBtn = document.getElementById("sidebarHomeBtn");
+      const backToAppBtn = document.getElementById("backToAppBtn");
+      const profileBtn = document.getElementById("profileBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let unsubscribeCurrentProfile = null;
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function createProfileFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seeds = Array.from(safeName).reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0);
+        const hueA = seeds % 360;
+        const hueB = (hueA + 42) % 360;
+        const hueC = (hueA + 110) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 76% 60%)" />
+                <stop offset="55%" stop-color="hsl(${hueB} 78% 56%)" />
+                <stop offset="100%" stop-color="hsl(${hueC} 62% 44%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="76" fill="url(#bg)" />
+            <circle cx="160" cy="132" r="64" fill="rgba(255,255,255,0.88)" />
+            <path d="M82 256C105 214 132 194 160 194C188 194 215 214 238 256" fill="rgba(255,255,255,0.88)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getProfileAvatarSrc(photo, name) {
+        return photo || createProfileFallbackAvatar(name);
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count || 0);
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+
+        if (!user?.uid) {
+          setSidebarBadge(notificationsNavBadge, 0);
+          setSidebarBadge(messagesNavBadge, 0);
+          return;
+        }
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .where("read", "==", false)
+          .onSnapshot((snapshot) => {
+            setSidebarBadge(notificationsNavBadge, snapshot.size);
+          }, (error) => {
+            console.error("Failed to subscribe to unread notifications:", error);
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((count, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const lastMessageAt = Number(data.lastMessageAt || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && lastMessageAt > readAt);
+              return count + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          }, (error) => {
+            console.error("Failed to subscribe to unread conversations:", error);
+          });
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = getProfileAvatarSrc(profile?.photo || user?.photoURL || "", profile?.name || user?.displayName || "Uživatel");
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+      }
+
+      sidebarHomeBtn.onclick = () => { window.location.href = "index.html"; };
+      backToAppBtn.onclick = () => { window.location.href = "app.html"; };
+      profileBtn.onclick = () => { window.location.href = "profil.html"; };
+      logoutBtn.onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        setHeaderUser(readProfileCache(), user);
+        subscribeSidebarBadges(user);
+
+        unsubscribeCurrentProfile?.();
+        unsubscribeCurrentProfile = db.collection("profiles").doc(user.uid).onSnapshot((snap) => {
+          const profile = snap.exists ? snap.data() : readProfileCache();
+          setHeaderUser(profile, user);
+          localStorage.setItem("zunoProfile", JSON.stringify({
+            ...(readProfileCache() || {}),
+            ...(profile || {}),
+            uid: user.uid,
+            email: user.email || ""
+          }));
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Nastavení</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const resolved = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+        document.documentElement.dataset.theme = resolved;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --text: #0a1525;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --danger: #da4b5a;
+      --success: #16745f;
+      --warning: #a46a11;
+      --surface: rgba(255, 255, 255, 0.84);
+      --surface-strong: rgba(255, 255, 255, 0.94);
+      --surface-soft: rgba(247, 250, 255, 0.92);
+      --line: rgba(10, 21, 37, 0.08);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --sidebar-width: 310px;
+      --bg:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.28), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.26), transparent 22%),
+        radial-gradient(circle at 22% 72%, rgba(255, 205, 129, 0.18), transparent 18%),
+        linear-gradient(135deg, #f3f8ff 0%, #eef4fb 42%, #e9f1fb 100%);
+      --hero-bg:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.22), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.18), transparent 24%),
+        linear-gradient(135deg, #0b182a 0%, #12345a 54%, #183f5a 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.1), transparent 22%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      --sidebar-text: #eaf1ff;
+    }
+
+    :root[data-theme="dark"] {
+      --text: #e9f1ff;
+      --muted: #9fb1c7;
+      --surface: rgba(13, 27, 46, 0.82);
+      --surface-strong: rgba(18, 34, 57, 0.94);
+      --surface-soft: rgba(19, 36, 61, 0.92);
+      --line: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.38);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.26);
+      --bg:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.14), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.14), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+      --hero-bg:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.16), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.14), transparent 24%),
+        linear-gradient(135deg, #0a1526 0%, #102741 54%, #13354b 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.08), transparent 22%),
+        linear-gradient(180deg, rgba(4, 11, 22, 0.98), rgba(8, 19, 33, 0.98));
+      --sidebar-text: #f1f6ff;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent 78%);
+      z-index: 0;
+    }
+
+    :root[data-theme="light"] body::before {
+      background-image:
+        linear-gradient(rgba(9, 19, 33, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(9, 19, 33, 0.04) 1px, transparent 1px);
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 14px 0 40px rgba(3, 10, 20, 0.14);
+    }
+
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.2), transparent 24%),
+        linear-gradient(180deg, rgba(245, 250, 255, 0.96), rgba(233, 241, 251, 0.96));
+      color: #0b1728;
+      border-right: 1px solid rgba(10, 21, 37, 0.08);
+      box-shadow: 14px 0 40px rgba(8, 17, 34, 0.08);
+    }
+
+    :root[data-theme="light"] .brand-caption {
+      color: rgba(10, 21, 37, 0.52);
+    }
+
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .logout-btn {
+      background: rgba(255, 255, 255, 0.82);
+      color: #0a1525;
+      border-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.06);
+    }
+
+    :root[data-theme="light"] .sidebar-user span {
+      color: #5e6b80;
+    }
+
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(115, 224, 194, 0.12);
+      border-color: rgba(10, 21, 37, 0.06);
+      color: #20456a;
+    }
+
+    :root[data-theme="dark"] .sidebar-user,
+    :root[data-theme="dark"] .sidebar-link,
+    :root[data-theme="dark"] .home-btn,
+    :root[data-theme="dark"] .logout-btn {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .sidebar-brand,
+    .brand-block,
+    .sidebar-nav,
+    .topbar,
+    .top-left,
+    .top-right,
+    .toggle-row {
+      display: flex;
+    }
+
+    .sidebar-brand {
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .brand-block {
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115, 224, 194, 0.26);
+    }
+
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
+    .brand {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-caption {
+      color: rgba(234, 241, 255, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .home-btn,
+    .pill-btn,
+    .sidebar-link,
+    .settings-btn,
+    .logout-btn,
+    .action-btn,
+    .theme-option,
+    .save-btn {
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .home-btn:hover,
+    .pill-btn:hover,
+    .sidebar-link:hover,
+    .settings-btn:hover,
+    .logout-btn:hover,
+    .action-btn:hover,
+    .theme-option:hover,
+    .save-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .sidebar-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.96), rgba(134, 190, 255, 0.96));
+      color: #10243e;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 12px 30px rgba(115, 224, 194, 0.22);
+    }
+
+    .sidebar-badge.is-visible {
+      display: inline-flex;
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: white;
+      cursor: pointer;
+    }
+
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-user img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-user strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .sidebar-user span { display: block; color: rgba(234, 241, 255, 0.68); font-size: 13px; line-height: 1.45; word-break: break-word; }
+
+    .sidebar-nav { flex-direction: column; gap: 10px; }
+
+    .sidebar-link {
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ebf2ff;
+    }
+
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 16px;
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.2), rgba(144, 183, 255, 0.16));
+      border-color: rgba(115, 224, 194, 0.36);
+      color: white;
+      box-shadow: 0 18px 30px rgba(3, 10, 20, 0.24);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .settings-btn,
+    .logout-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #081321;
+      border-color: transparent;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: white;
+    }
+
+    .main { padding: 24px; }
+    .page-frame { max-width: 1320px; margin: 0 auto; }
+
+    .topbar {
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--surface-strong), var(--surface)), var(--surface);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    :root[data-theme="dark"] .topbar,
+    :root[data-theme="dark"] .top-user,
+    :root[data-theme="dark"] .pill-btn,
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .hero-side,
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .status-card,
+    :root[data-theme="dark"] .settings-item,
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] .action-btn,
+    :root[data-theme="dark"] .theme-option {
+      background: linear-gradient(180deg, rgba(19, 36, 61, 0.96), rgba(13, 27, 46, 0.92)), rgba(13, 27, 46, 0.92);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+    }
+
+    :root[data-theme="dark"] .hero-main {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    :root[data-theme="dark"] .top-user span,
+    :root[data-theme="dark"] .hero-side p,
+    :root[data-theme="dark"] .panel .lead,
+    :root[data-theme="dark"] .status-card span,
+    :root[data-theme="dark"] .settings-item span,
+    :root[data-theme="dark"] .field label {
+      color: var(--muted);
+    }
+
+    :root[data-theme="dark"] .section-badge {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.18), rgba(144, 183, 255, 0.22));
+      color: #d6e6ff;
+    }
+
+    :root[data-theme="dark"] .status-message.success {
+      background: rgba(17, 66, 57, 0.3);
+      border-color: rgba(115, 224, 194, 0.18);
+    }
+
+    :root[data-theme="dark"] .status-message.warning {
+      background: rgba(98, 64, 12, 0.28);
+      border-color: rgba(255, 194, 92, 0.18);
+    }
+
+    :root[data-theme="dark"] .status-message.error {
+      background: rgba(98, 25, 37, 0.34);
+      border-color: rgba(240, 109, 122, 0.18);
+      color: #ffcad0;
+    }
+
+    .top-left,
+    .top-right {
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 11px 15px;
+      background: var(--surface-strong);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.05);
+    }
+
+    .top-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 22px rgba(8, 17, 34, 0.05);
+    }
+
+    .top-user img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .top-user span {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .hero,
+    .content-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      grid-template-columns: 1fr;
+      margin-bottom: 18px;
+    }
+
+    .hero.hero-single {
+      grid-template-columns: 1fr;
+    }
+
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      border-radius: 32px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 24px 26px;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.18), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.14), transparent 22%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(242, 247, 255, 0.94));
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(248, 251, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      color: #365781;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 8px rgba(115, 224, 194, 0.1);
+    }
+
+    .hero-main h1 {
+      margin: 0 0 12px;
+      max-width: 760px;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.9rem, 3vw, 2.7rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      color: #13233a;
+    }
+
+    .hero-main p {
+      margin: 0;
+      max-width: 520px;
+      color: #66768b;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .hero-side,
+    .panel {
+      padding: 22px;
+      background: linear-gradient(180deg, var(--surface-strong), var(--surface-soft)), var(--surface);
+    }
+
+    .hero-side h2,
+    .panel h2 {
+      margin: 0 0 8px;
+      font-family: "Sora", sans-serif;
+      font-size: 1.5rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-side p,
+    .panel .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.8;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      margin-top: 16px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.18), rgba(144, 183, 255, 0.18));
+      color: #315da8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .status-grid,
+    .settings-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .status-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .status-card,
+    .settings-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, var(--surface-strong), var(--surface-soft)), var(--surface-soft);
+      border: 1px solid var(--line);
+    }
+
+    .status-card strong,
+    .settings-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .status-card span,
+    .settings-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .status-card strong {
+      font-size: 1.2rem;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 15px;
+      font-size: 15px;
+      background: var(--surface-strong);
+      color: var(--text);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #8ab4ff;
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.16);
+    }
+
+    input[readonly] {
+      opacity: 0.82;
+      cursor: not-allowed;
+    }
+
+    .toggle-row {
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .theme-option {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 104px;
+    }
+
+    .theme-option.active {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      border-color: transparent;
+    }
+
+    :root[data-theme="light"] .theme-option[data-theme-option="light"],
+    :root[data-theme="dark"] .theme-option[data-theme-option="dark"] {
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.18);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .action-btn,
+    .save-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      color: var(--text);
+    }
+
+    .action-btn.primary,
+    .save-btn {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      border-color: transparent;
+    }
+
+    .action-btn.danger {
+      background: linear-gradient(135deg, #f06d7a, #da4b5a);
+      color: white;
+      border-color: transparent;
+    }
+
+    .status-message {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 700;
+      display: none;
+    }
+
+    .status-message.success {
+      display: block;
+      background: #ecfff7;
+      color: var(--success);
+      border: 1px solid rgba(22, 116, 95, 0.14);
+    }
+
+    .status-message.warning {
+      display: block;
+      background: #fff7ea;
+      color: var(--warning);
+      border: 1px solid rgba(164, 106, 17, 0.14);
+    }
+
+    .status-message.error {
+      display: block;
+      background: #fff1f2;
+      color: #b4233c;
+      border: 1px solid rgba(180, 35, 60, 0.14);
+    }
+
+    @media (max-width: 1200px) {
+      .hero,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .main { padding: 18px; }
+    }
+
+    @media (max-width: 760px) {
+      .hero-main h1 { font-size: 1.95rem; }
+      .top-user span { max-width: 120px; }
+      .status-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link active" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="topbar">
+          <div class="top-left"></div>
+          <div class="top-right">
+            <div class="top-user">
+              <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+              <span id="topUserName">Načítám...</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="hero hero-single">
+          <div class="card hero-main">
+            <div class="hero-kicker">Nastavení</div>
+            <h1>Nastavení</h1>
+            <p>Uprav si profil, účet a preference.</p>
+            <div class="status-grid">
+              <div class="status-card">
+                <strong id="verificationStatusValue">Neověřeno</strong>
+                <span>Email verifikace</span>
+              </div>
+              <div class="status-card">
+                <strong id="themeStatusValue">Light</strong>
+                <span>Aktivní vzhled</span>
+              </div>
+              <div class="status-card">
+                <strong id="providerStatusValue">-</strong>
+                <span>Způsob přihlášení</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="card panel">
+            <h2>Profil</h2>
+            <p class="lead">Základní údaje a rychlé akce kolem tvého profilu.</p>
+
+            <div class="field-grid">
+              <div class="two-col">
+                <div class="field">
+                  <label for="settingsName">Jméno</label>
+                  <input id="settingsName" placeholder="Tvoje jméno" />
+                </div>
+                <div class="field">
+                  <label for="settingsEmail">Email</label>
+                  <input id="settingsEmail" type="email" placeholder="tvuj@email.cz" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="settingsProvider">Přihlašovací metoda</label>
+                <input id="settingsProvider" readonly />
+              </div>
+
+              <div class="action-row">
+                <button class="save-btn" id="saveAccountBtn">Uložit změny</button>
+                <button class="action-btn" id="openProfileBtn">Otevřít profil</button>
+                <button class="action-btn" id="copyProfileBtn">Kopírovat odkaz</button>
+                <button class="action-btn" id="clearCacheBtn">Vyčistit cache</button>
+                <button class="action-btn" id="openAppBtn">Otevřít aplikaci</button>
+              </div>
+            </div>
+
+            <div class="status-message" id="accountStatusMessage">Hotovo.</div>
+            <div class="status-message" id="utilityStatusMessage">Hotovo.</div>
+          </div>
+
+          <div class="card panel">
+            <h2>Vzhled</h2>
+            <p class="lead">Vyber si, jak má aplikace působit.</p>
+
+            <div class="settings-grid">
+              <div class="settings-item">
+                <strong>Režim rozhraní</strong>
+                <span>Můžeš přepnout mezi světlým, tmavým a systémovým nastavením.</span>
+                <div class="toggle-row" id="themeOptions">
+                  <button class="theme-option" data-theme-option="light">Světlý</button>
+                  <button class="theme-option" data-theme-option="dark">Tmavý</button>
+                  <button class="theme-option" data-theme-option="system">Systém</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="status-message" id="preferenceStatusMessage">Hotovo.</div>
+          </div>
+
+          <div class="card panel">
+            <h2>Bezpečnost</h2>
+            <p class="lead">Ověření emailu a bezpečné akce kolem účtu.</p>
+
+            <div class="settings-grid">
+              <div class="settings-item">
+                <strong>Email verifikace</strong>
+                <span id="verificationDescription">Kontroluju stav verifikace.</span>
+                <div class="action-row">
+                  <button class="action-btn primary" id="verifyEmailBtn">Poslat verifikační email</button>
+                </div>
+              </div>
+
+              <div class="settings-item">
+                <strong>Bezpečné odhlášení</strong>
+                <span>Odhlásí tě ze Zuno a smaže lokální profil z tohoto zařízení.</span>
+                <div class="action-row">
+                  <button class="action-btn danger" id="logoutActionBtn">Odhlásit se</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="status-message" id="securityStatusMessage">Hotovo.</div>
+          </div>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+
+      const settingsName = document.getElementById("settingsName");
+      const settingsEmail = document.getElementById("settingsEmail");
+      const settingsProvider = document.getElementById("settingsProvider");
+      const verificationStatusValue = document.getElementById("verificationStatusValue");
+      const verificationDescription = document.getElementById("verificationDescription");
+      const themeStatusValue = document.getElementById("themeStatusValue");
+      const providerStatusValue = document.getElementById("providerStatusValue");
+
+      const accountStatusMessage = document.getElementById("accountStatusMessage");
+      const preferenceStatusMessage = document.getElementById("preferenceStatusMessage");
+      const securityStatusMessage = document.getElementById("securityStatusMessage");
+      const utilityStatusMessage = document.getElementById("utilityStatusMessage");
+      const verifyEmailBtn = document.getElementById("verifyEmailBtn");
+
+      let currentUser = null;
+      let currentProfile = null;
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let unsubscribeCurrentProfile = null;
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function saveProfileCache(profile) {
+        localStorage.setItem("zunoProfile", JSON.stringify(profile));
+      }
+
+      function createProfileFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seeds = Array.from(safeName).reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0);
+        const hueA = seeds % 360;
+        const hueB = (hueA + 42) % 360;
+        const hueC = (hueA + 110) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+            <defs>
+              <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 76% 60%)" />
+                <stop offset="55%" stop-color="hsl(${hueB} 78% 56%)" />
+                <stop offset="100%" stop-color="hsl(${hueC} 62% 44%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="76" fill="url(#bg)" />
+            <circle cx="160" cy="132" r="64" fill="rgba(255,255,255,0.88)" />
+            <path d="M82 256C105 214 132 194 160 194C188 194 215 214 238 256" fill="rgba(255,255,255,0.88)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getProfileAvatarSrc(photo, name) {
+        return photo || createProfileFallbackAvatar(name);
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count || 0);
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+
+        if (!user?.uid) {
+          setSidebarBadge(notificationsNavBadge, 0);
+          setSidebarBadge(messagesNavBadge, 0);
+          return;
+        }
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .where("read", "==", false)
+          .onSnapshot((snapshot) => {
+            setSidebarBadge(notificationsNavBadge, snapshot.size);
+          }, (error) => {
+            console.error("Failed to subscribe to unread notifications:", error);
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((count, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const lastMessageAt = Number(data.lastMessageAt || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && lastMessageAt > readAt);
+              return count + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          }, (error) => {
+            console.error("Failed to subscribe to unread conversations:", error);
+          });
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = getProfileAvatarSrc(profile?.photo || user?.photoURL || "", profile?.name || user?.displayName || "Uživatel");
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+      }
+
+      function showStatus(target, text, type) {
+        target.textContent = text;
+        target.className = "status-message " + type;
+        clearTimeout(target._timeout);
+        target._timeout = setTimeout(() => {
+          target.className = "status-message";
+        }, 2800);
+      }
+
+      function getAuthProviderLabel(user) {
+        const providerId = user?.providerData?.[0]?.providerId || "";
+        if (providerId === "google.com") return "Google";
+        if (providerId === "password") return "Email + heslo";
+        if (providerId === "apple.com") return "Apple";
+        return providerId || "Neznámé";
+      }
+
+      function applyThemePreference(preference) {
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const resolved = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+        document.documentElement.dataset.theme = resolved;
+        themeStatusValue.textContent = preference === "system" ? "Systém" : (preference === "dark" ? "Tmavý" : "Světlý");
+
+        document.querySelectorAll("[data-theme-option]").forEach((button) => {
+          button.classList.toggle("active", button.getAttribute("data-theme-option") === preference);
+        });
+      }
+
+      function loadThemePreference() {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        applyThemePreference(preference);
+      }
+
+      function populateAccount(profile, user) {
+        const name = profile?.name || user?.displayName || "";
+        const email = profile?.email || user?.email || "";
+        settingsName.value = name;
+        settingsEmail.value = email;
+        settingsProvider.value = getAuthProviderLabel(user);
+        providerStatusValue.textContent = getAuthProviderLabel(user);
+      }
+
+      function refreshVerificationState(user) {
+        const isVerified = !!user?.emailVerified;
+        verificationStatusValue.textContent = isVerified ? "Ověřeno" : "Neověřeno";
+        verificationDescription.textContent = isVerified
+          ? "Tvůj email je ověřený a účet působí důvěryhodněji."
+          : "Email zatím není ověřený. Doporučuji poslat verifikační zprávu a potvrdit ji.";
+        verifyEmailBtn.disabled = isVerified;
+        verifyEmailBtn.textContent = isVerified ? "Email je ověřený" : "Poslat verifikační email";
+        verifyEmailBtn.style.opacity = isVerified ? "0.6" : "1";
+        verifyEmailBtn.style.cursor = isVerified ? "default" : "pointer";
+      }
+
+      async function saveAccountSettings() {
+        if (!currentUser) return;
+
+        const nextName = settingsName.value.trim();
+        const nextEmail = settingsEmail.value.trim();
+
+        if (!nextName || !nextEmail) {
+          showStatus(accountStatusMessage, "Vyplň prosím jméno i email.", "warning");
+          return;
+        }
+
+        try {
+          if (nextName !== (currentUser.displayName || "")) {
+            await currentUser.updateProfile({ displayName: nextName });
+          }
+
+          if (nextEmail !== (currentUser.email || "")) {
+            await currentUser.updateEmail(nextEmail);
+          }
+
+          const payload = {
+            uid: currentUser.uid,
+            name: nextName,
+            email: nextEmail,
+            photo: currentProfile?.photo || currentUser.photoURL || "",
+            city: currentProfile?.city || "",
+            bio: currentProfile?.bio || "",
+            hobbies: currentProfile?.hobbies || "",
+            followersCount: currentProfile?.followersCount || 0,
+            followingCount: currentProfile?.followingCount || 0,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          await db.collection("profiles").doc(currentUser.uid).set(payload, { merge: true });
+          currentProfile = { ...(currentProfile || {}), ...payload };
+          saveProfileCache({
+            uid: currentUser.uid,
+            name: payload.name,
+            email: payload.email,
+            photo: payload.photo,
+            city: payload.city,
+            bio: payload.bio,
+            hobbies: payload.hobbies,
+            followersCount: payload.followersCount,
+            followingCount: payload.followingCount
+          });
+
+          setHeaderUser(currentProfile, currentUser);
+          showStatus(accountStatusMessage, "Účet byl uložen.", "success");
+        } catch (e) {
+          console.error(e);
+          const message = e.code === "auth/requires-recent-login"
+            ? "Změna emailu vyžaduje znovu se přihlásit. Odhlas se a přihlas znovu."
+            : "Nepodařilo se uložit změny účtu.";
+          showStatus(accountStatusMessage, message, "error");
+        }
+      }
+
+      document.getElementById("sidebarHomeBtn").onclick = () => { window.location.href = "index.html"; };
+      document.getElementById("openProfileBtn").onclick = () => { window.location.href = "profil.html"; };
+      document.getElementById("openAppBtn").onclick = () => { window.location.href = "app.html"; };
+      document.getElementById("saveAccountBtn").onclick = saveAccountSettings;
+
+      document.querySelectorAll("[data-theme-option]").forEach((button) => {
+        button.onclick = () => {
+          const preference = button.getAttribute("data-theme-option");
+          localStorage.setItem("zunoThemePreference", preference);
+          applyThemePreference(preference);
+          showStatus(preferenceStatusMessage, "Preference vzhledu byla uložena.", "success");
+        };
+      });
+
+      document.getElementById("copyProfileBtn").onclick = async () => {
+        const cached = readProfileCache();
+        const uid = cached?.uid || currentUser?.uid || "";
+        const profileUrl = `${window.location.origin}/profil.html?uid=${uid}`;
+
+        try {
+          await navigator.clipboard.writeText(profileUrl);
+          showStatus(utilityStatusMessage, "Odkaz na profil zkopírován.", "success");
+        } catch (e) {
+          showStatus(utilityStatusMessage, profileUrl, "warning");
+        }
+      };
+
+      document.getElementById("clearCacheBtn").onclick = () => {
+        localStorage.removeItem("zunoProfile");
+        localStorage.removeItem("zunoGeocodeCache");
+        localStorage.removeItem("zunoThemePreference");
+        applyThemePreference("system");
+        showStatus(utilityStatusMessage, "Lokální cache byla vyčištěna.", "success");
+      };
+
+      verifyEmailBtn.onclick = async () => {
+        if (!currentUser || currentUser.emailVerified) return;
+
+        try {
+          await currentUser.sendEmailVerification();
+          showStatus(securityStatusMessage, "Verifikační email byl odeslán.", "success");
+        } catch (e) {
+          console.error(e);
+          showStatus(securityStatusMessage, "Nepodařilo se odeslat verifikační email.", "error");
+        }
+      };
+
+      async function logoutAndReturn() {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      }
+
+      document.getElementById("logoutBtn").onclick = logoutAndReturn;
+      document.getElementById("logoutActionBtn").onclick = logoutAndReturn;
+
+      loadThemePreference();
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        const cached = readProfileCache();
+        setHeaderUser(cached, user);
+        subscribeSidebarBadges(user);
+        populateAccount(cached || {}, user);
+        refreshVerificationState(user);
+
+        unsubscribeCurrentProfile?.();
+        unsubscribeCurrentProfile = db.collection("profiles").doc(user.uid).onSnapshot((snap) => {
+          currentProfile = snap.exists ? snap.data() : (cached || {});
+          populateAccount(currentProfile, user);
+          setHeaderUser(currentProfile, user);
+          saveProfileCache({
+            ...(readProfileCache() || {}),
+            ...(currentProfile || {}),
+            uid: user.uid,
+            email: user.email || ""
+          });
+          refreshVerificationState(user);
+        }, (e) => {
+          console.error(e);
+          currentProfile = cached || {};
+          populateAccount(currentProfile, user);
+          refreshVerificationState(user);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

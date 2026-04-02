@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zuno – Stránka nenalezena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --text: #0a1525;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --primary-strong: #35c1a3;
+      --accent: #90b7ff;
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+    }
+
+    :root[data-theme="dark"] {
+      --text: #e8f0ff;
+      --muted: #9db0c8;
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.4);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.28);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.28), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.26), transparent 22%),
+        radial-gradient(circle at 22% 72%, rgba(255, 205, 129, 0.18), transparent 18%),
+        linear-gradient(135deg, #f3f8ff 0%, #eef4fb 42%, #e9f1fb 100%);
+    }
+
+    :root[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115, 224, 194, 0.14), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144, 183, 255, 0.14), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent 78%);
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    }
+
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .visual,
+    :root[data-theme="dark"] .stat-card,
+    :root[data-theme="dark"] .btn.secondary {
+      background: rgba(18, 34, 57, 0.9);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    :root[data-theme="dark"] .brand-copy span,
+    :root[data-theme="dark"] p,
+    :root[data-theme="dark"] .stat-card span {
+      color: var(--muted);
+    }
+
+    .shell {
+      width: min(100%, 1120px);
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel,
+    .visual {
+      position: relative;
+      overflow: hidden;
+      border-radius: 32px;
+      border: 1px solid rgba(10, 21, 37, 0.07);
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(115, 224, 194, 0.16), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(144, 183, 255, 0.16), transparent 20%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(243, 248, 255, 0.92));
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115, 224, 194, 0.26);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-copy span {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #edf6ff;
+      color: #216653;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-strong);
+      box-shadow: 0 0 0 8px rgba(53, 193, 163, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+
+    .copy {
+      max-width: 680px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      box-shadow: 0 16px 30px rgba(11, 30, 53, 0.18);
+    }
+
+    .btn.secondary {
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      background: white;
+      color: var(--text);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .meta-card {
+      padding: 16px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 250, 255, 0.88)),
+        rgba(247, 250, 255, 0.92);
+      border: 1px solid rgba(10, 21, 37, 0.08);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .meta-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.2rem;
+    }
+
+    .meta-card span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .visual {
+      padding: 28px;
+      color: white;
+      background:
+        radial-gradient(circle at top right, rgba(144, 183, 255, 0.22), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115, 224, 194, 0.18), transparent 24%),
+        linear-gradient(135deg, #0b182a 0%, #12345a 54%, #183f5a 100%);
+    }
+
+    .visual::before,
+    .visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .visual::before {
+      width: 220px;
+      height: 220px;
+      top: -70px;
+      right: -20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: inset 0 0 0 20px rgba(255, 255, 255, 0.03);
+    }
+
+    .visual::after {
+      width: 240px;
+      height: 240px;
+      left: -72px;
+      bottom: -96px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .visual-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .visual-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #dce9ff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .visual-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 8px rgba(115, 224, 194, 0.1);
+    }
+
+    .visual-card {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+    }
+
+    .visual-row {
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .visual-row strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.15rem;
+      color: white;
+    }
+
+    .visual-row span {
+      color: rgba(237, 244, 255, 0.74);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .visual-note {
+      margin-top: auto;
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .visual-note strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .visual-note span {
+      color: rgba(237, 244, 255, 0.72);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 1100px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+
+      .panel,
+      .visual {
+        padding: 22px;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="panel">
+      <div class="brand">
+        <div class="brand-mark">Z</div>
+        <div class="brand-copy">
+          <strong>Zuno</strong>
+          <span>Sport. Lidi. Energie.</span>
+        </div>
+      </div>
+
+      <div class="eyebrow">404 • Stránka nenalezena</div>
+
+      <div class="copy">
+        <h1>Tahle cesta v Zuno zrovna nikam nevede.</h1>
+        <p>
+          Stránka byla přesunuta, neexistuje nebo je adresa zadaná jinak, než jak ji aplikace očekává.
+          Vrať se zpět na domovskou stránku nebo otevři aplikaci a pokračuj tam, kde to dává smysl.
+        </p>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="/index.html">Zpět na úvod</a>
+        <a class="btn secondary" href="/app.html">Otevřít aplikaci</a>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <strong>Rychlý návrat</strong>
+          <span>Jedním klikem se vrátíš na hlavní vstup nebo rovnou do aktivit.</span>
+        </div>
+        <div class="meta-card">
+          <strong>Konzistentní styl</strong>
+          <span>I chybová stránka teď vypadá jako součást produktu, ne jako systémový fallback.</span>
+        </div>
+        <div class="meta-card">
+          <strong>Jasná orientace</strong>
+          <span>Uživatel není ztracený a hned ví, kam se posunout dál.</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="visual">
+      <div class="visual-top">
+        <div class="visual-chip">Zuno navigace</div>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-row">
+          <strong>Úvodní stránka</strong>
+          <span>Vrátí tě na hlavní landing page, kde znovu pochopíš směr aplikace i další kroky.</span>
+        </div>
+
+        <div class="visual-row">
+          <strong>Aplikace</strong>
+          <span>Otevře přehled aktivit, filtrů, mapy a tvorby nových akcí, pokud už jsi přihlášený.</span>
+        </div>
+
+        <div class="visual-row">
+          <strong>Profil</strong>
+          <span>Upravíš si bio, sporty i vizuální identitu, aby profil působil důvěryhodně a živě.</span>
+        </div>
+      </div>
+
+      <div class="visual-note">
+        <strong>Malý detail, který dělá velký rozdíl</strong>
+        <span>Dobře navržená 404 stránka snižuje frustraci a drží produktový dojem i ve chvíli, kdy něco nevyšlo.</span>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>

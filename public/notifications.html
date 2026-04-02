@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno – Notifikace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --text: #0a1525; --muted: #607089; --primary: #73e0c2; --primary-strong: #35c1a3; --accent: #90b7ff;
+      --shadow: 0 24px 60px rgba(8,17,34,0.12); --shadow-soft: 0 16px 38px rgba(8,17,34,0.08); --sidebar-width: 310px;
+    }
+    :root[data-theme="dark"] {
+      --text: #e8f0ff; --muted: #9db0c8;
+      --shadow: 0 24px 60px rgba(1,8,18,0.4); --shadow-soft: 0 16px 38px rgba(1,8,18,0.28);
+    }
+    body {
+      margin: 0; font-family: "Manrope", sans-serif; color: var(--text);
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115,224,194,0.28), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144,183,255,0.26), transparent 22%),
+        radial-gradient(circle at 22% 72%, rgba(255,205,129,0.18), transparent 18%),
+        linear-gradient(135deg, #f3f8ff 0%, #eef4fb 42%, #e9f1fb 100%);
+    }
+    :root[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 10% 18%, rgba(115,224,194,0.14), transparent 20%),
+        radial-gradient(circle at 78% 12%, rgba(144,183,255,0.14), transparent 22%),
+        linear-gradient(135deg, #081220 0%, #0b1730 42%, #102038 100%);
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.28) 1px, transparent 1px);
+      background-size: 48px 48px; mask-image: linear-gradient(180deg, rgba(0,0,0,0.3), transparent 78%);
+    }
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+    }
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115,224,194,0.14), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(242,247,255,0.94));
+      color: #0a1525;
+      border-right-color: rgba(10,21,37,0.08);
+      box-shadow: 14px 0 36px rgba(8,17,34,0.08);
+    }
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .logout-btn {
+      background: rgba(248,251,255,0.92);
+      color: #13233a;
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 12px 24px rgba(8,17,34,0.04);
+    }
+    :root[data-theme="light"] .brand,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .sidebar-user strong {
+      color: #13233a;
+    }
+    :root[data-theme="light"] .brand-caption,
+    :root[data-theme="light"] .sidebar-user span {
+      color: #66768b;
+    }
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(236,242,250,0.96);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+    }
+    :root[data-theme="light"] .sidebar-link:hover {
+      background: rgba(255,255,255,0.98);
+    }
+    :root[data-theme="light"] .sidebar-bottom {
+      border-top-color: rgba(10,21,37,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main {
+      color: #13233a;
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.18), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.16), transparent 24%),
+        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(240,247,255,0.94));
+      border-color: rgba(10,21,37,0.08);
+      box-shadow: 0 24px 42px rgba(8,17,34,0.08);
+    }
+
+    :root[data-theme="light"] .hero-main h1 {
+      color: #13233a;
+    }
+
+    :root[data-theme="light"] .hero-main p {
+      color: #66768b;
+    }
+
+    :root[data-theme="light"] .hero-kicker,
+    :root[data-theme="light"] .section-badge {
+      background: rgba(248,251,255,0.92);
+      border-color: rgba(10,21,37,0.08);
+      color: #365781;
+      box-shadow: 0 12px 22px rgba(8,17,34,0.04);
+    }
+    :root[data-theme="dark"] .topbar,
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .hero-side,
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .notice-item,
+    :root[data-theme="dark"] .status-card,
+    :root[data-theme="dark"] .empty-state,
+    :root[data-theme="dark"] .pill-btn,
+    :root[data-theme="dark"] .top-user {
+      background: rgba(18,34,57,0.9);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+    :root[data-theme="dark"] .top-user span,
+    :root[data-theme="dark"] .hero-side p,
+    :root[data-theme="dark"] .panel .lead,
+    :root[data-theme="dark"] .notice-item span,
+    :root[data-theme="dark"] .status-card span,
+    :root[data-theme="dark"] .empty-state {
+      color: var(--muted);
+    }
+    :root[data-theme="dark"] .section-badge {
+      background: linear-gradient(135deg, rgba(115,224,194,0.16), rgba(144,183,255,0.18));
+      color: #cde0ff;
+    }
+    :root[data-theme="dark"] .notice-item.unread {
+      border-color: rgba(115,224,194,0.34);
+      box-shadow: inset 0 0 0 1px rgba(115,224,194,0.16);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .layout { position: relative; z-index: 1; min-height: 100vh; display: grid; grid-template-columns: var(--sidebar-width) 1fr; }
+    .sidebar {
+      position: sticky; top: 0; align-self: start; padding: 22px 18px; display: flex; flex-direction: column;
+      background: radial-gradient(circle at top left, rgba(115,224,194,0.1), transparent 22%), linear-gradient(180deg, rgba(8,19,33,0.98), rgba(12,29,51,0.98));
+      color: #eaf1ff; border-right: 1px solid rgba(255,255,255,0.08); box-shadow: 14px 0 40px rgba(3,10,20,0.14);
+    }
+    .sidebar-brand,.brand-block,.sidebar-nav,.topbar,.top-left,.top-right { display: flex; }
+    .sidebar-brand { align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .brand-block { align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); color: #081321; font-family: "Sora", sans-serif; font-size: 19px; font-weight: 800;
+      box-shadow: 0 12px 24px rgba(115,224,194,0.26);
+    }
+    .brand-text { display: flex; flex-direction: column; gap: 2px; }
+    .brand { font-family: "Sora", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.03em; }
+    .brand-caption { color: rgba(234,241,255,0.62); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .home-btn,.pill-btn,.sidebar-link,.settings-btn,.logout-btn { transition: transform 0.18s ease, background 0.18s ease; }
+    .home-btn:hover,.pill-btn:hover,.sidebar-link:hover,.settings-btn:hover,.logout-btn:hover { transform: translateY(-1px); }
+    .home-btn { width: 42px; height: 42px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; background: rgba(255,255,255,0.06); color: white; cursor: pointer; }
+    .sidebar-user {
+      display: flex; gap: 12px; align-items: center; padding: 16px; margin-bottom: 20px; border-radius: 22px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-user img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.1); }
+    .sidebar-user strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .sidebar-user span { display: block; color: rgba(234,241,255,0.68); font-size: 13px; line-height: 1.45; word-break: break-word; }
+    .sidebar-nav { flex-direction: column; gap: 10px; }
+    .sidebar-link {
+      align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; font-size: 14px; font-weight: 700;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); color: #ebf2ff;
+    }
+    .sidebar-badge {
+      min-width: 22px;
+      height: 22px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #73e0c2, #90b7ff);
+      color: #081321;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      box-shadow: 0 10px 20px rgba(8,17,34,0.18);
+    }
+    .sidebar-badge.is-visible {
+      display: inline-flex;
+    }
+    .sidebar-icon { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); font-size: 16px; }
+    .sidebar-link.active { background: linear-gradient(135deg, rgba(115,224,194,0.2), rgba(144,183,255,0.16)); border-color: rgba(115,224,194,0.36); color: white; box-shadow: 0 18px 30px rgba(3,10,20,0.24); }
+    .sidebar-bottom { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: grid; gap: 10px; }
+    .settings-btn,.logout-btn { width: 100%; padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); }
+    .settings-btn { background: linear-gradient(135deg, var(--primary), var(--primary-strong)); color: #081321; border-color: transparent; }
+    .logout-btn { background: rgba(255,255,255,0.04); color: white; }
+    .main { padding: 24px; }
+    .page-frame { max-width: 1320px; margin: 0 auto; }
+    .topbar {
+      justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; padding: 14px 16px;
+      border-radius: 22px; background: linear-gradient(135deg, rgba(255,255,255,0.82), rgba(250,252,255,0.66)), rgba(255,255,255,0.66);
+      border: 1px solid rgba(10,21,37,0.06); backdrop-filter: blur(18px); box-shadow: var(--shadow-soft);
+    }
+    .top-left,.top-right { align-items: center; gap: 10px; flex-wrap: wrap; }
+    .pill-btn {
+      border: 1px solid rgba(10,21,37,0.08); border-radius: 999px; padding: 11px 15px; background: white;
+      font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .pill-btn.primary {
+      background: linear-gradient(135deg, #0b1e35, #173b63);
+      color: white;
+      border-color: transparent;
+    }
+    .top-user {
+      display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 999px; background: white;
+      border: 1px solid rgba(10,21,37,0.08); box-shadow: 0 12px 22px rgba(8,17,34,0.05);
+    }
+    .top-user img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #dbe4ef; }
+    .top-user span { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 700; color: #20314a; }
+    .hero,.content-grid { display: grid; gap: 18px; }
+    .hero { grid-template-columns: 1fr; margin-bottom: 18px; }
+    .content-grid { grid-template-columns: 1fr; }
+    .card {
+      border-radius: 32px; border: 1px solid rgba(10,21,37,0.07); background: rgba(255,255,255,0.84);
+      backdrop-filter: blur(18px); box-shadow: var(--shadow);
+    }
+    .hero-main {
+      padding: 24px 26px; color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(144,183,255,0.18), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(115,224,194,0.14), transparent 22%),
+        linear-gradient(145deg, rgba(255,255,255,0.96), rgba(242,247,255,0.94));
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 10px 14px; border-radius: 999px;
+      background: rgba(248,251,255,0.92); border: 1px solid rgba(10,21,37,0.08); color: #365781; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 8px rgba(115,224,194,0.1); }
+    .hero-main h1 {
+      margin: 0 0 8px; max-width: 720px; font-family: "Sora", sans-serif; font-size: clamp(1.9rem, 3vw, 2.7rem);
+      line-height: 1.02; letter-spacing: -0.05em; color: #13233a;
+    }
+    .hero-main p,.panel .lead { margin: 0; color: #66768b; font-size: 0.98rem; line-height: 1.6; }
+    .hero-main p { max-width: 520px; }
+    .hero-side,.panel { padding: 22px; }
+    .hero-side,.panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(246,250,255,0.84)), rgba(255,255,255,0.84);
+    }
+    .hero-side h2,.panel h2 { margin: 0 0 8px; font-family: "Sora", sans-serif; font-size: 1.85rem; line-height: 1.08; letter-spacing: -0.04em; }
+    .hero-side p,.panel .lead { color: var(--muted); }
+    .section-badge {
+      display: inline-flex; margin-top: 16px; padding: 9px 12px; border-radius: 999px; background: linear-gradient(135deg, rgba(115,224,194,0.18), rgba(144,183,255,0.18));
+      color: #315da8; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .notice-list { display: grid; gap: 12px; margin-top: 12px; }
+    .notice-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px; border-radius: 18px; background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92);
+      border: 1px solid rgba(10,21,37,0.08);
+      cursor: pointer;
+    }
+    .notice-item.unread {
+      border-color: rgba(115,224,194,0.32);
+      box-shadow: inset 0 0 0 1px rgba(115,224,194,0.12);
+    }
+    .notice-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+    .notice-body strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .notice-body span { color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .notice-meta {
+      display: grid;
+      gap: 4px;
+      justify-items: end;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .empty-state {
+      padding: 20px; border-radius: 20px; border: 1px dashed rgba(10,21,37,0.18); background: rgba(255,255,255,0.56);
+      text-align: center; color: var(--muted); line-height: 1.75;
+    }
+    .status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+    .status-card {
+      padding: 16px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,255,0.88)), rgba(247,250,255,0.92);
+      border: 1px solid rgba(10,21,37,0.08);
+    }
+    .status-card strong { display: block; margin-bottom: 4px; font-size: 1.4rem; }
+    .status-card span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } .sidebar { position: static; } .main { padding: 18px; } }
+    @media (max-width: 760px) { .status-grid { grid-template-columns: 1fr; } .notice-item { grid-template-columns: auto 1fr; } .notice-meta { justify-items: start; } .hero-main h1 { font-size: 1.95rem; } .top-user span { max-width: 120px; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div class="brand-text">
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn">⌂</button>
+      </div>
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Uživatel</strong>
+          <span id="sidebarUserEmail">email</span>
+        </div>
+      </div>
+      <div class="sidebar-nav">
+        <a class="sidebar-link" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link active" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" id="settingsBtn" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </div>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="logoutBtn">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page-frame">
+        <div class="topbar">
+          <div class="top-left">
+            <button class="pill-btn primary" id="markAllReadBtn">Označit vše jako přečtené</button>
+          </div>
+          <div class="top-right">
+            <div class="top-user">
+              <img id="topUserPhoto" src="https://via.placeholder.com/100x100.png?text=+" alt="Profil" />
+              <span id="topUserName">Načítám...</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="hero">
+          <div class="card hero-main">
+            <div class="hero-kicker">Notifikace</div>
+            <h1>Notifikace</h1>
+            <p>Přehled toho, co se děje kolem tvých aktivit.</p>
+            <div class="status-grid">
+              <div class="status-card"><strong id="createdActivitiesCount">0</strong><span>celkem</span></div>
+              <div class="status-card"><strong id="joinedActivitiesCount">0</strong><span>nepřečtené</span></div>
+              <div class="status-card"><strong id="latestNoticeCount">0</strong><span>aktivity</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="card panel">
+            <h2>Seznam</h2>
+            <p class="lead">Follow, zprávy a dění kolem aktivit na jednom místě.</p>
+            <div class="notice-list" id="noticeList">
+              <div class="empty-state">Načítám notifikace...</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const sidebarUserPhoto = document.getElementById("sidebarUserPhoto");
+      const sidebarUserName = document.getElementById("sidebarUserName");
+      const sidebarUserEmail = document.getElementById("sidebarUserEmail");
+      const topUserPhoto = document.getElementById("topUserPhoto");
+      const topUserName = document.getElementById("topUserName");
+      const noticeList = document.getElementById("noticeList");
+      const notificationsNavBadge = document.getElementById("notificationsNavBadge");
+      const messagesNavBadge = document.getElementById("messagesNavBadge");
+      const markAllReadBtn = document.getElementById("markAllReadBtn");
+      const createdActivitiesCount = document.getElementById("createdActivitiesCount");
+      const joinedActivitiesCount = document.getElementById("joinedActivitiesCount");
+      const latestNoticeCount = document.getElementById("latestNoticeCount");
+      let currentUser = null;
+      let latestNotifications = [];
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const safeCount = Number(count) || 0;
+        target.textContent = safeCount > 99 ? "99+" : String(safeCount);
+        target.classList.toggle("is-visible", safeCount > 0);
+      }
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setHeaderUser(profile, user) {
+        const photo = profile?.photo || user?.photoURL || "https://via.placeholder.com/100x100.png?text=+";
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+
+        sidebarUserPhoto.src = photo;
+        sidebarUserName.textContent = name;
+        sidebarUserEmail.textContent = email;
+        topUserPhoto.src = photo;
+        topUserName.textContent = name;
+      }
+
+      document.getElementById("sidebarHomeBtn").onclick = () => { window.location.href = "index.html"; };
+      document.getElementById("settingsBtn").onclick = () => { window.location.href = "settings.html"; };
+      document.getElementById("logoutBtn").onclick = async () => {
+        await auth.signOut();
+        localStorage.removeItem("zunoProfile");
+        window.location.href = "index.html";
+      };
+
+      function formatDateTime(value) {
+        if (!value) return "";
+        const dt = new Date(value);
+        if (isNaN(dt.getTime())) return "";
+        return dt.toLocaleString("cs-CZ", {
+          day: "numeric",
+          month: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+
+      function renderNotificationItem(item) {
+        const div = document.createElement("div");
+        div.className = `notice-item${item.read ? "" : " unread"}`;
+        const avatar = item.actorPhoto || item.photo || "https://via.placeholder.com/100x100.png?text=+";
+        div.innerHTML = `
+          <img class="notice-avatar" src="${avatar}" alt="Profil">
+          <div class="notice-body">
+            <strong>${item.title || "Notifikace"}</strong>
+            <span>${item.body || ""}</span>
+          </div>
+          <div class="notice-meta">
+            <span>${formatDateTime(item.createdAt)}</span>
+            <span>${item.type === "follow" ? "Sledování" : item.type === "message" ? "Zpráva" : "Aktivita"}</span>
+          </div>
+        `;
+
+        div.onclick = async () => {
+          if (item.type === "follow" && item.actorUid) {
+            await db.collection("notifications").doc(item.id).set({ read: true }, { merge: true });
+            window.location.href = `profil.html?uid=${item.actorUid}`;
+            return;
+          }
+
+          if (item.type === "message" && item.conversationId) {
+            await db.collection("notifications").doc(item.id).set({ read: true }, { merge: true });
+            if (item.actorUid) {
+              window.location.href = `messages.html?uid=${item.actorUid}`;
+            } else {
+              window.location.href = "messages.html";
+            }
+          }
+        };
+
+        return div;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+
+        setHeaderUser(readProfileCache(), user);
+
+        db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((total, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const hasUnread = Boolean(data.lastSenderUid && data.lastSenderUid !== user.uid && Number(data.lastMessageAt || 0) > readAt);
+              return total + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(messagesNavBadge, unreadCount);
+          });
+
+        db.collection("activities").where("authorUid", "==", user.uid).onSnapshot((activitySnapshot) => {
+          const myCreated = activitySnapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+          latestNoticeCount.textContent = myCreated.length;
+        });
+
+        db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .onSnapshot((snapshot) => {
+            const notifications = snapshot.docs
+              .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+              .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            latestNotifications = notifications;
+
+            createdActivitiesCount.textContent = notifications.length;
+            joinedActivitiesCount.textContent = notifications.filter((item) => item.read === false).length;
+            setSidebarBadge(notificationsNavBadge, notifications.filter((item) => item.read === false).length);
+
+            if (!notifications.length) {
+              noticeList.innerHTML = `<div class="empty-state">Zatím tu nejsou notifikace. Jakmile tě někdo začne sledovat nebo ti napíše, objeví se to tady.</div>`;
+              return;
+            }
+
+            noticeList.innerHTML = "";
+            notifications.slice(0, 12).forEach((item) => {
+              noticeList.appendChild(renderNotificationItem(item));
+            });
+          });
+
+        markAllReadBtn.onclick = async () => {
+          const unread = latestNotifications.filter((item) => item.read === false);
+          if (!unread.length || !currentUser?.uid) return;
+          await Promise.all(
+            unread.map((item) => db.collection("notifications").doc(item.id).set({ read: true }, { merge: true }))
+          );
+        };
+      });
+    });
+  </script>
+</body>
+</html>

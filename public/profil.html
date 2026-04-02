@@ -1,0 +1,2925 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zuno - Profil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    (function () {
+      try {
+        const preference = localStorage.getItem("zunoThemePreference") || "system";
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = preference === "system" ? (systemDark ? "dark" : "light") : preference;
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    }());
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --text: #0d1726;
+      --muted: #607089;
+      --primary: #73e0c2;
+      --accent: #90b7ff;
+      --danger: #d85d6d;
+      --line: rgba(10, 21, 37, 0.08);
+      --surface: rgba(255, 255, 255, 0.94);
+      --surface-strong: #ffffff;
+      --surface-soft: rgba(247, 250, 255, 0.74);
+      --shadow: 0 24px 60px rgba(8, 17, 34, 0.12);
+      --shadow-soft: 0 16px 38px rgba(8, 17, 34, 0.08);
+      --sidebar-width: 300px;
+      --bg: linear-gradient(180deg, #f3f4f1 0%, #eef1f5 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.12), transparent 24%),
+        linear-gradient(180deg, rgba(8, 19, 33, 0.98), rgba(12, 29, 51, 0.98));
+      --sidebar-text: #edf4ff;
+      --hero-bg:
+        linear-gradient(180deg, rgba(7, 16, 30, 0.18), rgba(7, 16, 30, 0.56)),
+        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80") center center / cover no-repeat;
+      --hero-panel: linear-gradient(135deg, #0d1b30 0%, #122946 58%, #153551 100%);
+    }
+
+    :root[data-theme="dark"] {
+      --text: #eaf1ff;
+      --muted: #9baec8;
+      --line: rgba(255, 255, 255, 0.08);
+      --surface: #142030;
+      --surface-strong: #172537;
+      --surface-soft: rgba(19, 35, 58, 0.8);
+      --shadow: 0 24px 60px rgba(1, 8, 18, 0.38);
+      --shadow-soft: 0 16px 38px rgba(1, 8, 18, 0.24);
+      --bg: linear-gradient(180deg, #0b1118 0%, #101824 100%);
+      --sidebar-bg:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(4, 11, 22, 0.98), rgba(8, 19, 33, 0.98));
+      --sidebar-text: #edf4ff;
+      --hero-panel: linear-gradient(135deg, #0c182a 0%, #10233d 58%, #12314a 100%);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 78%);
+    }
+
+    :root[data-theme="light"] body::before {
+      background-image:
+        linear-gradient(rgba(10, 21, 37, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 21, 37, 0.035) 1px, transparent 1px);
+    }
+
+    :root[data-theme="dark"] body::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      min-height: 100vh;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 10px 0 28px rgba(3, 10, 20, 0.12);
+    }
+
+    :root[data-theme="light"] .sidebar {
+      background:
+        radial-gradient(circle at top left, rgba(115, 224, 194, 0.2), transparent 24%),
+        linear-gradient(180deg, rgba(245, 250, 255, 0.96), rgba(233, 241, 251, 0.96));
+      color: #0b1728;
+      border-right-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 14px 0 40px rgba(8, 17, 34, 0.08);
+    }
+
+    .sidebar-brand,
+    .brand-block,
+    .sidebar-nav,
+    .topbar,
+    .top-actions,
+    .hero-meta,
+    .hero-actions,
+    .stats-strip,
+    .content-grid,
+    .section-head,
+    .user-row,
+    .activity-actions,
+    .activity-meta-line {
+      display: flex;
+    }
+
+    .sidebar-brand {
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-block {
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #081321;
+      font-family: "Sora", sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 14px 26px rgba(115, 224, 194, 0.26);
+    }
+
+    .brand {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-caption {
+      color: rgba(234, 241, 255, 0.62);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    :root[data-theme="light"] .brand-caption {
+      color: rgba(10, 21, 37, 0.52);
+    }
+
+    .home-btn,
+    .sidebar-link,
+    .sidebar-button,
+    .pill-btn,
+    .action-btn,
+    .save-btn,
+    .upload-label,
+    .details-toggle {
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .home-btn:hover,
+    .sidebar-link:hover,
+    .sidebar-button:hover,
+    .pill-btn:hover,
+    .action-btn:hover,
+    .save-btn:hover,
+    .upload-label:hover,
+    .details-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: inherit;
+      cursor: pointer;
+    }
+
+    :root[data-theme="light"] .home-btn,
+    :root[data-theme="light"] .sidebar-user,
+    :root[data-theme="light"] .sidebar-link,
+    :root[data-theme="light"] .sidebar-button {
+      background: rgba(255, 255, 255, 0.82);
+      color: #0a1525;
+      border-color: rgba(10, 21, 37, 0.08);
+      box-shadow: 0 12px 24px rgba(8, 17, 34, 0.06);
+    }
+
+    .sidebar-user {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-user img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .sidebar-user strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .sidebar-user span {
+      display: block;
+      color: rgba(234, 241, 255, 0.68);
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    :root[data-theme="light"] .sidebar-user span {
+      color: #5e6b80;
+    }
+
+    .sidebar-nav {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-link {
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #ebf2ff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.22), rgba(144, 183, 255, 0.2));
+      border-color: rgba(115, 224, 194, 0.18);
+    }
+
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+    }
+
+    :root[data-theme="light"] .sidebar-icon {
+      background: rgba(115, 224, 194, 0.12);
+      color: #20456a;
+      border-color: rgba(10, 21, 37, 0.06);
+    }
+
+    .sidebar-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.96), rgba(134, 190, 255, 0.96));
+      color: #081321;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .sidebar-badge.is-visible {
+      display: inline-flex;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      display: grid;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-button {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .main {
+      padding: 20px 24px 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .product-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      max-width: 1180px;
+      margin: 0 auto 2px;
+      padding: 0;
+    }
+
+    .product-nav-left,
+    .product-nav-right,
+    .product-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .product-mark {
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .nav-link,
+    .nav-summary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 0 14px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .nav-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .nav-link.active,
+    .nav-summary.active,
+    .nav-dropdown[open] > .nav-summary {
+      color: var(--text);
+    }
+
+    .nav-link.active::after,
+    .nav-summary.active::after,
+    .nav-dropdown[open] > .nav-summary::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      min-width: 220px;
+      display: grid;
+      gap: 2px;
+      padding: 8px;
+      border-radius: 8px;
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 34px rgba(8, 17, 34, 0.14);
+      z-index: 20;
+    }
+
+    .nav-menu a {
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-menu a:hover {
+      background: rgba(115, 224, 194, 0.08);
+    }
+
+    .topbar,
+    .card {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      max-width: 1180px;
+      margin: 0 auto 14px;
+      padding: 10px 0 0;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .top-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .top-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+    }
+
+    .top-user img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .top-user span {
+      font-size: 14px;
+      font-weight: 700;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pill-btn,
+    .action-btn,
+    .save-btn,
+    .upload-label,
+    .details-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 11px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(8, 17, 34, 0.05);
+    }
+
+    .pill-btn.primary,
+    .action-btn.primary,
+    .save-btn,
+    .upload-label {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.96), rgba(144, 183, 255, 0.92));
+      color: #07111f;
+      border-color: transparent;
+      box-shadow: 0 16px 30px rgba(57, 201, 170, 0.16);
+    }
+
+    .pill-btn.secondary,
+    .action-btn.secondary,
+    .details-toggle {
+      background: transparent;
+    }
+
+    .action-btn.danger {
+      background: linear-gradient(135deg, #ee7882, var(--danger));
+      border-color: transparent;
+      color: white;
+    }
+
+    .card {
+      padding: 22px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .hero-card {
+      overflow: hidden;
+      padding: 0;
+      background: var(--hero-panel);
+      color: #eff5ff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-cover {
+      height: 176px;
+      background: var(--hero-bg);
+    }
+
+    .hero-body {
+      padding: 0 24px 24px;
+      margin-top: -48px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-main {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 22px;
+      align-items: end;
+    }
+
+    .avatar-panel {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .avatar-button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+      width: fit-content;
+      border-radius: 8px;
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 6px solid rgba(255, 255, 255, 0.94);
+      background: #dce6f4;
+      box-shadow: 0 20px 40px rgba(5, 11, 21, 0.28);
+      transition: transform 0.18s ease;
+    }
+
+    .avatar-button:hover .avatar,
+    .avatar-button:focus-visible .avatar {
+      transform: scale(1.02);
+    }
+
+    .avatar-button:focus-visible {
+      outline: none;
+    }
+
+    .photo-input {
+      display: none;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 8px rgba(115, 224, 194, 0.16);
+    }
+
+    .hero-title-wrap {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2.1rem, 4vw, 3.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-real-name {
+      color: rgba(238, 245, 255, 0.7);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .hero-bio {
+      margin: 0;
+      max-width: 720px;
+      color: rgba(238, 245, 255, 0.84);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .hero-meta {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      font-weight: 700;
+      color: #e9f2ff;
+    }
+
+    .contact-pill {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      font-weight: 700;
+      color: #ebf3ff;
+    }
+
+    .hero-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .stats-strip {
+      gap: 0;
+      flex-wrap: wrap;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .stat-chip {
+      flex: 1 1 170px;
+      min-width: 0;
+      padding: 18px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat-chip:last-child {
+      border-right: 0;
+    }
+
+    .stat-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-bottom: 6px;
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .content-grid {
+      gap: 18px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .main-col,
+    .side-col {
+      min-width: 0;
+      display: grid;
+      gap: 18px;
+    }
+
+    .main-col {
+      flex: 1 1 640px;
+    }
+
+    .side-col {
+      flex: 0 1 360px;
+    }
+
+    .section-head {
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      margin: 0 0 6px;
+      font-family: "Sora", sans-serif;
+      font-size: 1.55rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .section-lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.12);
+      border: 1px solid rgba(115, 224, 194, 0.16);
+      color: #28537d;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    :root[data-theme="dark"] .section-badge {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.16), rgba(144, 183, 255, 0.18));
+      color: #cfe2ff;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .activity-card,
+    .user-card,
+    .empty-state,
+    .readonly-note {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+    }
+
+    .activity-card {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .activity-card.past {
+      opacity: 0.78;
+      background: color-mix(in srgb, var(--surface-strong) 88%, #10192a 12%);
+    }
+
+    .activity-card.past .activity-title,
+    .activity-card.past .organizer-line strong {
+      color: color-mix(in srgb, var(--text) 82%, transparent 18%);
+    }
+
+    .activity-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .activity-title {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .activity-meta {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .activity-meta-line {
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .activity-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #7f95b5;
+    }
+
+    .activity-state::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 18%, transparent);
+    }
+
+    .activity-state.today {
+      color: #73e0c2;
+    }
+
+    .activity-state.upcoming {
+      color: #8fb7ff;
+    }
+
+    .activity-state.past {
+      color: #93a1b8;
+    }
+
+    .activity-badge,
+    .status-chip,
+    .person-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .activity-badge {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.28), rgba(144, 183, 255, 0.22));
+      border: 1px solid rgba(115, 224, 194, 0.28);
+      color: #1c4a74;
+      box-shadow: 0 10px 24px rgba(57, 201, 170, 0.14);
+    }
+
+    .activity-badge.joined {
+      background: linear-gradient(135deg, rgba(255, 205, 129, 0.24), rgba(144, 183, 255, 0.18));
+      border: 1px solid rgba(255, 205, 129, 0.22);
+      color: #7a4d16;
+      box-shadow: 0 10px 24px rgba(255, 205, 129, 0.1);
+    }
+
+    :root[data-theme="dark"] .activity-badge {
+      background: linear-gradient(135deg, rgba(115, 224, 194, 0.2), rgba(144, 183, 255, 0.18));
+      border: 1px solid rgba(115, 224, 194, 0.16);
+      color: #9fe8d7;
+      box-shadow: 0 10px 24px rgba(57, 201, 170, 0.1);
+    }
+
+    :root[data-theme="dark"] .activity-badge.joined {
+      background: linear-gradient(135deg, rgba(255, 205, 129, 0.18), rgba(144, 183, 255, 0.14));
+      border: 1px solid rgba(255, 205, 129, 0.14);
+      color: #ffd38b;
+      box-shadow: 0 10px 24px rgba(255, 205, 129, 0.08);
+    }
+
+    .organizer-line {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .organizer-line strong {
+      color: var(--text);
+    }
+
+    .joined-line {
+      color: #c28a1f;
+      font-weight: 700;
+    }
+
+    :root[data-theme="dark"] .joined-line {
+      color: #ffd38b;
+    }
+
+    .status-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+      color: var(--text);
+      letter-spacing: 0;
+      text-transform: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .person-pill {
+      gap: 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      color: var(--text);
+      letter-spacing: 0;
+      text-transform: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .person-pill img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .activity-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .user-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+    }
+
+    .user-row {
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .user-card img {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #dbe4ef;
+      flex-shrink: 0;
+    }
+
+    .user-meta {
+      min-width: 0;
+    }
+
+    .user-meta strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .user-meta span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    :root[data-theme="dark"] .user-meta strong {
+      color: #eef4ff;
+    }
+
+    .user-cta {
+      flex-shrink: 0;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(115, 224, 194, 0.12);
+      color: #264d81;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .details-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .details-card[open] {
+      box-shadow: var(--shadow-soft);
+    }
+
+    .details-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .details-toggle::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-label {
+      display: grid;
+      gap: 5px;
+      text-align: left;
+    }
+
+    .details-label strong {
+      font-family: "Sora", sans-serif;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .details-label span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .details-chevron {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .details-card[open] .details-chevron {
+      transform: rotate(180deg);
+    }
+
+    .details-content {
+      padding: 0 22px 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .form-grid,
+    .field-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 15px;
+      font-size: 15px;
+      background: var(--surface-strong);
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #8ab4ff;
+      box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.14);
+    }
+
+    .save-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty-state,
+    .readonly-note {
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      background: var(--surface-soft);
+      border-style: dashed;
+    }
+
+    .readonly-note {
+      display: none;
+    }
+
+    .photo-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(4, 10, 20, 0.82);
+      backdrop-filter: blur(10px);
+      z-index: 50;
+    }
+
+    .photo-modal.is-open {
+      display: flex;
+    }
+
+    .photo-modal-panel {
+      position: relative;
+      width: min(92vw, 920px);
+      max-height: 88vh;
+      padding: 56px 18px 18px;
+      border-radius: 28px;
+      background: rgba(10, 20, 36, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.44);
+    }
+
+    .photo-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      color: #eef5ff;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .photo-modal-stage {
+      max-height: calc(88vh - 74px);
+      overflow: auto;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .photo-modal-image {
+      max-width: 100%;
+      max-height: calc(88vh - 110px);
+      object-fit: contain;
+      cursor: zoom-in;
+      transform: scale(1);
+      transform-origin: center center;
+      transition: transform 0.18s ease;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .photo-modal-image.is-zoomed {
+      transform: scale(1.7);
+      cursor: zoom-out;
+    }
+
+    .profile-shell {
+      display: grid;
+      gap: 18px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 20px;
+    }
+
+    .profile-summary {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .summary-main {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .summary-heading {
+      display: grid;
+      gap: 4px;
+    }
+
+    .summary-title {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+    }
+
+    .summary-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .summary-bio {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .summary-meta,
+    .summary-actions,
+    .stats-inline,
+    .feed-head,
+    .secondary-grid,
+    .compact-row {
+      display: flex;
+    }
+
+    .summary-meta {
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .profile-shell .avatar {
+      width: 112px;
+      height: 112px;
+      border-radius: 8px;
+      border-width: 4px;
+      box-shadow: 0 14px 30px rgba(5, 11, 21, 0.18);
+    }
+
+    .profile-shell .avatar-panel {
+      gap: 10px;
+    }
+
+    .summary-actions {
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px solid var(--line);
+    }
+
+    .stats-inline {
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .inline-stat {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .inline-stat strong {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .inline-divider {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--muted) 60%, transparent);
+    }
+
+    .feed-card,
+    .compact-card {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 20px;
+    }
+
+    .feed-head {
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .feed-list,
+    .compact-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .feed-item {
+      display: grid;
+      gap: 12px;
+      padding: 16px 18px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-strong);
+    }
+
+    .feed-item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .feed-item-title {
+      margin: 0 0 6px;
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .feed-item-meta {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .feed-item-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .feed-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      color: #28537d;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    :root[data-theme="dark"] .feed-badge {
+      color: #d8e6ff;
+    }
+
+    .feed-item-user {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .feed-item-user img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #dbe4ef;
+    }
+
+    .feed-item-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .secondary-grid {
+      max-width: 1180px;
+      margin: 0 auto;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+
+    .secondary-grid > .card {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+
+    .compact-row {
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .compact-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .compact-row strong {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .edit-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(4, 10, 20, 0.72);
+      backdrop-filter: blur(10px);
+      z-index: 44;
+    }
+
+    .edit-modal.is-open {
+      display: flex;
+    }
+
+    .edit-modal-panel {
+      position: relative;
+      width: min(760px, 100%);
+      max-height: min(88vh, 920px);
+      overflow: auto;
+      padding: 24px;
+      border-radius: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .edit-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface-strong);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        min-height: auto;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .product-nav {
+        gap: 12px;
+      }
+
+      .product-nav-left,
+      .product-nav-links {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero-main,
+      .field-grid,
+      .content-grid,
+      .profile-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .content-grid {
+        display: grid;
+      }
+
+      .stat-chip {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .stat-chip:last-child {
+        border-bottom: 0;
+      }
+
+      .main-col,
+      .side-col {
+        flex: auto;
+      }
+
+      .profile-summary {
+        gap: 14px;
+      }
+
+      .summary-actions {
+        padding-top: 0;
+        border-top: 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 16px;
+      }
+
+      .topbar,
+      .hero-body,
+      .card,
+      .details-content,
+      .details-toggle {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .hero-body {
+        padding-bottom: 18px;
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .hero-real-name {
+        font-size: 0.95rem;
+      }
+
+      .hero-bio {
+        font-size: 0.96rem;
+        line-height: 1.65;
+      }
+
+      .hero-meta,
+      .hero-actions,
+      .activity-actions {
+        gap: 12px;
+      }
+
+      .meta-pill,
+      .tag,
+      .action-btn,
+      .details-toggle,
+      .pill-btn {
+        max-width: 100%;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .hero-actions .action-btn {
+        width: 100%;
+      }
+
+      .avatar {
+        width: 124px;
+        height: 124px;
+      }
+
+      .photo-modal {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-block">
+          <div class="brand-mark">Z</div>
+          <div>
+            <div class="brand">Zuno</div>
+            <div class="brand-caption">Lidé. Aktivity. Plány.</div>
+          </div>
+        </div>
+        <button class="home-btn" id="sidebarHomeBtn" type="button" aria-label="Domů">⌂</button>
+      </div>
+
+      <div class="sidebar-user">
+        <img id="sidebarUserPhoto" alt="Profil" />
+        <div>
+          <strong id="sidebarUserName">Načítám...</strong>
+          <span id="sidebarUserEmail">Přihlášený uživatel</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="sidebar-link active" href="profil.html"><span class="sidebar-icon">◉</span><span>Profil</span></a>
+        <a class="sidebar-link" href="app.html?scope=all"><span class="sidebar-icon">✦</span><span>Aktivity</span></a>
+        <a class="sidebar-link" href="users.html"><span class="sidebar-icon">☻</span><span>Komunita</span></a>
+        <a class="sidebar-link" href="messages.html"><span class="sidebar-icon">✉</span><span>Zprávy</span><span class="sidebar-badge" id="messagesNavBadge">0</span></a>
+        <a class="sidebar-link" href="notifications.html"><span class="sidebar-icon">✳</span><span>Notifikace</span><span class="sidebar-badge" id="notificationsNavBadge">0</span></a>
+        <a class="sidebar-link" href="settings.html"><span class="sidebar-icon">⚙</span><span>Nastavení</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-button" id="logoutBtn" type="button">Odhlásit se</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page">
+        <div class="product-nav">
+          <div class="product-nav-left">
+            <a class="product-mark" href="app.html?scope=all">Zuno</a>
+            <div class="product-nav-links">
+              <a class="nav-link" href="app.html?scope=all">Aktivity</a>
+              <a class="nav-link" href="users.html">Komunita</a>
+              <a class="nav-link" href="messages.html">Zprávy</a>
+              <a class="nav-link active" href="profil.html">Profil</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar">
+          <div class="top-actions">
+            <button class="pill-btn secondary" id="homeBtn" type="button">Domů</button>
+            <button class="pill-btn secondary" id="messagesBtn" type="button">Zprávy</button>
+            <button class="pill-btn primary" id="shareProfileBtn" type="button">Sdílet profil</button>
+          </div>
+          <div class="top-user">
+            <img id="topUserPhoto" alt="Můj profil" />
+            <span id="topUserName">Načítám...</span>
+          </div>
+        </div>
+
+        <section class="card profile-shell">
+          <div class="profile-summary">
+            <div class="avatar-panel">
+              <button class="avatar-button" id="profileAvatarButton" type="button" aria-label="Otevřít profilovou fotku">
+                <img class="avatar" id="profileAvatar" alt="Profilová fotka" />
+              </button>
+              <label class="upload-label" id="photoUploadLabel" for="profilePhotoInput">Změnit fotku</label>
+              <input class="photo-input" id="profilePhotoInput" type="file" accept="image/*" />
+            </div>
+
+            <div class="summary-main">
+              <div class="summary-heading">
+                <h1 class="summary-title" id="profileDisplayName">Můj profil</h1>
+                <div class="summary-subtitle" id="profileRealName">Načítám jméno...</div>
+              </div>
+
+              <div class="summary-meta">
+                <span class="summary-chip" id="profileCityPill">Město: -</span>
+                <span class="summary-chip" id="profileEmailPill">Kontakt: -</span>
+                <span class="summary-chip" id="sportLevel">Úroveň: -</span>
+              </div>
+
+              <p class="summary-bio" id="profileDisplayBio">Profil se načítá.</p>
+              <div class="tags" id="heroTags"></div>
+            </div>
+          </div>
+
+          <div class="stats-inline">
+            <div class="inline-stat"><strong id="followersStat">0</strong><span>sleduje mě</span></div>
+            <div class="inline-divider"></div>
+            <div class="inline-stat"><strong id="followingStat">0</strong><span>sleduju</span></div>
+            <div class="inline-divider"></div>
+            <div class="inline-stat"><strong id="levelStat">-</strong><span id="levelStatSub">úroveň</span></div>
+            <div class="inline-divider"></div>
+            <div class="inline-stat"><strong id="primarySportStat">-</strong><span id="primarySportStatSub">hlavní sport</span></div>
+          </div>
+
+          <div class="summary-actions">
+            <button class="action-btn secondary" id="editProfileBtn" type="button">Upravit profil</button>
+            <a class="action-btn secondary" id="addActivityBtn" href="app.html?scope=all">Přidat aktivitu</a>
+            <button class="action-btn secondary" id="followProfileBtn" type="button">Sledovat</button>
+            <button class="action-btn primary" id="messageProfileBtn" type="button">Napsat zprávu</button>
+          </div>
+        </section>
+
+        <section class="card feed-card">
+          <div class="feed-head">
+            <div>
+              <h2 class="section-title">Aktivity</h2>
+              <p class="section-lead" id="activitiesLead">Hlavní přehled toho, co je pro tenhle profil právě aktuální.</p>
+            </div>
+            <a class="action-btn secondary" id="activitiesPageBtn" href="app.html?scope=mine">Otevřít vše</a>
+          </div>
+          <div class="feed-list" id="profileActivitiesList">
+            <div class="empty-state">Načítám aktivity...</div>
+          </div>
+        </section>
+
+        <section class="secondary-grid">
+          <section class="card compact-card">
+            <div class="feed-head">
+              <div>
+                <h2 class="section-title">Sportovní profil</h2>
+                <p class="section-lead">Jen to podstatné bez zbytečného balastu.</p>
+              </div>
+              <div class="section-badge">Sport</div>
+            </div>
+            <div class="compact-list">
+              <div class="compact-row"><span>Hlavní sport</span><strong id="sportPrimarySport">-</strong></div>
+              <div class="compact-row"><span>Typ sportovce</span><strong id="sportAthleteType">-</strong></div>
+            </div>
+            <div class="tags" id="sportTags"></div>
+          </section>
+
+          <section class="card compact-card">
+            <div class="feed-head">
+              <div>
+                <h2 class="section-title">Komunita</h2>
+                <p class="section-lead">Kontakty jsou sekundární, ale pořád po ruce.</p>
+              </div>
+              <div class="section-badge">Lidé</div>
+            </div>
+            <div class="compact-list">
+              <div class="compact-row">
+                <span>Kdo mě sleduje</span>
+                <strong><span id="followersCountLabel">0</span></strong>
+              </div>
+              <div class="compact-row">
+                <span>Koho sleduju já</span>
+                <strong><span id="followingCountLabel">0</span></strong>
+              </div>
+            </div>
+            <div class="activity-actions">
+              <a class="action-btn secondary" id="followersPageBtn" href="users.html?tab=followers">Sledující</a>
+              <a class="action-btn secondary" id="followingPageBtn" href="users.html?tab=following">Sledované</a>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="edit-modal" id="editModal" aria-hidden="true">
+    <div class="edit-modal-panel" id="editCard">
+      <button class="edit-modal-close" id="editModalClose" type="button" aria-label="Zavřít úpravu profilu">×</button>
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Upravit profil</h2>
+          <p class="section-lead">Editace je schovaná bokem, aby profil zůstal čistý.</p>
+        </div>
+        <div class="section-badge">Editace</div>
+      </div>
+
+      <div class="readonly-note" id="readonlyNote">
+        Díváš se na veřejný profil jiného uživatele. Tuhle část nemůžeš upravovat.
+      </div>
+
+      <div class="form-grid">
+        <div class="field-grid">
+          <div class="field">
+            <label for="profileNameInput">Jméno</label>
+            <input id="profileNameInput" placeholder="Např. Vojta Burian" />
+          </div>
+          <div class="field">
+            <label for="profileCityInput">Město</label>
+            <input id="profileCityInput" placeholder="Např. Praha" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="profileBioInput">Bio</label>
+          <textarea id="profileBioInput" placeholder="Napiš něco o sobě a o tom, co tě baví."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="profileHobbiesInput">Sporty a aktivity</label>
+          <input id="profileHobbiesInput" placeholder="Např. padel, běh, tenis, turistika" />
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="profileLevelInput">Sportovní úroveň</label>
+            <select id="profileLevelInput">
+              <option value="">Vyber úroveň</option>
+              <option value="Začátečník">Začátečník</option>
+              <option value="Mírně pokročilý">Mírně pokročilý</option>
+              <option value="Pokročilý">Pokročilý</option>
+              <option value="Závodní">Závodní</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="profileAthleteTypeInput">Typ sportovce</label>
+            <select id="profileAthleteTypeInput">
+              <option value="">Vyber typ</option>
+              <option value="Chci partu">Chci partu</option>
+              <option value="Chci soupeře">Chci soupeře</option>
+              <option value="Chci trénovat">Chci trénovat</option>
+              <option value="Jdu si jen zahrát">Jdu si jen zahrát</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="save-btn" id="saveProfileBtn" type="button">Uložit profil</button>
+          <div class="helper" id="saveHelper">Fotku můžeš změnit nahoře u avatara.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="photo-modal" id="photoModal" aria-hidden="true">
+    <div class="photo-modal-panel">
+      <button class="photo-modal-close" id="photoModalClose" type="button" aria-label="Zavřít fotku">×</button>
+      <div class="photo-modal-stage">
+        <img class="photo-modal-image" id="photoModalImage" alt="Profilová fotka ve větším zobrazení" />
+      </div>
+    </div>
+  </div>
+
+  <script defer src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.12.2/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+
+  <script>
+    async function initProfilePage() {
+      const params = new URLSearchParams(window.location.search);
+      const viewedUidParam = params.get("uid");
+
+      const els = {
+        sidebarUserPhoto: document.getElementById("sidebarUserPhoto"),
+        sidebarUserName: document.getElementById("sidebarUserName"),
+        sidebarUserEmail: document.getElementById("sidebarUserEmail"),
+        notificationsNavBadge: document.getElementById("notificationsNavBadge"),
+        messagesNavBadge: document.getElementById("messagesNavBadge"),
+        sidebarHomeBtn: document.getElementById("sidebarHomeBtn"),
+        homeBtn: document.getElementById("homeBtn"),
+        logoutBtn: document.getElementById("logoutBtn"),
+        topUserPhoto: document.getElementById("topUserPhoto"),
+        topUserName: document.getElementById("topUserName"),
+        shareProfileBtn: document.getElementById("shareProfileBtn"),
+        messagesBtn: document.getElementById("messagesBtn"),
+        messageProfileBtn: document.getElementById("messageProfileBtn"),
+        editProfileBtn: document.getElementById("editProfileBtn"),
+        followProfileBtn: document.getElementById("followProfileBtn"),
+        profileAvatarButton: document.getElementById("profileAvatarButton"),
+        profileAvatar: document.getElementById("profileAvatar"),
+        profilePhotoInput: document.getElementById("profilePhotoInput"),
+        photoUploadLabel: document.getElementById("photoUploadLabel"),
+        profileDisplayName: document.getElementById("profileDisplayName"),
+        profileRealName: document.getElementById("profileRealName"),
+        profileDisplayBio: document.getElementById("profileDisplayBio"),
+        profileCityPill: document.getElementById("profileCityPill"),
+        profileEmailPill: document.getElementById("profileEmailPill"),
+        heroTags: document.getElementById("heroTags"),
+        sportTags: document.getElementById("sportTags"),
+        addActivityBtn: document.getElementById("addActivityBtn"),
+        activitiesLead: document.getElementById("activitiesLead"),
+        activitiesPageBtn: document.getElementById("activitiesPageBtn"),
+        profileActivitiesList: document.getElementById("profileActivitiesList"),
+        followingStat: document.getElementById("followingStat"),
+        followersStat: document.getElementById("followersStat"),
+        levelStat: document.getElementById("levelStat"),
+        levelStatSub: document.getElementById("levelStatSub"),
+        primarySportStat: document.getElementById("primarySportStat"),
+        primarySportStatSub: document.getElementById("primarySportStatSub"),
+        sportPrimarySport: document.getElementById("sportPrimarySport"),
+        sportLevel: document.getElementById("sportLevel"),
+        sportAthleteType: document.getElementById("sportAthleteType"),
+        followersCountLabel: document.getElementById("followersCountLabel"),
+        followersPageBtn: document.getElementById("followersPageBtn"),
+        followingCountLabel: document.getElementById("followingCountLabel"),
+        followingPageBtn: document.getElementById("followingPageBtn"),
+        editModal: document.getElementById("editModal"),
+        editCard: document.getElementById("editCard"),
+        editModalClose: document.getElementById("editModalClose"),
+        readonlyNote: document.getElementById("readonlyNote"),
+        profileNameInput: document.getElementById("profileNameInput"),
+        profileCityInput: document.getElementById("profileCityInput"),
+        profileBioInput: document.getElementById("profileBioInput"),
+        profileHobbiesInput: document.getElementById("profileHobbiesInput"),
+        profileLevelInput: document.getElementById("profileLevelInput"),
+        profileAthleteTypeInput: document.getElementById("profileAthleteTypeInput"),
+        saveProfileBtn: document.getElementById("saveProfileBtn"),
+        saveHelper: document.getElementById("saveHelper"),
+        photoModal: document.getElementById("photoModal"),
+        photoModalClose: document.getElementById("photoModalClose"),
+        photoModalImage: document.getElementById("photoModalImage")
+      };
+
+      const goHome = () => { window.location.href = "index.html"; };
+      els.sidebarHomeBtn.onclick = goHome;
+      els.homeBtn.onclick = goHome;
+      let currentUser = null;
+      let currentViewedUid = viewedUidParam || null;
+      let isOwnProfile = true;
+      let currentProfileData = null;
+      let currentProfilePhoto = "";
+      let resolvedFollowersCount = 0;
+      let resolvedFollowingCount = 0;
+      let isFollowingViewedUser = false;
+      let allActivities = [];
+      let unsubscribeViewedProfile = null;
+      let unsubscribeFollowers = null;
+      let unsubscribeFollowing = null;
+      let unsubscribeFollowState = null;
+      let unsubscribeActivities = null;
+      let unsubscribeUnreadNotifications = null;
+      let unsubscribeUnreadMessages = null;
+      let isPhotoZoomed = false;
+
+      const firebaseApi = window.firebase;
+      const auth = firebaseApi?.auth ? firebaseApi.auth() : null;
+      const db = firebaseApi?.firestore ? firebaseApi.firestore() : null;
+      const firebaseReady = Boolean(auth && db);
+
+      function createFallbackAvatar(name) {
+        const safeName = (name || "Zuno").trim();
+        const seed = Array.from(safeName).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 3), 0);
+        const hueA = seed % 360;
+        const hueB = (hueA + 46) % 360;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-label="Avatar">
+            <defs>
+              <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="hsl(${hueA} 80% 62%)" />
+                <stop offset="100%" stop-color="hsl(${hueB} 72% 48%)" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" rx="78" fill="url(#g)" />
+            <circle cx="160" cy="126" r="54" fill="rgba(255,255,255,0.9)" />
+            <path d="M70 270c18-52 55-78 90-78s72 26 90 78" fill="rgba(255,255,255,0.9)" />
+          </svg>
+        `;
+        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+      }
+
+      function getAvatar(photo, name) {
+        return photo || createFallbackAvatar(name);
+      }
+
+      function readProfileCache() {
+        try {
+          return JSON.parse(localStorage.getItem("zunoProfile") || "null");
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function saveProfileCache(profile) {
+        try {
+          localStorage.setItem("zunoProfile", JSON.stringify(profile));
+        } catch (e) {
+          console.error("Failed to cache profile:", e);
+        }
+      }
+
+      function clearProfileCache() {
+        localStorage.removeItem("zunoProfile");
+      }
+
+      function setSidebarBadge(target, count) {
+        if (!target) return;
+        const value = Number(count) || 0;
+        target.textContent = value > 99 ? "99+" : String(value);
+        target.classList.toggle("is-visible", value > 0);
+      }
+
+      function setCurrentUserHeader(profile, user) {
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+        const photo = getAvatar(profile?.photo || user?.photoURL || "", name);
+        els.sidebarUserPhoto.src = photo;
+        els.sidebarUserName.textContent = name;
+        els.sidebarUserEmail.textContent = email || "Bez e-mailu";
+        els.topUserPhoto.src = photo;
+        els.topUserName.textContent = name;
+      }
+
+      function parseTags(value) {
+        return (value || "")
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+
+      function renderTags(target, value) {
+        if (!target) return;
+        target.innerHTML = "";
+        const tags = parseTags(value);
+        if (!tags.length) {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = "Zatím bez vyplněných sportů";
+          target.appendChild(tag);
+          return;
+        }
+        tags.slice(0, 6).forEach((item) => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = item;
+          target.appendChild(tag);
+        });
+      }
+
+      function renderEmpty(target, text) {
+        target.innerHTML = `<div class="empty-state">${text}</div>`;
+      }
+
+      function toDateTime(activity) {
+        if (!activity?.date) return null;
+        const value = new Date(`${activity.date}T${activity.time || "00:00"}`);
+        return Number.isNaN(value.getTime()) ? null : value;
+      }
+
+      function isPastActivity(activity) {
+        const date = toDateTime(activity);
+        return date ? date < new Date() : false;
+      }
+
+      function isJoinedBy(activity, uid) {
+        const people = Array.isArray(activity?.people) ? activity.people : [];
+        return people.some((person) => person?.uid === uid);
+      }
+
+      function sortActivities(items) {
+        return [...items].sort((a, b) => {
+          const left = toDateTime(a)?.getTime() || 0;
+          const right = toDateTime(b)?.getTime() || 0;
+          return left - right;
+        });
+      }
+
+      function formatFeedDate(activity) {
+        const date = toDateTime(activity);
+        if (!date) return "Bez data";
+        return date.toLocaleDateString("cs-CZ", { day: "numeric", month: "long" });
+      }
+
+      function createFeedActivityCard(activity) {
+        const people = Array.isArray(activity?.people) ? activity.people : [];
+        const isOrganizer = activity?.authorUid === currentUser?.uid;
+        const alreadyJoined = isJoinedBy(activity, currentUser?.uid);
+        const isPast = isPastActivity(activity);
+        const authorName = activity?.authorName || "Uživatel";
+        const authorPhoto = getAvatar(activity?.authorPhoto || "", authorName);
+        const card = document.createElement("article");
+        card.className = "feed-item";
+
+        const stateLabel = isPast ? "Proběhlo" : "Nadcházející";
+        const roleLabel = isOrganizer ? "Organizátor" : (alreadyJoined ? "Přihlášený" : "Aktivita");
+
+        card.innerHTML = `
+          <div class="feed-item-top">
+            <div>
+              <h3 class="feed-item-title">${activity?.name || "Bez názvu"}</h3>
+              <div class="feed-item-meta">${activity?.place || "Bez místa"} • ${formatFeedDate(activity)}${activity?.time ? ` • ${activity.time}` : ""}</div>
+            </div>
+            <div class="feed-item-badges">
+              <span class="feed-badge">${roleLabel}</span>
+              <span class="feed-badge">${stateLabel}</span>
+            </div>
+          </div>
+        `;
+
+        const userButton = document.createElement("button");
+        userButton.type = "button";
+        userButton.className = "feed-item-user";
+        userButton.innerHTML = `<img src="${authorPhoto}" alt="Organizátor"><span>${authorName}</span>`;
+        userButton.onclick = () => {
+          if (!activity?.authorUid) return;
+          window.location.href = `profil.html?uid=${activity.authorUid}`;
+        };
+        card.appendChild(userButton);
+
+        const actions = document.createElement("div");
+        actions.className = "feed-item-actions";
+
+        if (!isOrganizer && !isPast && currentUser) {
+          const joinBtn = document.createElement("button");
+          joinBtn.type = "button";
+          joinBtn.className = `action-btn ${alreadyJoined ? "secondary" : "primary"}`;
+          joinBtn.textContent = alreadyJoined ? "Opustit" : "Přidat se";
+          joinBtn.onclick = async () => {
+            const currentPeople = Array.isArray(activity.people) ? activity.people : [];
+            const joined = currentPeople.some((person) => person.uid === currentUser.uid);
+            const nextPeople = joined
+              ? currentPeople.filter((person) => person.uid !== currentUser.uid)
+              : [...currentPeople, {
+                  uid: currentUser.uid,
+                  name: els.sidebarUserName.textContent || currentUser.displayName || "Uživatel",
+                  photo: els.sidebarUserPhoto.src || currentUser.photoURL || ""
+                }];
+            joinBtn.disabled = true;
+            try {
+              await db.collection("activities").doc(activity.id).update({ people: nextPeople });
+            } catch (error) {
+              console.error("Failed to toggle join on profile feed:", error);
+              alert("Nepodařilo se upravit účast.");
+              joinBtn.disabled = false;
+            }
+          };
+          actions.appendChild(joinBtn);
+        }
+
+        const mapLink = document.createElement("a");
+        mapLink.className = "action-btn secondary";
+        mapLink.href = `https://mapy.com/cs/zakladni?q=${encodeURIComponent(activity?.place || "")}`;
+        mapLink.target = "_blank";
+        mapLink.rel = "noopener";
+        mapLink.textContent = "Otevřít";
+        actions.appendChild(mapLink);
+
+        const shareLink = document.createElement("a");
+        shareLink.className = "action-btn secondary";
+        shareLink.href = `https://wa.me/?text=${encodeURIComponent(`Ahoj, přidej se na ${activity?.name || "aktivitu"} ${activity?.place ? `v ${activity.place}` : ""} ${activity?.date ? `dne ${activity.date}` : ""}.`)}`;
+        shareLink.target = "_blank";
+        shareLink.rel = "noopener";
+        shareLink.textContent = "Pozvat";
+        actions.appendChild(shareLink);
+
+        if (isOrganizer) {
+          const deleteBtn = document.createElement("button");
+          deleteBtn.type = "button";
+          deleteBtn.className = "action-btn danger";
+          deleteBtn.textContent = "Smazat";
+          deleteBtn.onclick = async () => {
+            const confirmed = confirm("Opravdu chceš aktivitu smazat?");
+            if (!confirmed) return;
+            try {
+              await db.collection("activities").doc(activity.id).delete();
+            } catch (error) {
+              console.error("Failed to delete activity from profile feed:", error);
+              alert("Aktivitu se nepodařilo smazat.");
+            }
+          };
+          actions.appendChild(deleteBtn);
+        }
+
+        card.appendChild(actions);
+        return card;
+      }
+
+      function renderProfileActivities() {
+        if (!els.profileActivitiesList) return;
+
+        let items = [...allActivities];
+        if (isOwnProfile && currentUser?.uid) {
+          items = items.filter((activity) => activity.authorUid === currentUser.uid || isJoinedBy(activity, currentUser.uid));
+        } else {
+          items = items.filter((activity) => activity.authorUid === currentViewedUid);
+        }
+
+        items = sortActivities(items).filter((activity) => !isPastActivity(activity));
+
+        if (!items.length) {
+          renderEmpty(
+            els.profileActivitiesList,
+            isOwnProfile
+              ? "Zatím tu nemáš žádné aktuální aktivity. Přidej novou nebo mrkni do přehledu aktivit."
+              : "Tento profil teď nemá žádné aktuální aktivity."
+          );
+          return;
+        }
+
+        els.profileActivitiesList.innerHTML = "";
+        items.slice(0, 6).forEach((activity) => {
+          els.profileActivitiesList.appendChild(createFeedActivityCard(activity));
+        });
+      }
+
+      function setReadonlyMode(readonly) {
+        els.profileNameInput.disabled = readonly;
+        els.profileCityInput.disabled = readonly;
+        els.profileBioInput.disabled = readonly;
+        els.profileHobbiesInput.disabled = readonly;
+        els.profileLevelInput.disabled = readonly;
+        els.profileAthleteTypeInput.disabled = readonly;
+        els.profilePhotoInput.disabled = readonly;
+        els.saveProfileBtn.classList.toggle("hidden", readonly);
+        els.photoUploadLabel.classList.toggle("hidden", readonly);
+        els.editProfileBtn.classList.toggle("hidden", readonly);
+        els.addActivityBtn.classList.toggle("hidden", readonly);
+        els.followProfileBtn.classList.toggle("hidden", readonly);
+        els.readonlyNote.style.display = readonly ? "block" : "none";
+        els.editModal.setAttribute("aria-hidden", readonly ? "true" : els.editModal.getAttribute("aria-hidden"));
+      }
+
+      function fillForm(profile, user) {
+        els.profileNameInput.value = profile?.name || user?.displayName || "";
+        els.profileCityInput.value = profile?.city || "";
+        els.profileBioInput.value = profile?.bio || "";
+        els.profileHobbiesInput.value = profile?.hobbies || "";
+        els.profileLevelInput.value = profile?.level || "";
+        els.profileAthleteTypeInput.value = profile?.athleteType || "";
+      }
+
+      function renderProfile(profile, user) {
+        currentProfileData = profile || {};
+
+        const name = profile?.name || user?.displayName || "Uživatel";
+        const email = profile?.email || user?.email || "";
+        const city = profile?.city || "";
+        const bio = profile?.bio || "Tenhle profil zatím nemá vyplněné bio.";
+        const hobbies = profile?.hobbies || "";
+        const level = profile?.level || "";
+        const athleteType = profile?.athleteType || "";
+        const primarySport = profile?.primarySport || parseTags(hobbies)[0] || "-";
+        const photo = getAvatar(profile?.photo || "", name);
+
+        currentProfilePhoto = profile?.photo || "";
+
+        els.profileAvatar.src = photo;
+        els.profileDisplayName.textContent = name;
+        els.profileRealName.textContent = city || (isOwnProfile ? "Tvůj sportovní profil" : "Veřejný profil");
+        els.profileDisplayBio.textContent = bio;
+        els.profileCityPill.textContent = city || "Město neuvedeno";
+        els.profileEmailPill.textContent = email || "Bez kontaktu";
+        els.levelStat.textContent = level || "-";
+        els.levelStatSub.textContent = athleteType || "úroveň";
+        els.primarySportStat.textContent = primarySport || "-";
+        els.primarySportStatSub.textContent = "hlavní sport";
+        els.sportPrimarySport.textContent = primarySport || "-";
+        els.sportLevel.textContent = `Úroveň: ${level || "-"}`;
+        els.sportAthleteType.textContent = athleteType || "-";
+        els.messageProfileBtn.textContent = isOwnProfile ? "Moje zprávy" : "Napsat zprávu";
+        els.activitiesLead.textContent = isOwnProfile
+          ? "Jedno hlavní místo, kde vidíš to, co organizuješ nebo kam ses přidal."
+          : "Aktuální aktivity, které tenhle profil organizuje nebo řeší.";
+        els.activitiesPageBtn.href = isOwnProfile ? "app.html?scope=mine" : `app.html?scope=all`;
+        els.activitiesPageBtn.textContent = isOwnProfile ? "Moje aktivity" : "Přehled aktivit";
+        els.followersPageBtn.href = `users.html?tab=followers&uid=${encodeURIComponent(currentViewedUid || user?.uid || "")}`;
+        els.followingPageBtn.href = `users.html?tab=following&uid=${encodeURIComponent(currentViewedUid || user?.uid || "")}`;
+
+        renderTags(els.heroTags, hobbies);
+        renderTags(els.sportTags, hobbies);
+        fillForm(profile, user);
+        renderProfileActivities();
+      }
+
+      function openPhotoModal() {
+        if (!els.profileAvatar?.src) return;
+        isPhotoZoomed = false;
+        els.photoModalImage.src = els.profileAvatar.src;
+        els.photoModalImage.classList.remove("is-zoomed");
+        els.photoModal.classList.add("is-open");
+        els.photoModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePhotoModal() {
+        els.photoModal.classList.remove("is-open");
+        els.photoModal.setAttribute("aria-hidden", "true");
+        els.photoModalImage.src = "";
+        els.photoModalImage.classList.remove("is-zoomed");
+        isPhotoZoomed = false;
+        document.body.style.overflow = "";
+      }
+
+      function togglePhotoZoom() {
+        if (!els.photoModal.classList.contains("is-open")) return;
+        isPhotoZoomed = !isPhotoZoomed;
+        els.photoModalImage.classList.toggle("is-zoomed", isPhotoZoomed);
+      }
+
+      async function getProfileByUid(uid) {
+        if (!uid || !db) return null;
+        try {
+          const snap = await db.collection("profiles").doc(uid).get();
+          return snap.exists ? snap.data() : null;
+        } catch (e) {
+          console.error("Failed to fetch profile:", e);
+          return null;
+        }
+      }
+
+      function openMessagesWith(uid) {
+        if (!uid) {
+          window.location.href = "messages.html";
+          return;
+        }
+        window.location.href = `messages.html?uid=${uid}`;
+      }
+
+      async function copyProfileUrl() {
+        const uid = currentViewedUid || currentUser?.uid || "";
+        const profileUrl = `${window.location.origin}/profil.html${uid ? `?uid=${uid}` : ""}`;
+        try {
+          await navigator.clipboard.writeText(profileUrl);
+          els.shareProfileBtn.textContent = "Odkaz zkopírován";
+          setTimeout(() => {
+            els.shareProfileBtn.textContent = "Sdílet profil";
+          }, 1500);
+        } catch (e) {
+          alert(profileUrl);
+        }
+      }
+
+      async function createNotification(payload) {
+        if (!db) return;
+        try {
+          await db.collection("notifications").add({
+            ...payload,
+            createdAt: Date.now(),
+            read: false
+          });
+        } catch (e) {
+          console.error("Failed to create notification:", e);
+        }
+      }
+
+      function subscribeSidebarBadges(user) {
+        unsubscribeUnreadNotifications?.();
+        unsubscribeUnreadMessages?.();
+        if (!db || !user?.uid) return;
+
+        unsubscribeUnreadNotifications = db.collection("notifications")
+          .where("recipientUid", "==", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.filter((docSnap) => docSnap.data()?.read === false).length;
+            setSidebarBadge(els.notificationsNavBadge, unreadCount);
+          });
+
+        unsubscribeUnreadMessages = db.collection("conversations")
+          .where("participants", "array-contains", user.uid)
+          .onSnapshot((snapshot) => {
+            const unreadCount = snapshot.docs.reduce((total, docSnap) => {
+              const data = docSnap.data() || {};
+              const readAt = Number(data.lastReadAtBy?.[user.uid] || 0);
+              const hasUnread = Boolean(
+                data.lastSenderUid &&
+                data.lastSenderUid !== user.uid &&
+                Number(data.lastMessageAt || 0) > readAt
+              );
+              return total + (hasUnread ? 1 : 0);
+            }, 0);
+            setSidebarBadge(els.messagesNavBadge, unreadCount);
+          });
+      }
+
+      async function ensureCurrentUserProfile(user) {
+        if (!db || !user?.uid) return null;
+        const ref = db.collection("profiles").doc(user.uid);
+        const snap = await ref.get();
+        if (snap.exists) return snap.data();
+
+        const payload = {
+          uid: user.uid,
+          name: user.displayName || "Uživatel",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          city: "",
+          bio: "",
+          hobbies: "",
+          followersCount: 0,
+          followingCount: 0,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await ref.set(payload, { merge: true });
+        return payload;
+      }
+
+      async function persistProfileChanges() {
+        if (!db || !currentUser || !isOwnProfile) return;
+
+        const name = els.profileNameInput.value.trim();
+        const city = els.profileCityInput.value.trim();
+        const bio = els.profileBioInput.value.trim();
+        const hobbies = els.profileHobbiesInput.value.trim();
+        const level = els.profileLevelInput.value.trim();
+        const athleteType = els.profileAthleteTypeInput.value.trim();
+        const parsedSports = parseTags(hobbies);
+        const primarySport = parsedSports[0] || "";
+
+        if (!name || !city || !bio || !hobbies) {
+          alert("Vyplň prosím jméno, město, bio i oblíbené sporty.");
+          return;
+        }
+
+        els.saveProfileBtn.disabled = true;
+        els.saveProfileBtn.textContent = "Ukládám...";
+
+        const payload = {
+          uid: currentUser.uid,
+          name,
+          email: currentUser.email || "",
+          photo: currentProfilePhoto || currentProfileData?.photo || currentUser.photoURL || "",
+          city,
+          bio,
+          hobbies,
+          sports: parsedSports,
+          primarySport,
+          athleteType,
+          level,
+          followersCount: resolvedFollowersCount || currentProfileData?.followersCount || 0,
+          followingCount: resolvedFollowingCount || currentProfileData?.followingCount || 0,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        try {
+          await db.collection("profiles").doc(currentUser.uid).set(payload, { merge: true });
+          currentProfileData = { ...(currentProfileData || {}), ...payload };
+          saveProfileCache({
+            ...payload,
+            followersCount: payload.followersCount,
+            followingCount: payload.followingCount
+          });
+          renderProfile(currentProfileData, currentUser);
+          setCurrentUserHeader(currentProfileData, currentUser);
+          els.saveProfileBtn.textContent = "Uloženo";
+        } catch (e) {
+          console.error("Failed to save profile:", e);
+          alert("Profil se nepodařilo uložit.");
+          els.saveProfileBtn.textContent = "Uložit profil";
+        } finally {
+          setTimeout(() => {
+            els.saveProfileBtn.disabled = false;
+            els.saveProfileBtn.textContent = "Uložit profil";
+          }, 1200);
+        }
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Soubor se nepodařilo přečíst."));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Obrázek se nepodařilo načíst."));
+          img.src = src;
+        });
+      }
+
+      async function compressImage(file) {
+        const source = await readFileAsDataUrl(file);
+        const img = await loadImage(source);
+        const maxSide = 420;
+        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const width = Math.max(1, Math.round(img.width * scale));
+        const height = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        return canvas.toDataURL("image/jpeg", 0.78);
+      }
+
+      async function handlePhotoChange(event) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        if (!isOwnProfile) {
+          event.target.value = "";
+          return;
+        }
+        if (!file.type.startsWith("image/")) {
+          alert("Vyber prosím obrázek.");
+          event.target.value = "";
+          return;
+        }
+
+        els.photoUploadLabel.textContent = "Nahrávám...";
+        try {
+          const photoDataUrl = await compressImage(file);
+          currentProfilePhoto = photoDataUrl;
+          els.profileAvatar.src = photoDataUrl;
+          await db.collection("profiles").doc(currentUser.uid).set({
+            photo: photoDataUrl,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          if (typeof currentUser?.updateProfile === "function") {
+            currentUser.updateProfile({ photoURL: photoDataUrl }).catch((error) => {
+              console.error("Failed to update auth photo:", error);
+            });
+          }
+
+          currentProfileData = { ...(currentProfileData || {}), photo: photoDataUrl };
+          setCurrentUserHeader(currentProfileData, currentUser);
+          els.photoUploadLabel.textContent = "Fotka uložena";
+        } catch (e) {
+          console.error("Failed to update photo:", e);
+          alert("Profilovou fotku se nepodařilo uložit.");
+          els.photoUploadLabel.textContent = "Změnit fotku";
+        } finally {
+          setTimeout(() => {
+            els.photoUploadLabel.textContent = "Změnit fotku";
+          }, 1500);
+          event.target.value = "";
+        }
+      }
+
+      function attachFollowListeners() {
+        unsubscribeFollowers?.();
+        unsubscribeFollowing?.();
+        unsubscribeFollowState?.();
+
+        if (!db || !currentViewedUid) return;
+
+        unsubscribeFollowers = db.collection("follows")
+          .where("followingUid", "==", currentViewedUid)
+          .onSnapshot((snapshot) => {
+            resolvedFollowersCount = snapshot.size;
+            els.followersCountLabel.textContent = String(snapshot.size);
+            els.followersStat.textContent = String(snapshot.size);
+          });
+
+        unsubscribeFollowing = db.collection("follows")
+          .where("followerUid", "==", currentViewedUid)
+          .onSnapshot((snapshot) => {
+            resolvedFollowingCount = snapshot.size;
+            els.followingCountLabel.textContent = String(snapshot.size);
+            els.followingStat.textContent = String(snapshot.size);
+          });
+
+        if (!isOwnProfile && currentUser?.uid) {
+          unsubscribeFollowState = db.collection("follows")
+            .doc(`${currentUser.uid}_${currentViewedUid}`)
+            .onSnapshot((docSnap) => {
+              isFollowingViewedUser = docSnap.exists;
+              els.followProfileBtn.textContent = isFollowingViewedUser ? "Přestat sledovat" : "Sledovat";
+            });
+        } else {
+          isFollowingViewedUser = false;
+        }
+      }
+
+      async function toggleFollow() {
+        if (!db || !currentUser || !currentViewedUid || isOwnProfile) return;
+        const ref = db.collection("follows").doc(`${currentUser.uid}_${currentViewedUid}`);
+        els.followProfileBtn.disabled = true;
+        try {
+          if (isFollowingViewedUser) {
+            await ref.delete();
+          } else {
+            await ref.set({
+              followerUid: currentUser.uid,
+              followingUid: currentViewedUid,
+              followerName: els.sidebarUserName.textContent || currentUser.displayName || "Uživatel",
+              followerPhoto: els.sidebarUserPhoto.src || currentUser.photoURL || "",
+              followingName: currentProfileData?.name || "Uživatel",
+              followingPhoto: currentProfileData?.photo || "",
+              createdAt: Date.now()
+            }, { merge: true });
+
+            await createNotification({
+              recipientUid: currentViewedUid,
+              actorUid: currentUser.uid,
+              actorName: els.sidebarUserName.textContent || currentUser.displayName || "Uživatel",
+              actorPhoto: els.sidebarUserPhoto.src || currentUser.photoURL || "",
+              type: "follow",
+              title: `${els.sidebarUserName.textContent || currentUser.displayName || "Uživatel"} tě začal(a) sledovat`,
+              body: "Mrkni na profil a navaz kontakt přes zprávy."
+            });
+          }
+        } catch (e) {
+          console.error("Failed to toggle follow:", e);
+          alert("Sledování se nepodařilo upravit.");
+        } finally {
+          els.followProfileBtn.disabled = false;
+        }
+      }
+
+      els.shareProfileBtn.onclick = copyProfileUrl;
+      els.messagesBtn.onclick = () => openMessagesWith(isOwnProfile ? "" : currentViewedUid);
+      els.messageProfileBtn.onclick = () => openMessagesWith(isOwnProfile ? "" : currentViewedUid);
+      els.editProfileBtn.onclick = () => {
+        if (els.profileNameInput.disabled) return;
+        els.editModal.classList.add("is-open");
+        els.editModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          els.profileNameInput.focus();
+        }, 30);
+      };
+      els.followProfileBtn.onclick = toggleFollow;
+      els.profileAvatarButton.onclick = openPhotoModal;
+      els.profilePhotoInput.addEventListener("change", handlePhotoChange);
+      els.saveProfileBtn.onclick = persistProfileChanges;
+      els.editModalClose.onclick = () => {
+        els.editModal.classList.remove("is-open");
+        els.editModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      };
+      els.editModal.onclick = (event) => {
+        if (event.target === els.editModal) {
+          els.editModal.classList.remove("is-open");
+          els.editModal.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+        }
+      };
+      els.photoModalClose.onclick = closePhotoModal;
+      els.photoModal.onclick = (event) => {
+        if (event.target === els.photoModal) closePhotoModal();
+      };
+      els.photoModalImage.onclick = togglePhotoZoom;
+      window.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (els.photoModal.classList.contains("is-open")) closePhotoModal();
+        if (els.editModal.classList.contains("is-open")) {
+          els.editModal.classList.remove("is-open");
+          els.editModal.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+        }
+      });
+      els.logoutBtn.onclick = async () => {
+        if (!auth) {
+          clearProfileCache();
+          window.location.href = "index.html";
+          return;
+        }
+        await auth.signOut();
+        clearProfileCache();
+        window.location.href = "index.html";
+      };
+
+      const cached = readProfileCache();
+      const bootstrapName = cached?.name || "Uživatel";
+      const bootstrapPhoto = getAvatar(cached?.photo || "", bootstrapName);
+      els.sidebarUserPhoto.src = bootstrapPhoto;
+      els.topUserPhoto.src = bootstrapPhoto;
+      els.profileAvatar.src = bootstrapPhoto;
+      els.sidebarUserName.textContent = bootstrapName;
+      els.topUserName.textContent = bootstrapName;
+      els.profileDisplayName.textContent = bootstrapName;
+      els.profileRealName.textContent = cached?.city || "Tvůj sportovní profil";
+      els.profileDisplayBio.textContent = cached?.bio || "Načítám profil...";
+      els.followersStat.textContent = String(cached?.followersCount || 0);
+      els.followingStat.textContent = String(cached?.followingCount || 0);
+      els.followersCountLabel.textContent = String(cached?.followersCount || 0);
+      els.followingCountLabel.textContent = String(cached?.followingCount || 0);
+      els.levelStat.textContent = cached?.level || "-";
+      els.levelStatSub.textContent = cached?.athleteType || "úroveň";
+      els.primarySportStat.textContent = cached?.primarySport || "-";
+      els.sportPrimarySport.textContent = cached?.primarySport || "-";
+      els.sportLevel.textContent = `Úroveň: ${cached?.level || "-"}`;
+      els.sportAthleteType.textContent = cached?.athleteType || "-";
+      renderTags(els.heroTags, cached?.hobbies || "");
+      renderTags(els.sportTags, cached?.hobbies || "");
+
+      if (!firebaseReady) {
+        console.error("Firebase is not available on profil.html");
+        els.saveHelper.textContent = "Firebase není dostupný, takže profil teď nepůjde načíst ani uložit.";
+        renderEmpty(els.profileActivitiesList, "Aktivity teď nejde načíst.");
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        currentUser = user;
+        currentViewedUid = currentViewedUid || user.uid;
+        isOwnProfile = currentViewedUid === user.uid;
+        setReadonlyMode(!isOwnProfile);
+        subscribeSidebarBadges(user);
+
+        try {
+          const ownProfile = await ensureCurrentUserProfile(user);
+          setCurrentUserHeader(ownProfile, user);
+
+          if (isOwnProfile && ownProfile) {
+            saveProfileCache({
+              uid: user.uid,
+              name: ownProfile.name || user.displayName || "",
+              email: user.email || "",
+              photo: ownProfile.photo || user.photoURL || "",
+              city: ownProfile.city || "",
+              bio: ownProfile.bio || "",
+              hobbies: ownProfile.hobbies || "",
+              athleteType: ownProfile.athleteType || "",
+              level: ownProfile.level || "",
+              primarySport: ownProfile.primarySport || "",
+              followersCount: ownProfile.followersCount || 0,
+              followingCount: ownProfile.followingCount || 0
+            });
+          }
+
+          unsubscribeViewedProfile?.();
+          unsubscribeViewedProfile = db.collection("profiles").doc(currentViewedUid).onSnapshot((snap) => {
+            let profile = null;
+            if (snap.exists) {
+              profile = snap.data();
+            } else if (isOwnProfile) {
+              profile = {
+                uid: user.uid,
+                name: user.displayName || "Uživatel",
+                email: user.email || "",
+                photo: user.photoURL || "",
+                city: "",
+                bio: "",
+                hobbies: "",
+                athleteType: "",
+                level: "",
+                primarySport: "",
+                followersCount: 0,
+                followingCount: 0
+              };
+            } else {
+              profile = {
+                uid: currentViewedUid,
+                name: "Uživatel",
+                email: "",
+                photo: "",
+                city: "",
+                bio: "",
+                hobbies: "",
+                athleteType: "",
+                level: "",
+                primarySport: "",
+                followersCount: 0,
+                followingCount: 0
+              };
+            }
+            renderProfile(profile, user);
+          });
+
+          attachFollowListeners();
+
+          unsubscribeActivities?.();
+          unsubscribeActivities = db.collection("activities").onSnapshot((snapshot) => {
+            allActivities = [];
+            snapshot.forEach((docSnap) => {
+              const data = docSnap.data() || {};
+              allActivities.push({ id: docSnap.id, ...data });
+            });
+            renderProfileActivities();
+          });
+        } catch (e) {
+          console.error("Profile page init failed:", e);
+          renderEmpty(els.profileActivitiesList, "Nepodařilo se načíst aktivity.");
+        }
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        initProfilePage().catch((error) => {
+          console.error("Profile page fatal init error:", error);
+        });
+      }, { once: true });
+    } else {
+      initProfilePage().catch((error) => {
+        console.error("Profile page fatal init error:", error);
+      });
+    }
+  </script>
+</body>
+</html>
